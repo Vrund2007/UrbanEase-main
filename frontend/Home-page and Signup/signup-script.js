@@ -13,14 +13,20 @@ document.addEventListener('DOMContentLoaded', () => {
         const confirmPassword = confirmPasswordInput.value;
         const accountType = accountTypeInput.value;
 
+        const validEmail = /^\w+([.-]?\w+)*@\w+([.]?\w+)*(\.\w{2,3})+$/.test(email)
         // 1. Validation
         if (!email || !password || !confirmPassword || !accountType) {
             alert('All fields are required!');
             return;
         }
 
-        if (password.length < 6) {
-            alert('Password must be at least 6 characters long.');
+        if (!validEmail) {
+            alert('This is not a valid email address.');
+            return;
+        }
+
+        if (password.length < 8) {
+            alert('Password must be at least 8 characters long.');
             return;
         }
 
