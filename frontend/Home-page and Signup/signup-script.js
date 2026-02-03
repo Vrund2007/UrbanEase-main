@@ -1,5 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     const signupForm = document.getElementById('signupForm');
+    const usernameInput = document.getElementById('floatingUsername');
+    const phoneInput = document.getElementById('floatingPhone');
     const emailInput = document.getElementById('floatingInput');
     const passwordInput = document.getElementById('floatingPassword');
     const confirmPasswordInput = document.getElementById('floatingConfirmPassword');
@@ -8,15 +10,23 @@ document.addEventListener('DOMContentLoaded', () => {
     signupForm.addEventListener('submit', async (e) => {
         e.preventDefault();
 
+        const username = usernameInput.value.trim();
+        const phone = phoneInput.value.trim();
         const email = emailInput.value.trim();
         const password = passwordInput.value;
         const confirmPassword = confirmPasswordInput.value;
         const accountType = accountTypeInput.value;
 
-        const validEmail = /^\w+([.-]?\w+)*@\w+([.]?\w+)*(\.\w{2,3})+$/.test(email)
+        const validEmail = /^\w+([.-]?\w+)*@\w+([.]?\w+)*(\.\w{2,3})+$/.test(email);
+        const validPhone = /^[6-9]\d{9}$/.test(phone);
         // 1. Validation
-        if (!email || !password || !confirmPassword || !accountType) {
+        if (!username || !phone || !email || !password || !confirmPassword || !accountType) {
             alert('All fields are required!');
+            return;
+        }
+
+        if (!validPhone) {
+            alert('Please enter a valid 10-digit Indian mobile number.');
             return;
         }
 
@@ -51,6 +61,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
+                    username: username,
+                    phone: phone,
                     email: email,
                     password: password,
                     account_type: accountType

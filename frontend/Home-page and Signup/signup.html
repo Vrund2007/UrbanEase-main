@@ -97,6 +97,33 @@
               <form id="signupForm">
                 <div class="form-floating mb-3">
                   <input
+                    type="text"
+                    class="form-control"
+                    id="floatingUsername"
+                    placeholder="Username"
+                    required
+                  />
+                  <label for="floatingUsername">Username</label>
+                </div>
+
+                <div class="input-group mb-3">
+                  <span class="input-group-text">+91</span>
+                  <div class="form-floating">
+                    <input
+                      type="tel"
+                      class="form-control"
+                      id="floatingPhone"
+                      placeholder="Mobile Number"
+                      pattern="^[6-9]\d{9}$"
+                      maxlength="10"
+                      required
+                    />
+                    <label for="floatingPhone">Mobile Number</label>
+                  </div>
+                </div>
+
+                <div class="form-floating mb-3">
+                  <input
                     type="email"
                     class="form-control"
                     id="floatingInput"

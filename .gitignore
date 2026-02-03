@@ -1,0 +1,12 @@
+# Environments
+.env
+*.env
+backend/.env
+
+# Python
+__pycache__/
+*.pyc
+
+# IDEs
+.vscode/
+.idea/
