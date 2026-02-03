@@ -12,7 +12,7 @@ Stores all platform users including customers, providers, and admins.
 | id (PK) | INT | Unique user identifier |
 | username | VARCHAR | Unique username |
 | email | VARCHAR | Unique email address |
-| password | VARCHAR | Hashed password |
+| password | VARCHAR | Password |
 | phone | VARCHAR | Contact number |
 | account_type | ENUM (customer, provider, admin) | User role |
 | status | ENUM (active, suspended) | Account status |
