@@ -1,6 +1,6 @@
 # UrbanEase Database Documentation
 
-This document describes the relational database structure for the UrbanEase platform.
+This document describes the relational database structure for all the tables UrbanEase platform.
 
 UrbanEase connects:
 - House/PG/Hostel providers
