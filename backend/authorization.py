@@ -1,10 +1,13 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from flask_mail import Mail, Message
 from dotenv import load_dotenv
 import os
 import random
+
+# Images folder path (absolute path)
+IMAGES_FOLDER = r'C:\Users\vrund\OneDrive\Desktop\UrbanEase-main\Images\database images'
 
 # Load environment variables from .env file
 dotenv_path = os.path.join(os.path.dirname(__file__), '.env')
@@ -22,8 +25,7 @@ temp_storage = {
 }
 
 # Database Configuration
-# Using SQLite for local development
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///UrbanEase.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:9979@localhost:5432/UrbanEase'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
@@ -53,6 +55,8 @@ class User(db.Model):
     email = db.Column(db.String(255), unique=True, nullable=False)
     password = db.Column(db.Text, nullable=False)
     account_type = db.Column(db.String(20), nullable=False)
+    status = db.Column(db.String(20), nullable=False, default='active')
+    created_at = db.Column(db.DateTime, server_default=db.func.now())
 
 # --- Helper Functions ---
 def get_user_by_email(email):
@@ -65,7 +69,8 @@ def create_user(username, phone, email, password, account_type):
             phone=phone,
             email=email,
             password=password,
-            account_type=account_type
+            account_type=account_type,
+            status='active'  # Default status
         )
         db.session.add(new_user)
         db.session.commit()
@@ -216,6 +221,12 @@ Welcome to UrbanEase! We are excited to have you on board.
             return jsonify({'success': False, 'message': str(e)}), 500
     else:
         return jsonify({'success': False, 'message': 'Invalid OTP'}), 400
+
+# --- Image Serving Route ---
+@app.route('/images/<path:filename>')
+def serve_image(filename):
+    """Serve images from the Images/database images folder"""
+    return send_from_directory(IMAGES_FOLDER, filename)
 
 if __name__ == '__main__':
     # Running on port 5000 as the primary common port

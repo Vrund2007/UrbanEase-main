@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UrbanEase - Admin Dashboard</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Global Styles -->
+    <link rel="stylesheet" href="../../Home-page and Signup/styles.css">
+    <!-- Admin Styles -->
+    <link rel="stylesheet" href="admin-styles.css">
+</head>
+<body>
+
+    <!-- Mobile Topbar -->
+    <div class="admin-topbar d-lg-none">
+        <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar">
+            <i class="fas fa-bars"></i>
+        </button>
+        <span class="topbar-brand"><i class="fas fa-city me-2"></i>UrbanEase</span>
+    </div>
+
+    <!-- Sidebar Overlay (mobile) -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- Sidebar -->
+    <aside class="admin-sidebar" id="adminSidebar">
+        <div class="sidebar-header">
+            <a href="#" class="sidebar-brand" id="brandLink"><i class="fas fa-city me-2"></i>UrbanEase</a>
+            <span class="sidebar-subtitle">Admin Panel</span>
+        </div>
+        <nav class="sidebar-nav">
+            <ul class="sidebar-menu">
+                <li>
+                    <a href="#" class="sidebar-link active" data-section="dashboard">
+                        <i class="fas fa-tachometer-alt"></i><span>Dashboard</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="sidebar-link" data-section="providers">
+                        <i class="fas fa-user-tie"></i><span>Provider Profiles</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="sidebar-link" data-section="house-listings">
+                        <i class="fas fa-home"></i><span>House Listings</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="sidebar-link" data-section="tiffin-listings">
+                        <i class="fas fa-utensils"></i><span>Tiffin Listings</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="sidebar-link" data-section="service-listings">
+                        <i class="fas fa-tools"></i><span>Service Listings</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="sidebar-link" data-section="food-orders">
+                        <i class="fas fa-shopping-bag"></i><span>Orders</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="sidebar-link" data-section="service-bookings">
+                        <i class="fas fa-calendar-check"></i><span>Service Bookings</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="sidebar-link" data-section="users">
+                        <i class="fas fa-users"></i><span>Users</span>
+                    </a>
+                </li>
+                <li class="sidebar-divider"></li>
+                <li>
+                    <a href="../../Home-page and Signup/index.html" class="sidebar-link sidebar-logout">
+                        <i class="fas fa-sign-out-alt"></i><span>Logout</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="admin-main">
+
+        <!-- Dashboard Section -->
+        <section class="admin-section active" id="section-dashboard">
+            <div class="section-header">
+                <h1 class="admin-page-title">Dashboard</h1>
+                <p class="text-muted">Overview of pending approvals and activity.</p>
+            </div>
+            <div class="row g-4">
+                <div class="col-sm-6 col-xl-3">
+                    <div class="summary-card" id="pending-providers-card" style="cursor: pointer;">
+                        <div class="summary-icon" style="background-color: var(--primary);">
+                            <i class="fas fa-user-tie" style="color: var(--primary-dark);"></i>
+                        </div>
+                        <div class="summary-info">
+                            <span class="summary-label">Pending Provider Verifications</span>
+                            <span class="summary-value" id="pending-providers-count">--</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-xl-3">
+                    <div class="summary-card" id="pending-houses-card" style="cursor: pointer;">
+                        <div class="summary-icon" style="background-color: var(--secondary);">
+                            <i class="fas fa-home" style="color: var(--secondary-dark);"></i>
+                        </div>
+                        <div class="summary-info">
+                            <span class="summary-label">Pending House Approvals</span>
+                            <span class="summary-value" id="pending-houses-count">--</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-xl-3">
+                    <div class="summary-card" id="pending-tiffins-card" style="cursor: pointer;">
+                        <div class="summary-icon" style="background-color: var(--accent);">
+                            <i class="fas fa-utensils" style="color: #059669;"></i>
+                        </div>
+                        <div class="summary-info">
+                            <span class="summary-label">Pending Tiffin Approvals</span>
+                            <span class="summary-value" id="pending-tiffins-count">--</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-xl-3">
+                    <div class="summary-card" id="pending-services-card" style="cursor: pointer;">
+                        <div class="summary-icon" style="background-color: #FDE68A;">
+                            <i class="fas fa-tools" style="color: #D97706;"></i>
+                        </div>
+                        <div class="summary-info">
+                            <span class="summary-label">Pending Service Approvals</span>
+                            <span class="summary-value" id="pending-services-count">--</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pending Providers Table Container -->
+            <div id="pending-providers-table-container" class="mt-4" style="display: none;">
+                <div class="admin-table-wrapper">
+                    <table class="table admin-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Business Name</th>
+                                <th>Provider Type</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="pending-providers-body">
+                            <tr>
+                                <td colspan="4" class="text-center text-muted py-5">Loading...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Pending Houses Table Container -->
+            <div id="pending-houses-table-container" class="mt-4" style="display: none;">
+                <div class="admin-table-wrapper">
+                    <table class="table admin-table">
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Provider</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="pending-houses-body">
+                            <tr>
+                                <td colspan="3" class="text-center text-muted py-5">Loading...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Pending Tiffins Table Container -->
+            <div id="pending-tiffins-table-container" class="mt-4" style="display: none;">
+                <div class="admin-table-wrapper">
+                    <table class="table admin-table">
+                        <thead>
+                            <tr>
+                                <th>Provider</th>
+                                <th>Diet Type</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="pending-tiffins-body">
+                            <tr>
+                                <td colspan="3" class="text-center text-muted py-5">Loading...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Pending Services Table Container -->
+            <div id="pending-services-table-container" class="mt-4" style="display: none;">
+                <div class="admin-table-wrapper">
+                    <table class="table admin-table">
+                        <thead>
+                            <tr>
+                                <th>Category</th>
+                                <th>Title</th>
+                                <th>Provider</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="pending-services-body">
+                            <tr>
+                                <td colspan="4" class="text-center text-muted py-5">Loading...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Providers Section -->
+        <section class="admin-section" id="section-providers">
+            <div class="section-header">
+                <h1 class="admin-page-title">Provider Profiles</h1>
+                <p class="text-muted">Manage registered service providers.</p>
+            </div>
+            <div class="admin-table-wrapper">
+                <table class="table admin-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Business Name</th>
+                            <th>Provider Type</th>
+                            <th>Verification Status</th>
+                            <th>Aadhaar Number</th>
+                            <th>Business License</th>
+                            <th>Verified At</th>
+                            <th>Created At</th>
+                        </tr>
+                    </thead>
+                    <tbody id="provider-profiles-body">
+                        <!-- Rows will be populated dynamically -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- House Listings Section -->
+        <section class="admin-section" id="section-house-listings">
+            <div class="section-header">
+                <h1 class="admin-page-title">House Listings</h1>
+                <p class="text-muted">Review and manage housing listings.</p>
+            </div>
+            <div class="admin-table-wrapper">
+                <table class="table admin-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Provider</th>
+                            <th>Title</th>
+                            <th>Type</th>
+                            <th>Location</th>
+                            <th>Price</th>
+                            <th>Status</th>
+                            <th>Approved At</th>
+                            <th>Created At</th>
+                        </tr>
+                    </thead>
+                    <tbody id="house-listings-body">
+                        <tr>
+                            <td colspan="9" class="text-center text-muted py-5">Loading...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Tiffin Listings Section -->
+        <section class="admin-section" id="section-tiffin-listings">
+            <div class="section-header">
+                <h1 class="admin-page-title">Tiffin Listings</h1>
+                <p class="text-muted">Review and manage tiffin service listings.</p>
+            </div>
+            <div class="admin-table-wrapper">
+                <table class="table admin-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Provider</th>
+                            <th>Delivery Radius</th>
+                            <th>Fast Delivery</th>
+                            <th>Diet Type</th>
+                            <th>Available Days</th>
+                            <th>Status</th>
+                            <th>Approved At</th>
+                            <th>Created At</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tiffin-listings-body">
+                        <tr>
+                            <td colspan="9" class="text-center text-muted py-5">Loading...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Service Listings Section -->
+        <section class="admin-section" id="section-service-listings">
+            <div class="section-header">
+                <h1 class="admin-page-title">Service Listings</h1>
+                <p class="text-muted">Review and manage home service listings.</p>
+            </div>
+            <div class="admin-table-wrapper">
+                <table class="table admin-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Service Title</th>
+                            <th>Provider</th>
+                            <th>Category</th>
+                            <th>Base Price</th>
+                            <th>Service Radius</th>
+                            <th>Availability Days</th>
+                            <th>Status</th>
+                            <th>Approved At</th>
+                            <th>Created At</th>
+                        </tr>
+                    </thead>
+                    <tbody id="service-listings-body">
+                        <tr>
+                            <td colspan="10" class="text-center text-muted py-5">Loading...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Food Orders Section -->
+        <section class="admin-section" id="section-food-orders">
+            <div class="section-header">
+                <h1 class="admin-page-title">Orders</h1>
+                <p class="text-muted">Track and manage tiffin food orders.</p>
+            </div>
+            <div class="admin-table-wrapper">
+                <table class="table admin-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Customer</th>
+                            <th>Provider</th>
+                            <th>Meal</th>
+                            <th>Qty</th>
+                            <th>Base Price</th>
+                            <th>Total Price</th>
+                            <th>Fast Delivery</th>
+                            <th>Status</th>
+                            <th>Address</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody id="orders-table-body">
+                        <tr>
+                            <td colspan="11" class="text-center text-muted py-5">Loading...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Service Bookings Section -->
+        <section class="admin-section" id="section-service-bookings">
+            <div class="section-header">
+                <h1 class="admin-page-title">Service Bookings</h1>
+                <p class="text-muted">Track and manage service bookings.</p>
+            </div>
+            <div class="admin-table-wrapper">
+                <table class="table admin-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Customer</th>
+                            <th>Provider</th>
+                            <th>Service</th>
+                            <th>Date</th>
+                            <th>Time</th>
+                            <th>Status</th>
+                            <th>Address</th>
+                            <th>Notes</th>
+                            <th>Quoted Price</th>
+                            <th>Created At</th>
+                        </tr>
+                    </thead>
+                    <tbody id="service-bookings-body">
+                        <tr>
+                            <td colspan="11" class="text-center text-muted py-5">Loading...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Users Section -->
+        <section class="admin-section" id="section-users">
+            <div class="section-header">
+                <h1 class="admin-page-title">Users</h1>
+                <p class="text-muted">Manage registered users.</p>
+            </div>
+            <div class="admin-table-wrapper">
+                <table class="table admin-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Username</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Account Type</th>
+                            <th>Status</th>
+                            <th>Created At</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="users-table-body">
+                        <tr>
+                            <td colspan="7" class="text-center text-muted py-5">Loading users...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Provider Verification Modal -->
+    <div class="modal fade" id="providerModal" tabindex="-1" aria-labelledby="providerModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="border-radius: 16px; box-shadow: 0 20px 40px rgba(0,0,0,0.15);">
+                <div class="modal-header" style="border-bottom: 1px solid var(--border);">
+                    <h5 class="modal-title fw-bold" id="providerModalLabel">Provider Verification</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" style="padding: 1.5rem;">
+                    <!-- Profile Image -->
+                    <div class="text-center mb-4">
+                        <img id="modal-provider-image" 
+                             src="" 
+                             alt="Provider Profile" 
+                             class="rounded-circle"
+                             style="width: 120px; height: 120px; object-fit: cover; border: 3px solid var(--primary); box-shadow: 0 4px 15px rgba(124, 58, 237, 0.2);">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label text-muted small mb-1">Business Name</label>
+                        <p id="modal-business-name" class="fw-bold mb-0">--</p>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label text-muted small mb-1">Provider Type</label>
+                        <p id="modal-provider-type" class="mb-0">--</p>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label text-muted small mb-1">Aadhaar Number</label>
+                        <p id="modal-aadhaar" class="mb-0">--</p>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label text-muted small mb-1">Business License</label>
+                        <p id="modal-license" class="mb-0">--</p>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label text-muted small mb-1">Registered Email</label>
+                        <p id="modal-email" class="mb-0">--</p>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label text-muted small mb-1">Phone</label>
+                        <p id="modal-phone" class="mb-0">--</p>
+                    </div>
+                    <div class="mb-0">
+                        <label class="form-label text-muted small mb-1">Created Date</label>
+                        <p id="modal-created" class="mb-0">--</p>
+                    </div>
+                </div>
+                <div class="modal-footer" style="border-top: 1px solid var(--border); gap: 0.5rem;">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-danger" id="modal-reject-btn" onclick="rejectProvider()">
+                        <i class="fas fa-times me-1"></i>Reject
+                    </button>
+                    <button type="button" class="btn btn-primary" id="modal-approve-btn" onclick="approveProvider()">
+                        <i class="fas fa-check me-1"></i>Approve
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Service Verification Modal -->
+    <div class="modal fade" id="serviceModal" tabindex="-1" aria-labelledby="serviceModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content" style="border-radius: 16px; box-shadow: 0 20px 40px rgba(0,0,0,0.15);">
+                <div class="modal-header" style="border-bottom: 1px solid var(--border);">
+                    <h5 class="modal-title fw-bold" id="serviceModalLabel">Service Verification</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" style="padding: 1.5rem;">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label text-muted small mb-1">Service Category</label>
+                                <p id="modal-service-category" class="fw-bold mb-0">--</p>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label text-muted small mb-1">Service Title</label>
+                                <p id="modal-service-title" class="fw-bold mb-0">--</p>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label text-muted small mb-1">Description</label>
+                                <p id="modal-service-description" class="mb-0" style="max-height: 100px; overflow-y: auto;">--</p>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label text-muted small mb-1">Base Price</label>
+                                <p id="modal-service-price" class="fw-bold mb-0">--</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label text-muted small mb-1">Service Radius</label>
+                                <p id="modal-service-radius" class="mb-0">--</p>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label text-muted small mb-1">Availability Days</label>
+                                <p id="modal-service-availability" class="mb-0">--</p>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label text-muted small mb-1">Provider Business Name</label>
+                                <p id="modal-service-provider" class="fw-bold mb-0">--</p>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label text-muted small mb-1">Provider Email</label>
+                                <p id="modal-service-email" class="mb-0">--</p>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label text-muted small mb-1">Provider Phone</label>
+                                <p id="modal-service-phone" class="mb-0">--</p>
+                            </div>
+                            <div class="mb-0">
+                                <label class="form-label text-muted small mb-1">Created Date</label>
+                                <p id="modal-service-created" class="mb-0">--</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer" style="border-top: 1px solid var(--border); gap: 0.5rem;">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-danger" id="modal-service-reject-btn" onclick="rejectService()">
+                        <i class="fas fa-times me-1"></i>Reject
+                    </button>
+                    <button type="button" class="btn btn-primary" id="modal-service-approve-btn" onclick="approveService()">
+                        <i class="fas fa-check me-1"></i>Approve
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tiffin Verification Modal -->
+    <div class="modal fade" id="tiffinModal" tabindex="-1" aria-labelledby="tiffinModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="border-radius: 16px; box-shadow: 0 20px 40px rgba(0,0,0,0.15);">
+                <div class="modal-header" style="border-bottom: 1px solid var(--border);">
+                    <h5 class="modal-title fw-bold" id="tiffinModalLabel">Tiffin Verification</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" style="padding: 1.5rem;">
+                    <div class="mb-3">
+                        <label class="form-label text-muted small mb-1">Provider Name</label>
+                        <p id="modal-tiffin-provider" class="fw-bold mb-0">--</p>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label text-muted small mb-1">Provider Email</label>
+                        <p id="modal-tiffin-email" class="mb-0">--</p>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label text-muted small mb-1">Provider Phone</label>
+                        <p id="modal-tiffin-phone" class="mb-0">--</p>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label text-muted small mb-1">Business License</label>
+                        <p id="modal-tiffin-license" class="mb-0">--</p>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label text-muted small mb-1">Delivery Radius</label>
+                        <p id="modal-tiffin-radius" class="mb-0">--</p>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label text-muted small mb-1">Fast Delivery</label>
+                        <p id="modal-tiffin-fast-delivery" class="mb-0">--</p>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label text-muted small mb-1">Available Days</label>
+                        <p id="modal-tiffin-days" class="mb-0">--</p>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label text-muted small mb-1">Diet Type</label>
+                        <p id="modal-tiffin-diet" class="mb-0">--</p>
+                    </div>
+                    <div class="mb-0">
+                        <label class="form-label text-muted small mb-1">Created Date</label>
+                        <p id="modal-tiffin-created" class="mb-0">--</p>
+                    </div>
+                </div>
+                <div class="modal-footer" style="border-top: 1px solid var(--border); gap: 0.5rem;">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-danger" id="modal-tiffin-reject-btn" onclick="rejectTiffin()">
+                        <i class="fas fa-times me-1"></i>Reject
+                    </button>
+                    <button type="button" class="btn btn-primary" id="modal-tiffin-approve-btn" onclick="approveTiffin()">
+                        <i class="fas fa-check me-1"></i>Approve
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- House Verification Modal -->
+    <div class="modal fade" id="houseModal" tabindex="-1" aria-labelledby="houseModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-xl">
+            <div class="modal-content" style="border-radius: 16px; box-shadow: 0 20px 40px rgba(0,0,0,0.15);">
+                <div class="modal-header" style="border-bottom: 1px solid var(--border);">
+                    <h5 class="modal-title fw-bold" id="houseModalLabel">House Listing Verification</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" style="padding: 1.5rem;">
+                    <!-- Image Carousel -->
+                    <div id="houseImageCarousel" class="carousel slide mb-4" data-bs-ride="false">
+                        <div class="carousel-indicators" id="carousel-indicators"></div>
+                        <div class="carousel-inner" id="carousel-inner" style="border-radius: 12px; overflow: hidden;">
+                            <!-- Images will be populated dynamically -->
+                        </div>
+                        <button class="carousel-control-prev" type="button" data-bs-target="#houseImageCarousel" data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Previous</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#houseImageCarousel" data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Next</span>
+                        </button>
+                    </div>
+
+                    <div class="row">
+                        <!-- Section 1: Basic Info -->
+                        <div class="col-md-6">
+                            <h6 class="text-muted mb-3 border-bottom pb-2">Basic Information</h6>
+                            <div class="mb-3">
+                                <label class="form-label text-muted small mb-1">Title</label>
+                                <p id="modal-house-title" class="fw-bold mb-0">--</p>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label text-muted small mb-1">Location</label>
+                                <p id="modal-house-location" class="mb-0">--</p>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label text-muted small mb-1">Price</label>
+                                <p id="modal-house-price" class="fw-bold mb-0">--</p>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label text-muted small mb-1">Type</label>
+                                <p id="modal-house-type" class="mb-0">--</p>
+                            </div>
+                            <div class="mb-0">
+                                <label class="form-label text-muted small mb-1">Created Date</label>
+                                <p id="modal-house-created" class="mb-0">--</p>
+                            </div>
+                        </div>
+
+                        <!-- Section 2 & 3: Description + Provider Info -->
+                        <div class="col-md-6">
+                            <h6 class="text-muted mb-3 border-bottom pb-2">Description</h6>
+                            <div class="mb-4">
+                                <p id="modal-house-description" class="mb-0" style="max-height: 120px; overflow-y: auto;">--</p>
+                            </div>
+
+                            <h6 class="text-muted mb-3 border-bottom pb-2">Provider Information</h6>
+                            <div class="mb-3">
+                                <label class="form-label text-muted small mb-1">Business Name</label>
+                                <p id="modal-house-provider" class="fw-bold mb-0">--</p>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label text-muted small mb-1">Business License</label>
+                                <p id="modal-house-license" class="mb-0">--</p>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label text-muted small mb-1">Phone</label>
+                                <p id="modal-house-phone" class="mb-0">--</p>
+                            </div>
+                            <div class="mb-0">
+                                <label class="form-label text-muted small mb-1">Email</label>
+                                <p id="modal-house-email" class="mb-0">--</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer" style="border-top: 1px solid var(--border); gap: 0.5rem;">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-danger" id="modal-house-reject-btn" onclick="rejectHouse()">
+                        <i class="fas fa-times me-1"></i>Reject
+                    </button>
+                    <button type="button" class="btn btn-primary" id="modal-house-approve-btn" onclick="approveHouse()">
+                        <i class="fas fa-check me-1"></i>Approve
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <script src="admin-script.js"></script>
+</body>
+</html>

@@ -1,0 +1,521 @@
+/* UrbanEase Admin Theme - Matching Frontend */
+
+:root {
+    /* Reuse variables from styles.css to ensure exact match */
+    --primary: #DDD6FE; /* Lavender */
+    --primary-dark: #7C3AED; /* Darker Purple */
+    --secondary: #FBCFE8; /* Baby Pink */
+    --secondary-dark: #DB2777; /* Darker Pink */
+    --accent: #A7F3D0; /* Mint */
+    --bg-body: #F9FAFB; /* White Smoke */
+    --bg-surface: #FFFFFF;
+    --text-main: #1F2937; /* Graphite Gray */
+    --text-muted: #6B7280; /* Cool Gray */
+    --border: #E5E7EB;
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --radius-lg: 1rem;
+    --radius-xl: 1.5rem;
+}
+
+body {
+    background-color: var(--bg-body);
+    font-family: 'Inter', sans-serif;
+    color: var(--text-main);
+    overflow-x: hidden;
+}
+
+/* ---- Mobile Topbar ---- */
+.admin-topbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 64px;
+    background-color: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    padding: 0 1.25rem;
+    z-index: 1040;
+}
+
+.sidebar-toggle {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    width: 42px;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-muted);
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.sidebar-toggle:hover {
+    border-color: var(--primary);
+    color: var(--primary-dark);
+    background-color: #F5F3FF;
+}
+
+.topbar-brand {
+    font-weight: 800;
+    font-size: 1.35rem;
+    color: var(--text-main);
+    margin-left: 1rem;
+    letter-spacing: -0.5px;
+}
+
+.topbar-brand i {
+    color: var(--primary-dark);
+}
+
+/* ---- Sidebar Overlay ---- */
+.sidebar-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(2px);
+    z-index: 1049;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.sidebar-overlay.active {
+    display: block;
+    opacity: 1;
+}
+
+/* ---- Sidebar ---- */
+.admin-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 280px;
+    height: 100vh;
+    background-color: var(--bg-surface);
+    border-right: 1px solid var(--border);
+    z-index: 1050;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    overflow-y: auto;
+    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.02);
+}
+
+.sidebar-header {
+    padding: 2rem 1.75rem 1.5rem;
+}
+
+.sidebar-brand {
+    font-weight: 800;
+    font-size: 1.6rem;
+    color: var(--text-main);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    letter-spacing: -0.5px;
+}
+
+.sidebar-brand:hover {
+    color: var(--text-main);
+}
+
+.sidebar-brand i {
+    color: var(--primary-dark);
+}
+
+.sidebar-subtitle {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    margin-top: 0.35rem;
+    padding-left: 2.2rem;
+}
+
+/* ---- Sidebar Navigation ---- */
+.sidebar-nav {
+    flex: 1;
+    padding: 0.5rem 1rem;
+}
+
+.sidebar-menu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+}
+
+.sidebar-divider {
+    height: 1px;
+    background-color: var(--border);
+    margin: 1rem 0.5rem;
+}
+
+.sidebar-link {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    padding: 0.85rem 1.25rem;
+    color: var(--text-muted);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.95rem;
+    border-radius: 12px;
+    transition: all 0.2s ease;
+    border: 1px solid transparent;
+}
+
+.sidebar-link:hover {
+    color: var(--primary-dark);
+    background-color: #FAF5FF; /* Very light purple */
+    text-decoration: none;
+}
+
+.sidebar-link.active {
+    background-color: var(--primary);
+    color: var(--text-main); /* Or darker purple text? primary-dark is acceptable but main is better contrast on light primary */
+    font-weight: 600;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.15); /* Soft purple shadow */
+    border-color: rgba(139, 92, 246, 0.1);
+}
+
+.sidebar-link.active i {
+    color: var(--primary-dark);
+}
+
+.sidebar-link i {
+    width: 20px;
+    text-align: center;
+    font-size: 1.1rem;
+    color: #9CA3AF;
+    transition: color 0.2s;
+}
+
+.sidebar-link:hover i {
+    color: var(--primary-dark);
+}
+
+.sidebar-logout {
+    color: #EF4444;
+}
+
+.sidebar-logout i {
+    color: #EF4444;
+}
+
+.sidebar-logout:hover {
+    background-color: #FEF2F2;
+    color: #DC2626;
+    border-color: #FECACA;
+}
+
+.sidebar-logout:hover i {
+    color: #DC2626;
+}
+
+/* ---- Main Content ---- */
+.admin-main {
+    margin-left: 280px;
+    padding: 2.5rem 3rem;
+    min-height: 100vh;
+}
+
+/* ---- Admin Sections ---- */
+.admin-section {
+    display: none;
+    padding: 0;
+}
+
+.admin-section.active {
+    display: block;
+    animation: fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.section-header {
+    margin-bottom: 2.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+}
+
+.section-header::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 100px;
+    height: 3px;
+    background: linear-gradient(to right, var(--primary), var(--secondary));
+    border-radius: 3px;
+}
+
+.admin-page-title {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--text-main);
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.5px;
+}
+
+.admin-page-title + p {
+    font-size: 1.05rem;
+    color: var(--text-muted);
+}
+
+/* ---- Summary Cards (Dashboard) ---- */
+.summary-card {
+    background-color: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xl);
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: var(--shadow-sm);
+    position: relative;
+    overflow: hidden;
+}
+
+.summary-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 6px;
+    background: linear-gradient(to right, var(--primary), var(--secondary));
+    opacity: 1; /* Keep visible if desired, or revert to 0 if full revert */
+    transition: opacity 0.3s ease;
+}
+
+.summary-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--primary);
+}
+
+.summary-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    flex-shrink: 0;
+    /* Background color handled by inline styles in HTML, but transition remains */
+    transition: all 0.3s ease;
+}
+
+.summary-card:hover .summary-icon {
+    transform: scale(1.1) rotate(5deg);
+}
+
+.summary-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.summary-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.summary-value {
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: var(--text-main);
+    line-height: 1.2;
+}
+
+/* ---- Table Styling ---- */
+.admin-table-wrapper {
+    background-color: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow);
+    overflow-x: auto; /* Restored horizontal scrolling */
+    white-space: nowrap; /* Ensure table actually scrolls */
+}
+
+.table.admin-table {
+    margin-bottom: 0;
+    width: 100%;
+    border-collapse: collapse; /* Ensure no gaps */
+}
+
+/* Header */
+.admin-table thead th {
+    background-color: #F8FAFC; /* Very light cool gray */
+    border-bottom: 1px solid var(--border);
+    color: var(--text-muted);
+    font-weight: 700;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    padding: 1.25rem 1.5rem;
+    white-space: nowrap;
+}
+
+/* Rows */
+.admin-table tbody td {
+    padding: 1.25rem 1.5rem;
+    color: var(--text-main);
+    font-size: 0.95rem;
+    font-weight: 500;
+    vertical-align: middle;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+}
+
+.admin-table tbody tr {
+    transition: background-color 0.15s ease;
+}
+
+.admin-table tbody tr:hover {
+    background-color: #F9FAFB;
+}
+
+.admin-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* ---- Badges & Buttons Compatibility ---- */
+.badge {
+    padding: 0.4em 0.8em;
+    font-weight: 600;
+    border-radius: 6px; /* slightly simpler radius for badges */
+    font-size: 0.75rem;
+    letter-spacing: 0.3px;
+}
+
+/* Success Badge Override */
+.bg-success {
+    background-color: #D1FAE5 !important; /* Mint Green Light */
+    color: #065F46 !important; /* Dark Green Text */
+}
+
+/* Danger Badge Override */
+.bg-danger {
+    background-color: #FEE2E2 !important; /* Soft Red Light */
+    color: #991B1B !important; /* Dark Red Text */
+}
+
+/* Warning Badge Override */
+.bg-warning {
+    background-color: #FEF3C7 !important; /* Soft Yellow */
+    color: #92400E !important; /* Dark Orange Text */
+}
+
+/* Buttons */
+.btn {
+    border-radius: 10px;
+    font-weight: 600;
+    padding: 0.5rem 1.25rem;
+    transition: all 0.2s ease;
+    font-size: 0.9rem;
+}
+
+/* Primary Button Redesign */
+.btn-primary {
+    background-color: var(--primary);
+    color: #4C1D95; /* Deep Purple text for contrast on lavender */
+    border: none;
+}
+
+.btn-primary:hover, .btn-primary:focus, .btn-primary:active {
+    background-color: var(--primary-dark) !important;
+    color: white !important;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(124, 58, 237, 0.25);
+}
+
+/* Danger Button Redesign */
+.btn-danger {
+    background-color: #FEE2E2;
+    color: #DC2626;
+    border: 1px solid transparent;
+}
+
+.btn-danger:hover {
+    background-color: #EF4444;
+    color: white;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.25);
+}
+
+.btn-secondary {
+    background-color: #F3F4F6;
+    color: var(--text-muted);
+    border: 1px solid var(--border);
+}
+
+.btn-secondary:disabled {
+    background-color: #E5E7EB;
+    color: #9CA3AF;
+    border-color: #E5E7EB;
+}
+
+/* ---- Animations ---- */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ---- Responsive ---- */
+@media (min-width: 992px) {
+    .admin-sidebar {
+        transform: translateX(0);
+    }
+}
+
+@media (max-width: 991.98px) {
+    .admin-sidebar {
+        transform: translateX(-100%);
+    }
+
+    .admin-sidebar.open {
+        transform: translateX(0);
+    }
+
+    .admin-main {
+        margin-left: 0;
+        padding: 1.5rem;
+        padding-top: calc(64px + 1.5rem);
+    }
+
+    .admin-page-title {
+        font-size: 1.75rem;
+    }
+
+    .summary-card {
+        padding: 1.5rem;
+        min-height: auto;
+    }
+
+    .summary-value {
+        font-size: 1.8rem;
+    }
+}
