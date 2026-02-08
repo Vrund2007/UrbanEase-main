@@ -178,6 +178,21 @@
                   <label for="floatingConfirmPassword">Confirm Password</label>
                 </div>
 
+                <!-- OTP Input (Initially Hidden) -->
+                <div id="otpSection" style="display: none;">
+                    <div class="form-floating mb-3">
+                        <input
+                            type="text"
+                            class="form-control"
+                            id="floatingOtp"
+                            placeholder="Enter 6-digit OTP"
+                            maxlength="6"
+                            pattern="\d{6}"
+                        />
+                        <label for="floatingOtp">Enter OTP</label>
+                    </div>
+                </div>
+
                 <button class="btn btn-primary w-100 py-2 mb-3" type="submit">
                   Create Account
                 </button>

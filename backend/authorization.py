@@ -4,6 +4,7 @@ from flask_cors import CORS
 from flask_mail import Mail, Message
 from dotenv import load_dotenv
 import os
+import random
 
 # Load environment variables from .env file
 dotenv_path = os.path.join(os.path.dirname(__file__), '.env')
@@ -13,12 +14,23 @@ app = Flask(__name__)
 # Enable CORS for all domains on all routes 
 CORS(app, resources={r"/*": {"origins": "*"}})
 
+# Global storage for OTP and registration data (For Testing Only)
+# WARNING: This is not thread-safe and supports only one active signup at a time.
+temp_storage = {
+    'otp': None,
+    'user_data': None
+}
+
 # Database Configuration
-# Using the connection string from the previous files
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:9979@localhost:5432/UrbanEase'
+# Using SQLite for local development
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///UrbanEase.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
+
+# Create tables if they don't exist
+with app.app_context():
+    db.create_all()
 
 # Mail Configuration
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
@@ -52,7 +64,7 @@ def create_user(username, phone, email, password, account_type):
             username=username,
             phone=phone,
             email=email,
-            password=password, # Storing as-is per requirements (no hashing)
+            password=password,
             account_type=account_type
         )
         db.session.add(new_user)
@@ -114,31 +126,97 @@ def signup():
         return jsonify({'success': False, 'message': 'Email already exists'}), 400
         
     try:
-        create_user(username, phone, email, password, account_type)
+        # Generate 6-digit OTP
+        otp = str(random.randint(100000, 999999))
         
-        # Send Welcome Email
+        # Store in global variable (Testing only)
+        temp_storage['otp'] = otp
+        temp_storage['user_data'] = {
+            'username': username,
+            'phone': phone,
+            'email': email,
+            'password': password,
+            'account_type': account_type
+        }
+        
+        # Send OTP Email
         try:
             msg = Message(
-                subject="Welcome to UrbanEase!",
+                subject="Your OTP for UrbanEase Registration",
                 recipients=[email]
             )
             msg.body = f"""Hello {username},
 
-Your {account_type} account has been successfully created.
+Your OTP for registration is: {otp}
+
+Please enter this OTP to complete your registration.
+
+Valuable,
+Team UrbanEase
+"""
+            mail.send(msg)
+            return jsonify({'success': True, 'message': 'OTP sent successfully'}), 200
+        except Exception as mail_error:
+            print(f"Error sending email: {mail_error}")
+            return jsonify({'success': False, 'message': 'Failed to send OTP email'}), 500
+
+    except Exception as e:
+        return jsonify({'success': False, 'message': str(e)}), 500
+
+@app.route('/verify_otp', methods=['POST'])
+def verify_otp():
+    data = request.get_json()
+    entered_otp = data.get('otp')
+    
+    if not entered_otp:
+         return jsonify({'success': False, 'message': 'OTP is required'}), 400
+         
+    # Check global storage
+    stored_otp = temp_storage.get('otp')
+    registration_data = temp_storage.get('user_data')
+    
+    if not stored_otp or not registration_data:
+        # For better UX in testing, if we lost the state, guide user to retry
+        return jsonify({'success': False, 'message': 'No pending registration found. Please try signing up again.'}), 400
+        
+    if entered_otp == stored_otp:
+        try:
+            # Create User
+            create_user(
+                registration_data['username'],
+                registration_data['phone'],
+                registration_data['email'],
+                registration_data['password'],
+                registration_data['account_type']
+            )
+            
+            # Send Welcome Email
+            try:
+                msg = Message(
+                    subject="Welcome to UrbanEase!",
+                    recipients=[registration_data['email']]
+                )
+                msg.body = f"""Hello {registration_data['username']},
+
+Your {registration_data['account_type']} account has been successfully created.
 
 Welcome to UrbanEase! We are excited to have you on board.
 """
-            mail.send(msg)
-        except Exception as mail_error:
-            # Log email failure but do not fail the registration
-            print(f"Error sending email: {mail_error}")
-
-        return jsonify({'success': True, 'account_type': account_type}), 201
-        
-    except Exception as e:
-        return jsonify({'success': False, 'message': str(e)}), 500
+                mail.send(msg)
+            except Exception as mail_error:
+                print(f"Error sending welcome email: {mail_error}")
+            
+            # Clear global storage
+            temp_storage['otp'] = None
+            temp_storage['user_data'] = None
+            
+            return jsonify({'success': True, 'account_type': registration_data['account_type']}), 201
+            
+        except Exception as e:
+            return jsonify({'success': False, 'message': str(e)}), 500
+    else:
+        return jsonify({'success': False, 'message': 'Invalid OTP'}), 400
 
 if __name__ == '__main__':
     # Running on port 5000 as the primary common port
     app.run(debug=True, port=5000)
-
