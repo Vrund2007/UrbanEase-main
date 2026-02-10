@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, send_from_directory
+from flask import Flask, request, jsonify, send_from_directory, session
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from flask_mail import Mail, Message
@@ -14,6 +14,8 @@ dotenv_path = os.path.join(os.path.dirname(__file__), '.env')
 load_dotenv(dotenv_path)
 
 app = Flask(__name__)
+# Secret key for session management
+app.secret_key = os.environ.get('SECRET_KEY', 'urbanease-dev-secret-key-change-in-production')
 # Enable CORS with credentials support for session cookies
 CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
 
@@ -23,9 +25,6 @@ temp_storage = {
     'otp': None,
     'user_data': None
 }
-
-# Session Configuration
-app.secret_key = os.environ.get('SECRET_KEY', 'urbanease-dev-secret-key-change-in-production')
 
 # Database Configuration
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:9979@localhost:5432/UrbanEase'
@@ -106,24 +105,15 @@ def login():
             'success': False,
             'message': 'Invalid email or password'
         }), 200
-    
-    # Check if user is suspended
-    if user.status == 'suspended':
-        return jsonify({
-            'success': False,
-            'message': 'Your account has been suspended'
-        }), 200
-    
-    # Store user info in session for protected routes
-    from flask import session
+        
+    # Set session variables for authentication
     session['user_id'] = user.id
     session['account_type'] = user.account_type
     session['username'] = user.username
-        
+    
     return jsonify({
         'success': True,
-        'account_type': user.account_type,
-        'user_id': user.id
+        'account_type': user.account_type
     }), 200
 
 @app.route('/signup', methods=['POST'])
@@ -245,23 +235,18 @@ def serve_image(filename):
     """Serve images from the Images/database images folder"""
     return send_from_directory(IMAGES_FOLDER, filename)
 
-# --- Frontend Static File Serving ---
-FRONTEND_FOLDER = os.path.join(os.path.dirname(__file__), '..', 'frontend')
+# --- Frontend Static Files Serving ---
+FRONTEND_FOLDER = r'C:\Users\vrund\OneDrive\Desktop\UrbanEase-main\frontend'
 
 @app.route('/frontend/<path:filepath>')
 def serve_frontend(filepath):
     """Serve frontend static files"""
     return send_from_directory(FRONTEND_FOLDER, filepath)
 
-@app.route('/login-page')
-def login_page():
-    """Serve the login page"""
-    return send_from_directory(os.path.join(FRONTEND_FOLDER, 'Home-page and Signup'), 'login.html')
-
 @app.route('/')
-def home_page():
-    """Serve the home page"""
-    return send_from_directory(os.path.join(FRONTEND_FOLDER, 'Home-page and Signup'), 'index.html')
+def index():
+    """Redirect to homepage"""
+    return send_from_directory(FRONTEND_FOLDER, 'Home-page and Signup/index.html')
 
 if __name__ == '__main__':
     # Running on port 5000 as the primary common port

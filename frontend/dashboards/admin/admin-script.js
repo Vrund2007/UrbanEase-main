@@ -970,16 +970,9 @@ function fetchPendingProviders() {
             data.forEach(provider => {
                 const tr = document.createElement('tr');
 
-                // Provider Type Formatting (snake_case to Title Case)
-                const typeFormatted = provider.provider_type
-                    .split('_')
-                    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-                    .join(' ');
-
                 tr.innerHTML = `
                     <td>${provider.id}</td>
                     <td><div class="fw-bold">${provider.business_name}</div></td>
-                    <td><span class="text-capitalize">${typeFormatted}</span></td>
                     <td>
                         <button class="btn btn-primary btn-sm" onclick="handleViewPendingProvider(${provider.id})">View</button>
                     </td>
@@ -1021,13 +1014,6 @@ function handleViewPendingProvider(providerId) {
             
             // Populate modal fields
             document.getElementById('modal-business-name').textContent = data.business_name || '--';
-            
-            // Format provider type (snake_case to Title Case)
-            const typeFormatted = data.provider_type
-                .split('_')
-                .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-                .join(' ');
-            document.getElementById('modal-provider-type').textContent = typeFormatted;
             
             document.getElementById('modal-aadhaar').textContent = data.aadhaar_number || '--';
             document.getElementById('modal-license').textContent = data.business_license || 'N/A';
@@ -1186,7 +1172,6 @@ function fetchProviderProfiles() {
                         <div class="fw-bold">${profile.business_name}</div>
                         <div class="small text-muted">${profile.username}</div>
                     </td>
-                    <td>${profile.provider_type}</td>
                     <td>${statusBadge}</td>
                     <td>${profile.aadhaar_number}</td>
                     <td>${businessLicense}</td>

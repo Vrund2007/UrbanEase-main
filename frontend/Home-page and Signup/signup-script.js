@@ -39,8 +39,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     alert('Account created successfully!');
                     if (data.account_type === 'customer') {
                         window.location.href = '../dashboards/demo-cust.html';
-                    } else if (data.account_type === 'service_provider') {
-                        window.location.href = '../dashboards/demo-ser.html';
+                    } else if (data.account_type === 'provider' || data.account_type === 'service_provider') {
+                        window.location.href = '/provider/dashboard';
                     }
                 } else {
                     alert(data.message || 'OTP Verification failed.');

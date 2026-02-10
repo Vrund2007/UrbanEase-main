@@ -35,11 +35,12 @@ document.addEventListener('DOMContentLoaded', function() {
                     // Redirect based on account_type
                     if (data.account_type === 'customer') {
                         window.location.href = '../dashboards/demo-cust.html';
-                    } else if (data.account_type === 'service_provider') {
-                        window.location.href = '../dashboards/demo-ser.html';
+                    } else if (data.account_type === 'service_provider' || data.account_type === 'provider') {
+                        // Redirect to provider dashboard (backend will serve HTML)
+                        window.location.href = '/provider/dashboard';
                     }
                     else if (data.account_type === 'admin') {
-                        window.location.href = '../dashboards/demo-admi.html';
+                        window.location.href = '../dashboards/admin/admin.html';
                     } else {
                         // Fallback or unknown type
                         alert("Unknown account type: " + data.account_type);

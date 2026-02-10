@@ -7,7 +7,6 @@ class ProviderProfile(db.Model):
     __tablename__ = 'provider_profiles'
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False, unique=True)
-    provider_type = db.Column(db.String(20), nullable=False)
     business_name = db.Column(db.String(150), nullable=False)
     aadhaar_number = db.Column(db.String(12), nullable=False, unique=True)
     business_license = db.Column(db.String(100))
@@ -61,9 +60,19 @@ class TiffinListing(db.Model):
     approved_at = db.Column(db.DateTime)
     diet_type = db.Column(db.String(20), nullable=False)
     available_days = db.Column(db.Text, nullable=False)
+    kitchen_open = db.Column(db.Boolean, nullable=False, default=False)
     created_at = db.Column(db.DateTime, server_default=db.func.now())
 
     provider = db.relationship('ProviderProfile', backref=db.backref('tiffin_listings', lazy=True))
+
+class TiffinImage(db.Model):
+    __tablename__ = 'tiffin_images'
+    id = db.Column(db.Integer, primary_key=True)
+    tiffin_listing_id = db.Column(db.Integer, db.ForeignKey('tiffin_listings.id'), nullable=False)
+    image_path = db.Column(db.String(500), nullable=False)
+    created_at = db.Column(db.DateTime, server_default=db.func.now())
+
+    listing = db.relationship('TiffinListing', backref=db.backref('images', lazy=True))
 
 class ServiceListing(db.Model):
     __tablename__ = 'service_listings'
@@ -147,8 +156,7 @@ def get_pending_providers():
         for profile in pending_profiles:
             results.append({
                 'id': profile.id,
-                'business_name': profile.business_name,
-                'provider_type': profile.provider_type
+                'business_name': profile.business_name
             })
         
         return jsonify(results), 200
@@ -263,7 +271,6 @@ def get_provider_profiles():
             results.append({
                 'id': profile.id,
                 'username': user.username,
-                'provider_type': profile.provider_type,
                 'business_name': profile.business_name,
                 'aadhaar_number': profile.aadhaar_number,
                 'business_license': profile.business_license or "N/A",
@@ -499,7 +506,6 @@ def get_provider_details(provider_id):
         return jsonify({
             'id': profile.id,
             'business_name': profile.business_name,
-            'provider_type': profile.provider_type,
             'aadhaar_number': profile.aadhaar_number,
             'business_license': profile.business_license or 'N/A',
             'email': user.email,

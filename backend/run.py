@@ -1,8 +1,12 @@
 from authorization import app, db
 from admin import admin_bp
+from provider import provider_bp
 
 # Register the admin blueprint
 app.register_blueprint(admin_bp)
+
+# Register the provider blueprint
+app.register_blueprint(provider_bp)
 
 # Ensure all tables are created (including ProviderProfile from admin.py)
 # This is necessary because authorization.py's db.create_all() runs before admin.py is imported
