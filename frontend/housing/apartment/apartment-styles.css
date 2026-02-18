@@ -1,8 +1,0 @@
-/* Apartment Specific Overrides */
-/* Most styles are inherited from hostel-styles.css */
-
-.apartment-hero {
-    background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?q=80&w=2000&auto=format&fit=crop');
-    background-size: cover;
-    background-position: center;
-}
