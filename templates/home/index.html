@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UrbanEase - Your City Companion</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body data-bs-spy="scroll" data-bs-target="#mainNavbar" data-bs-offset="100">
+
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNavbar">
+        <div class="container">
+            <a class="navbar-brand" href="/#home"><i class="fas fa-city me-2"></i>UrbanEase</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item"><a class="nav-link active" href="/#home">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/#why-urbanease">Why Us</a></li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Services</a>
+                        <ul class="dropdown-menu border-0 shadow-lg">
+                            <li><a class="dropdown-item" href="/#housing" id="housing-link"><i class="fas fa-home me-2"></i>Housing</a></li>
+                            <li><a class="dropdown-item" href="/#tiffin" id="tiffin-link"><i class="fas fa-utensils me-2"></i>Tiffin</a></li>
+                            <li><a class="dropdown-item" href="/#home-services" id="home-services-link"><i class="fas fa-tools me-2"></i>Home Services</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item ms-lg-3"><a href="/login" class="btn btn-primary btn-sm px-4 me-2">Log In</a></li>
+                    <li class="nav-item"><a href="/signup" class="btn btn-primary btn-sm px-4">Sign Up</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <section id="home" class="hero-section d-flex align-items-center">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6 mb-5 mb-lg-0">
+                    <span class="premium-badge mb-3"><i class="fas fa-star me-1"></i> Premium Lifestyle</span>
+                    <h1 class="hero-title">Settling in a New City Made Effortless.</h1>
+                    <p class="hero-lead">Find your perfect home and delicious daily meals in one place. UrbanEase connects you to the best PGs, apartments, and tiffin services.</p>
+                    <div class="d-flex gap-3">
+                        <a href="/#housing" class="btn btn-primary btn-lg"><i class="fas fa-search me-2"></i>Find Housing</a>
+                        <a href="/#tiffin" class="btn btn-primary btn-lg"><i class="fas fa-utensils me-2"></i>Order Food</a>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <img src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?q=80&w=2670&auto=format&fit=crop" alt="City Life" class="img-fluid rounded-4 shadow-lg border border-white border-opacity-50" style="box-shadow: 0 20px 80px -20px rgba(124, 58, 237, 0.3) !important;">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="housing">
+        <div class="container">
+            <h2 class="section-title">Housing Solutions</h2>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <a class="text-decoration-none h-100 d-block">
+                        <div class="feature-card">
+                            <div class="icon-box"><i class="fas fa-building"></i></div>
+                            <h3 class="card-title">Apartments</h3>
+                            <p class="card-text">Find semi-furnished and fully furnished apartments for rent or sale. Perfect for families, investors, and working professionals.</p>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-md-4">
+                    <a class="text-decoration-none h-100 d-block">
+                        <div class="feature-card">
+                            <div class="icon-box"><i class="fas fa-user-friends"></i></div>
+                            <h3 class="card-title">PGs</h3>
+                            <p class="card-text">Affordable Paying Guest accommodations with food and laundry facilities. Ideal for students and singles new to the city.</p>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-md-4">
+                    <a class="text-decoration-none h-100 d-block">
+                        <div class="feature-card">
+                            <div class="icon-box"><i class="fas fa-bed"></i></div>
+                            <h3 class="card-title">Hostels</h3>
+                            <p class="card-text">Secure and budget-friendly hostels with shared amenities. Great community atmosphere for students and travelers.</p>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="tiffin">
+        <div class="container">
+            <h2 class="section-title">Tiffin Services</h2>
+            <div class="row g-5 align-items-center mb-5">
+                <div class="col-lg-6 order-lg-2">
+                    <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=2680&auto=format&fit=crop" alt="Delicious Food" class="img-fluid rounded-4 shadow-lg border border-white border-opacity-50">
+                </div>
+                <div class="col-lg-6 order-lg-1">
+                    <h3 class="display-5 fw-bold mb-4" style="color: var(--text-main);">Home-Cooked Meals,<br>Delivered Daily.</h3>
+                    <p class="text-muted lead mb-4">Miss home food? Our Tiffin service connects you with verified kitchens offering healthy, hygienic, and tasty meals. Subscribe and save more!</p>
+                    <ul class="features-list">
+                        <li><i class="fas fa-check"></i> Breakfast, Lunch, and Dinner options</li>
+                        <li><i class="fas fa-check"></i> Flexible cancel and pause options</li>
+                        <li><i class="fas fa-check"></i> Weekly and Monthly subscription plans</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="home-services">
+        <div class="container">
+            <h2 class="section-title">Verified Services at Your Doorstep</h2>
+            <div class="row g-5 align-items-center mb-5">
+                <div class="col-lg-6 order-lg-2">
+                    <img src="{{ url_for('static', filename='images/website_images/photo-1580256081112-e49377338b7f.avif') }}" onerror="this.onerror=null;this.src='https://placehold.co/600x400?text=Home+Services'" alt="Home Services" class="img-fluid rounded-4 shadow-lg border border-white border-opacity-50" style="width: 100%; height: 400px; object-fit: cover;">
+                </div>
+                <div class="col-lg-6 order-lg-1">
+                    <p class="text-muted lead mb-4">UrbanEase connects you with verified service providers for daily needs like repairs, installation, and maintenance. Mentioned features include radius-based availability, transparent pricing, and service tracking.</p>
+                    <ul class="features-list">
+                        <li><i class="fas fa-check"></i> Verified Providers & Transparent Pricing</li>
+                        <li><i class="fas fa-check"></i> Radius-based Availability</li>
+                        <li><i class="fas fa-check"></i> Easy Booking with Date & Time</li>
+                    </ul>
+                    <a href="#" class="btn btn-primary btn-lg mt-2">Explore Services</a>
+                </div>
+            </div>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <a class="text-decoration-none h-100 d-block">
+                        <div class="feature-card">
+                            <div class="icon-box"><i class="fas fa-bolt"></i></div>
+                            <h3 class="card-title">Electrician</h3>
+                            <p class="card-text">Expert electricians for wiring, appliance repair, and installations. Safety and quality guaranteed.</p>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-md-4">
+                    <a class="text-decoration-none h-100 d-block">
+                        <div class="feature-card">
+                            <div class="icon-box"><i class="fas fa-wrench"></i></div>
+                            <h3 class="card-title">Plumber</h3>
+                            <p class="card-text">Professional plumbing services for leaks, fittings, and drainage solutions. Quick and reliable.</p>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-md-4">
+                    <a class="text-decoration-none h-100 d-block">
+                        <div class="feature-card">
+                            <div class="icon-box"><i class="fas fa-broom"></i></div>
+                            <h3 class="card-title">Cleaning</h3>
+                            <p class="card-text">Deep cleaning services for your home. Verified professionals ensuring a sparkling clean environment.</p>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="why-urbanease" class="bg-gradient-theme">
+        <div class="container">
+            <h2 class="section-title">Why Choose UrbanEase?</h2>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="feature-card text-center h-100">
+                        <div class="icon-box mx-auto"><i class="fas fa-check-circle"></i></div>
+                        <h3 class="card-title h4">100% Verified Listings</h3>
+                        <p class="card-text">Every property and tiffin service is physically verified by our team to ensure quality and safety.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-card text-center h-100">
+                        <div class="icon-box mx-auto"><i class="fas fa-wallet"></i></div>
+                        <h3 class="card-title h4">Zero Brokerage</h3>
+                        <p class="card-text">Connect directly with owners and service providers. No hidden fees or middleman charges.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-card text-center h-100">
+                        <div class="icon-box mx-auto"><i class="fas fa-layer-group"></i></div>
+                        <h3 class="card-title h4">One-Stop Solution</h3>
+                        <p class="card-text">From finding a roof over your head to daily meals, we handle all your essential settling-in needs.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+</body>
+</html>

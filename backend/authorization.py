@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, send_from_directory, session
+from flask import Flask, request, jsonify, session, render_template
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from flask_mail import Mail, Message
@@ -6,14 +6,18 @@ from dotenv import load_dotenv
 import os
 import random
 
-# Images folder path (absolute path)
-IMAGES_FOLDER = r'C:\Users\vrund\OneDrive\Desktop\UrbanEase-main\Images\database images'
+# Project root (parent of backend/)
+BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+# Load environment variables from .env at project root
+load_dotenv(os.path.join(BASE_DIR, '.env'))
 
-# Load environment variables from .env file
-dotenv_path = os.path.join(os.path.dirname(__file__), '.env')
-load_dotenv(dotenv_path)
-
-app = Flask(__name__)
+app = Flask(
+    __name__,
+    template_folder=os.path.join(BASE_DIR, 'templates'),
+    static_folder=os.path.join(BASE_DIR, 'static')
+)
+# Database images: uploads go here and are served at /static/images/database_images/
+IMAGES_FOLDER = os.path.join(app.static_folder, 'images', 'database_images')
 # Secret key for session management
 app.secret_key = os.environ.get('SECRET_KEY', 'urbanease-dev-secret-key-change-in-production')
 # Enable CORS with credentials support for session cookies
@@ -26,8 +30,11 @@ temp_storage = {
     'user_data': None
 }
 
-# Database Configuration
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:9979@localhost:5432/UrbanEase'
+# Database Configuration (use DATABASE_URL on Render, else local)
+database_url = os.environ.get('DATABASE_URL')
+if database_url and database_url.startswith('postgres://'):
+    database_url = database_url.replace('postgres://', 'postgresql://', 1)
+app.config['SQLALCHEMY_DATABASE_URI'] = database_url or 'postgresql://postgres:9979@localhost:5432/UrbanEase'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
@@ -84,7 +91,7 @@ def create_user(username, phone, email, password, account_type):
 # --- Routes ---
 
 @app.route('/login', methods=['POST'])
-def login():
+def login_api():
 
     data = request.get_json()
     
@@ -229,24 +236,33 @@ Welcome to UrbanEase! We are excited to have you on board.
     else:
         return jsonify({'success': False, 'message': 'Invalid OTP'}), 400
 
-# --- Image Serving Route ---
+# --- Page routes (GET): serve templates ---
+@app.route('/')
+def home():
+    """Homepage"""
+    return render_template('home/index.html')
+
+@app.route('/login', methods=['GET'])
+def login_page():
+    """Login page (GET); POST handled by login() below"""
+    return render_template('home/login.html')
+
+@app.route('/signup', methods=['GET'])
+def signup_page():
+    """Signup page"""
+    return render_template('home/signup.html')
+
+@app.route('/payment')
+def payment_page():
+    """Payment page"""
+    return render_template('payment/payment.html')
+
+# --- Backward compatibility: serve database images at /images/<filename> ---
+from flask import send_from_directory
 @app.route('/images/<path:filename>')
 def serve_image(filename):
-    """Serve images from the Images/database images folder"""
+    """Serve images from static/images/database_images"""
     return send_from_directory(IMAGES_FOLDER, filename)
-
-# --- Frontend Static Files Serving ---
-FRONTEND_FOLDER = r'C:\Users\vrund\OneDrive\Desktop\UrbanEase-main\frontend'
-
-@app.route('/frontend/<path:filepath>')
-def serve_frontend(filepath):
-    """Serve frontend static files"""
-    return send_from_directory(FRONTEND_FOLDER, filepath)
-
-@app.route('/')
-def index():
-    """Redirect to homepage"""
-    return send_from_directory(FRONTEND_FOLDER, 'Home-page and Signup/index.html')
 
 if __name__ == '__main__':
     # Running on port 5000 as the primary common port

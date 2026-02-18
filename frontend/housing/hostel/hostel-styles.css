@@ -1,0 +1,604 @@
+/* Hostel Page Styles */
+
+/* Hero Section */
+.hostel-hero {
+    margin-top: 76px;
+    height: 500px;
+    background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1555854877-bab0e564b8d5?q=80&w=2000&auto=format&fit=crop');
+    background-size: cover;
+    background-position: center;
+    color: white;
+    display: flex;
+    align-items: center;
+}
+
+.hero-tag {
+    display: inline-block;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(4px);
+    padding: 0.35rem 0.75rem;
+    border-radius: 50px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    margin-bottom: 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.hero-heading {
+    font-size: 3rem;
+    font-weight: 800;
+    margin-bottom: 0.5rem;
+    line-height: 1.1;
+}
+
+.hero-subtext {
+    font-size: 1.2rem;
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 2rem;
+}
+
+/* Search Bar */
+.search-bar-container {
+    background: white;
+    padding: 1rem;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.search-bar-container .form-control,
+.search-bar-container .form-select {
+    border: 1px solid #e2e8f0;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+}
+
+.search-bar-container .input-group-text {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-right: none;
+    color: var(--primary);
+}
+
+.search-bar-container .form-control {
+    border-left: none;
+}
+
+.search-bar-container .form-control:focus,
+.search-bar-container .form-select:focus {
+    box-shadow: none;
+    border-color: var(--primary);
+}
+
+.search-btn {
+    padding: 0.75rem;
+    font-weight: 600;
+}
+
+/* Listings Section */
+.hostel-listings {
+    padding: 80px 0;
+    background-color: var(--bg-body);
+}
+
+.section-header {
+    margin-bottom: 3rem;
+}
+
+.section-title {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--text-main);
+}
+
+.section-subtitle {
+    color: var(--text-muted);
+    font-size: 1.1rem;
+}
+
+/* Listing Card */
+.listing-card {
+    background: var(--bg-surface);
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.listing-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.08);
+    border-color: var(--primary-light, #ddd6fe);
+}
+
+.listing-image {
+    height: 220px;
+    position: relative;
+    overflow: hidden;
+}
+
+.listing-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.listing-card:hover .listing-image img {
+    transform: scale(1.05);
+}
+
+.listing-badge {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    backdrop-filter: blur(4px);
+}
+
+.btn-save {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: white;
+    border: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-muted);
+    transition: all 0.2s ease;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.btn-save:hover {
+    color: #ef4444;
+    transform: scale(1.1);
+}
+
+.listing-content {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.listing-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text-main);
+    margin: 0;
+    line-height: 1.3;
+}
+
+.listing-price {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--primary);
+}
+
+.listing-price small {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--text-muted);
+}
+
+.listing-location {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    margin-bottom: 0.75rem;
+}
+
+.listing-desc {
+    color: #64748b;
+    font-size: 0.95rem;
+    flex: 1;
+    margin-bottom: 1.5rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* ================================================
+   VIEW DETAILS MODAL
+   ================================================ */
+
+.detail-modal-content {
+    border: none;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.15);
+}
+
+.detail-modal-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    z-index: 10;
+    background: rgba(0, 0, 0, 0.5);
+    border: none;
+    color: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    backdrop-filter: blur(4px);
+}
+
+.detail-modal-close:hover {
+    background: rgba(0, 0, 0, 0.7);
+    transform: scale(1.1);
+}
+
+.detail-modal-body {
+    position: relative;
+}
+
+/* Loading State */
+.detail-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 400px;
+}
+
+/* Carousel */
+.detail-carousel {
+    border-radius: 20px 20px 0 0;
+    overflow: hidden;
+}
+
+.detail-carousel .carousel-item img {
+    width: 100%;
+    height: 350px;
+    object-fit: cover;
+}
+
+.detail-carousel .carousel-control-prev,
+.detail-carousel .carousel-control-next {
+    width: 44px;
+    height: 44px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 50%;
+    opacity: 1;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    transition: all 0.2s ease;
+}
+
+.detail-carousel .carousel-control-prev {
+    left: 1rem;
+}
+
+.detail-carousel .carousel-control-next {
+    right: 1rem;
+}
+
+.detail-carousel .carousel-control-prev:hover,
+.detail-carousel .carousel-control-next:hover {
+    background: white;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.detail-carousel .carousel-control-prev-icon,
+.detail-carousel .carousel-control-next-icon {
+    width: 16px;
+    height: 16px;
+    filter: invert(1) grayscale(1) brightness(0);
+}
+
+/* Details Body */
+.detail-body {
+    padding: 2rem;
+}
+
+.detail-info {
+    padding-right: 1.5rem;
+}
+
+.detail-type-badge {
+    display: inline-block;
+    background: var(--primary, #6d28d9); /* Darker purple */
+    color: white;
+    padding: 0.25rem 0.85rem;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    letter-spacing: 0.5px;
+}
+
+.detail-title {
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: var(--text-main);
+    margin-bottom: 0.5rem;
+    line-height: 1.2;
+}
+
+
+.detail-location {
+    color: #334155; /* Dark Slate to match theme */
+    font-size: 0.95rem;
+    margin-bottom: 1rem;
+    font-weight: 500;
+}
+
+.detail-location i {
+    color: var(--primary, #6d28d9);
+}
+
+.detail-price {
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: #4c1d95; /* Very Dark Purple */
+    margin-bottom: 1.25rem;
+}
+
+.detail-price-period {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #475569; /* Darker muted text */
+}
+
+.detail-description {
+    color: #1e293b; /* Nearly black (Slate 800) for readability */
+    font-size: 0.95rem;
+    line-height: 1.7;
+    margin-bottom: 1.25rem;
+    font-weight: 400;
+}
+
+.detail-date {
+    color: #475569; /* Darker Slate (Slate 600) so it's readable */
+    font-size: 0.85rem;
+    margin-bottom: 0;
+    font-weight: 500;
+}
+
+/* Provider Card */
+.provider-card {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 1.5rem;
+}
+
+.provider-card-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.provider-avatar {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: var(--primary-light, #ede9fe);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary, #6d28d9); /* Darker purple */
+    font-size: 1.25rem;
+    overflow: hidden;
+    flex-shrink: 0;
+    border: 2px solid var(--border, #e2e8f0);
+}
+
+.provider-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.provider-name {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-main);
+    margin: 0 0 0.25rem 0;
+}
+
+.provider-badge {
+    display: inline-flex;
+    align-items: center;
+    background: #dcfce7;
+    color: #16a34a;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+}
+
+.provider-contact {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.provider-contact-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.9rem;
+    color: #334155;
+}
+
+.provider-contact-item i {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--primary-light, #ede9fe);
+    color: var(--primary, #6d28d9); /* Darker purple */
+    border-radius: 8px;
+    font-size: 0.8rem;
+    flex-shrink: 0;
+}
+
+/* Bottom Actions */
+.detail-actions {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #e2e8f0;
+}
+
+.detail-btn-save {
+    flex: 1;
+    padding: 0.75rem 1.5rem;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    background: var(--primary, #6d28d9); /* Darker purple */
+    color: white;
+    border: 2px solid var(--primary, #6d28d9); /* Darker purple */
+    transition: all 0.2s ease;
+}
+
+.detail-btn-save:hover {
+    background: #5b21b6; /* Even darker purple on hover */
+    border-color: #5b21b6;
+    color: white;
+    transform: translateY(-1px);
+}
+
+.detail-btn-close {
+    padding: 0.75rem 1.5rem;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    background: transparent;
+    color: var(--text-muted);
+    border: 2px solid #e2e8f0;
+    transition: all 0.2s ease;
+}
+
+.detail-btn-close:hover {
+    background: #f1f5f9;
+    border-color: #cbd5e1;
+}
+
+/* ================================================
+   RESPONSIVE
+   ================================================ */
+
+@media (max-width: 991.98px) {
+    .hostel-hero {
+        height: auto;
+        padding: 100px 0 60px;
+    }
+    
+    .hero-heading {
+        font-size: 2.5rem;
+    }
+    
+    .detail-info {
+        padding-right: 0;
+        margin-bottom: 1.5rem;
+    }
+    
+    .detail-carousel .carousel-item img {
+        height: 280px;
+    }
+}
+
+@media (max-width: 767.98px) {
+    .hostel-hero {
+        text-align: center;
+    }
+    
+    .hero-heading {
+        font-size: 2rem;
+    }
+    
+    .search-bar-container .input-group {
+        margin-bottom: 0.5rem;
+    }
+    
+    .search-btn {
+        width: 100%;
+    }
+    
+    .detail-body {
+        padding: 1.25rem;
+    }
+    
+    .detail-title {
+        font-size: 1.4rem;
+    }
+    
+    .detail-price {
+        font-size: 1.4rem;
+    }
+    
+    .detail-carousel .carousel-item img {
+        height: 220px;
+    }
+    
+    .detail-actions {
+        flex-direction: column;
+    }
+}
+
+/* Toast Notification */
+.custom-toast {
+    position: fixed;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: #1e293b; /* Slate 800 */
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 50px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-weight: 500;
+    font-size: 0.95rem;
+    opacity: 0;
+    transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    z-index: 1100; /* Above modal */
+}
+
+.custom-toast.show {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+}
+
+.custom-toast.error {
+    background: #ef4444;
+}
+
+.custom-toast i {
+    font-size: 1.1rem;
+    color: #4ade80; /* Green accent */
+}
+
+.custom-toast.error i {
+    color: white;
+}

@@ -1,14 +1,14 @@
-from flask import Blueprint, jsonify, request, session, redirect, send_from_directory
-from authorization import db, User
-from admin import ProviderProfile, ProviderProfilePic, HouseListing, HouseImage, TiffinListing, TiffinImage, ServiceListing, Meal, Order, ServiceBooking
+from flask import Blueprint, jsonify, request, session, redirect, render_template
+from authorization import db, User, app
+from admin import ProviderProfile, ProviderProfilePic, HouseListing, HouseImage, HostelDetails, PGDetails, ApartmentDetails, TiffinListing, TiffinImage, ServiceListing, Meal, Order, ServiceBooking
 from werkzeug.utils import secure_filename
 import os
 import time
 
 provider_bp = Blueprint('provider', __name__)
 
-# Image storage paths
-IMAGES_FOLDER = r'C:\Users\vrund\OneDrive\Desktop\UrbanEase-main\Images\database images'
+# Image storage: same as static/images/database_images (Linux-safe)
+IMAGES_FOLDER = os.path.join(app.static_folder, 'images', 'database_images')
 ALLOWED_EXTENSIONS = {'jpg', 'jpeg'}
 MAX_FILE_SIZE = 5 * 1024 * 1024  # 5MB
 
@@ -29,9 +29,9 @@ def require_provider_auth(f):
     def decorated_function(*args, **kwargs):
         user = get_current_user()
         if not user:
-            return jsonify({'success': False, 'message': 'Not authenticated', 'redirect': '/frontend/Home-page and Signup/login.html'}), 401
+            return jsonify({'success': False, 'message': 'Not authenticated', 'redirect': '/login'}), 401
         if user.account_type not in ['provider', 'service_provider']:
-            return jsonify({'success': False, 'message': 'Not authorized', 'redirect': '/frontend/Home-page and Signup/index.html'}), 403
+            return jsonify({'success': False, 'message': 'Not authorized', 'redirect': '/'}), 403
         return f(*args, **kwargs)
     return decorated_function
 
@@ -43,18 +43,10 @@ def provider_dashboard():
     user = get_current_user()
     
     if not user:
-        # Not logged in - redirect to login
-        return redirect('/frontend/Home-page and Signup/login.html')
-    
+        return redirect('/login')
     if user.account_type not in ['provider', 'service_provider']:
-        # Not a provider - redirect to homepage
-        return redirect('/frontend/Home-page and Signup/index.html')
-    
-    # Serve the provider dashboard HTML
-    return send_from_directory(
-        r'C:\Users\vrund\OneDrive\Desktop\UrbanEase-main\frontend\dashboards\provider',
-        'provider.html'
-    )
+        return redirect('/')
+    return render_template('dashboards/provider/provider.html')
 
 @provider_bp.route('/provider/api/status', methods=['GET'])
 @require_provider_auth
@@ -239,18 +231,7 @@ def apply_verification():
 def provider_logout():
     """Clear session and redirect to login"""
     session.clear()
-    return redirect('/frontend/Home-page and Signup/login.html')
-
-    return jsonify({
-        'authenticated': True,
-        'account_type': user.account_type,
-        'username': user.username
-    }), 200
-
-@provider_bp.route('/images/<path:filename>')
-def serve_image(filename):
-    """Serve images from database images folder"""
-    return send_from_directory(IMAGES_FOLDER, filename)
+    return redirect('/login')
 
 # --- House Listings Routes ---
 
@@ -342,6 +323,38 @@ def add_house_listing():
         db.session.flush() # Get ID
         
         listing_id = new_listing.id
+        
+        # Insert into type-specific detail table
+        if type_ == 'Hostel':
+            hostel_details = HostelDetails(
+                listing_id=listing_id,
+                gender=request.form.get('gender'),
+                room_type=request.form.get('room_type'),
+                wifi=request.form.get('wifi') == 'true',
+                attached_bathroom=request.form.get('attached_bathroom') == 'true',
+                food_included=request.form.get('food_included') == 'true',
+                laundry=request.form.get('laundry') == 'true'
+            )
+            db.session.add(hostel_details)
+        elif type_ == 'PG':
+            pg_details = PGDetails(
+                listing_id=listing_id,
+                gender=request.form.get('gender'),
+                ac_available=request.form.get('ac_available') == 'true',
+                sharing=request.form.get('sharing'),
+                food_included=request.form.get('food_included') == 'true',
+                laundry=request.form.get('laundry') == 'true'
+            )
+            db.session.add(pg_details)
+        elif type_ == 'Apartment':
+            apartment_details = ApartmentDetails(
+                listing_id=listing_id,
+                listing_purpose=request.form.get('listing_purpose'),
+                bhk=request.form.get('bhk'),
+                tenant_preference=request.form.get('tenant_preference'),
+                furnishing=request.form.get('furnishing')
+            )
+            db.session.add(apartment_details)
         
         # Handle images
         if 'images' not in request.files:
@@ -594,10 +607,6 @@ def toggle_kitchen_status(listing_id):
         db.session.rollback()
         print(f"Error toggling kitchen status: {e}")
         return jsonify({'success': False, 'message': str(e)}), 500
-
-@provider_bp.route('/images/database_images/<path:filename>')
-def serve_db_image(filename):
-    return send_from_directory(IMAGES_FOLDER, filename)
 
 @provider_bp.route('/provider/tiffin/<int:listing_id>/add-meal', methods=['POST'])
 @require_provider_auth

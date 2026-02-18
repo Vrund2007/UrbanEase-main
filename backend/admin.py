@@ -1,7 +1,13 @@
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, render_template
 from authorization import db, User
 
 admin_bp = Blueprint('admin', __name__)
+
+
+@admin_bp.route('/admin')
+def admin_dashboard():
+    """Serve admin dashboard page"""
+    return render_template('dashboards/admin/admin.html')
 
 class ProviderProfile(db.Model):
     __tablename__ = 'provider_profiles'
@@ -41,6 +47,19 @@ class HouseListing(db.Model):
 
     provider = db.relationship('ProviderProfile', backref=db.backref('house_listings', lazy=True))
 
+class SavedHouse(db.Model):
+    __tablename__ = 'saved_houses'
+    id = db.Column(db.Integer, primary_key=True)
+    customer_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    house_listing_id = db.Column(db.Integer, db.ForeignKey('house_listings.id'), nullable=False)
+    created_at = db.Column(db.DateTime, server_default=db.func.now())
+
+    # Prevent duplicate saves at DB level
+    __table_args__ = (db.UniqueConstraint('customer_id', 'house_listing_id', name='unique_customer_listing'),)
+
+    customer = db.relationship('User', backref=db.backref('saved_houses', lazy=True))
+    listing = db.relationship('HouseListing', backref=db.backref('saved_by', lazy=True))
+
 class HouseImage(db.Model):
     __tablename__ = 'house_images'
     id = db.Column(db.Integer, primary_key=True)
@@ -49,6 +68,45 @@ class HouseImage(db.Model):
     created_at = db.Column(db.DateTime, server_default=db.func.now())
 
     listing = db.relationship('HouseListing', backref=db.backref('images', lazy=True))
+
+class HostelDetails(db.Model):
+    __tablename__ = 'hostel_details'
+    id = db.Column(db.Integer, primary_key=True)
+    listing_id = db.Column(db.Integer, db.ForeignKey('house_listings.id'), nullable=False, unique=True)
+    gender = db.Column(db.String(10), nullable=False)  # boys, girls, coed
+    room_type = db.Column(db.String(20), nullable=False)  # single, double, dorm
+    wifi = db.Column(db.Boolean, nullable=False, default=False)
+    attached_bathroom = db.Column(db.Boolean, nullable=False, default=False)
+    food_included = db.Column(db.Boolean, nullable=False, default=False)
+    laundry = db.Column(db.Boolean, nullable=False, default=False)
+    created_at = db.Column(db.DateTime, server_default=db.func.now())
+
+    listing = db.relationship('HouseListing', backref=db.backref('hostel_details', uselist=False))
+
+class PGDetails(db.Model):
+    __tablename__ = 'pg_details'
+    id = db.Column(db.Integer, primary_key=True)
+    listing_id = db.Column(db.Integer, db.ForeignKey('house_listings.id'), nullable=False, unique=True)
+    gender = db.Column(db.String(10), nullable=False)  # boys, girls, coed
+    ac_available = db.Column(db.Boolean, nullable=False, default=False)
+    sharing = db.Column(db.String(10), nullable=False)  # 1, 2, 3, 4+
+    food_included = db.Column(db.Boolean, nullable=False, default=False)
+    laundry = db.Column(db.Boolean, nullable=False, default=False)
+    created_at = db.Column(db.DateTime, server_default=db.func.now())
+
+    listing = db.relationship('HouseListing', backref=db.backref('pg_details', uselist=False))
+
+class ApartmentDetails(db.Model):
+    __tablename__ = 'apartment_details'
+    id = db.Column(db.Integer, primary_key=True)
+    listing_id = db.Column(db.Integer, db.ForeignKey('house_listings.id'), nullable=False, unique=True)
+    listing_purpose = db.Column(db.String(10), nullable=False)  # rent, sale
+    bhk = db.Column(db.String(10), nullable=False)  # 1, 2, 3, 4+
+    tenant_preference = db.Column(db.String(20), nullable=False)  # family, bachelor, any
+    furnishing = db.Column(db.String(20), nullable=False)  # furnished, semi, unfurnished
+    created_at = db.Column(db.DateTime, server_default=db.func.now())
+
+    listing = db.relationship('HouseListing', backref=db.backref('apartment_details', uselist=False))
 
 class TiffinListing(db.Model):
     __tablename__ = 'tiffin_listings'

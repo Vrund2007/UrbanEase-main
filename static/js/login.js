@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
             // 3. Send login request
-            fetch('http://localhost:5000/login', {
+            fetch('/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -40,7 +40,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         window.location.href = '/provider/dashboard';
                     }
                     else if (data.account_type === 'admin') {
-                        window.location.href = '../dashboards/admin/admin.html';
+                        window.location.href = '/admin';
                     } else {
                         // Fallback or unknown type
                         alert("Unknown account type: " + data.account_type);

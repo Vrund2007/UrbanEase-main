@@ -133,11 +133,11 @@ function fetchProviderStatus() {
     })
     .then(response => {
         if (response.status === 401) {
-            window.location.href = '/frontend/Home-page and Signup/login.html';
+            window.location.href = '/login';
             return null;
         }
         if (response.status === 403) {
-            window.location.href = '/frontend/Home-page and Signup/index.html';
+            window.location.href = '/';
             return null;
         }
         return response.json();
@@ -292,7 +292,7 @@ function updateProfileSection(profile, status) {
     // Update profile image
     const profileImage = document.getElementById('profile-image');
     if (profile.profile_image) {
-        profileImage.src = '/images/' + profile.profile_image;
+        profileImage.src = '/static/images/database_images/' + (profile.profile_image || '');
     } else {
         profileImage.src = 'https://via.placeholder.com/120?text=No+Photo';
     }
@@ -504,7 +504,7 @@ function renderHouseListings(listings) {
         
         // Image
         const imageSrc = listing.preview_image 
-            ? `/images/${listing.preview_image}` 
+            ? `/static/images/database_images/${listing.preview_image}` 
             : 'https://via.placeholder.com/400x300?text=No+Image';
 
         card.innerHTML = `
@@ -767,7 +767,7 @@ function startListingPaymentFlow(event) {
     // Store data in IndexedDB and redirect
     savePendingListing(listingData)
         .then(() => {
-            window.location.href = '/frontend/payment/payment.html';
+            window.location.href = '/payment';
         })
         .catch(err => {
             console.error(err);
@@ -877,7 +877,7 @@ function openViewHouseModal(listing) {
             // Slide
             const slide = document.createElement('div');
             slide.className = `carousel-item ${index === 0 ? 'active' : ''}`;
-            slide.innerHTML = `<img src="/images/${img.image_path}" class="d-block w-100" style="height: 350px; object-fit: cover;" alt="House Image">`;
+            slide.innerHTML = `<img src="/static/images/database_images/${img.image_path}" class="d-block w-100" style="height: 350px; object-fit: cover;" alt="House Image">`;
             carouselInner.appendChild(slide);
         });
     } else {
@@ -944,7 +944,7 @@ function renderTiffinListings(listings) {
         else if (listing.status === 'rejected') statusClass = 'badge-rejected';
         
         const imageSrc = listing.preview_image 
-            ? `/images/${listing.preview_image}` 
+            ? `/static/images/database_images/${listing.preview_image}` 
             : 'https://via.placeholder.com/400x300?text=No+Image';
 
         card.innerHTML = `
@@ -1056,7 +1056,7 @@ function startTiffinPaymentFlow(event) {
     // Store data in IndexedDB
     savePendingListing({ ...listingData, listing_type: 'tiffin' })
         .then(() => {
-            window.location.href = '/frontend/payment/payment.html'; 
+            window.location.href = '/payment'; 
         })
         .catch(err => {
             console.error(err);
@@ -1100,7 +1100,7 @@ function openViewTiffinModal(listing) {
             
             const item = document.createElement('div');
             item.className = `carousel-item ${isActive}`;
-            item.innerHTML = `<img src="/images/${img}" class="d-block w-100" style="height: 350px; object-fit: cover;" alt="Tiffin Image">`;
+            item.innerHTML = `<img src="/static/images/database_images/${img}" class="d-block w-100" style="height: 350px; object-fit: cover;" alt="Tiffin Image">`;
             inner.appendChild(item);
         });
     }
@@ -1260,7 +1260,7 @@ function startServicePaymentFlow(event) {
     // Store data in IndexedDB
     savePendingListing({ ...listingData, listing_type: 'service' })
         .then(() => {
-            window.location.href = '/frontend/payment/payment.html'; 
+            window.location.href = '/payment'; 
         })
         .catch(err => {
             console.error(err);
@@ -1315,7 +1315,7 @@ function fetchFoodOrdersTiffins() {
                 // Image
                 let imageHtml = '<div class="house-listing-image d-flex align-items-center justify-content-center bg-light"><i class="fas fa-utensils fa-2x text-secondary"></i></div>';
                 if (listing.preview_image) {
-                     imageHtml = `<img src="/images/database_images/${listing.preview_image}" alt="Tiffin" class="house-listing-image">`;
+                     imageHtml = `<img src="/static/images/database_images/${listing.preview_image}" alt="Tiffin" class="house-listing-image">`;
                 }
 
                 const isApproved = listing.status === 'approved';
@@ -1434,7 +1434,7 @@ function fetchMeals(tiffinId) {
 
                 let imageHtml = '<div class="house-listing-image d-flex align-items-center justify-content-center bg-light"><i class="fas fa-utensils fa-2x text-secondary"></i></div>';
                 if (meal.meal_image_path) {
-                     imageHtml = `<div class="position-relative"><img src="/images/database_images/${meal.meal_image_path}" alt="${meal.meal_name}" class="house-listing-image">${availabilityBadge}</div>`;
+                     imageHtml = `<div class="position-relative"><img src="/static/images/database_images/${meal.meal_image_path}" alt="${meal.meal_name}" class="house-listing-image">${availabilityBadge}</div>`;
                 }
 
                 card.innerHTML = `
@@ -1663,7 +1663,7 @@ function viewMeal(meal) {
     
     const img = document.getElementById('view-meal-image');
     if (meal.meal_image_path) {
-        img.src = '/images/database_images/' + meal.meal_image_path;
+        img.src = '/static/images/database_images/' + meal.meal_image_path;
         img.style.display = 'block';
     } else {
         img.style.display = 'none';
@@ -1690,7 +1690,7 @@ function openEditMealModal(meal) {
     // Show current image
     const previewImg = document.getElementById('edit-meal-image-preview');
     if (meal.meal_image_path) {
-        previewImg.src = '/images/database_images/' + meal.meal_image_path;
+        previewImg.src = '/static/images/database_images/' + meal.meal_image_path;
         previewImg.style.display = 'block';
     } else {
         previewImg.style.display = 'none';
