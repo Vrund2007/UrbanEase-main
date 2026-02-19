@@ -1,0 +1,88 @@
+/* My Food Orders Page - Reuses hostel/services card styling */
+
+.my-orders-hero {
+    background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=2000&auto=format&fit=crop');
+    background-size: cover;
+    background-position: center;
+}
+
+.order-card {
+    min-height: 320px;
+}
+
+.order-meta {
+    display: grid;
+    gap: 0.25rem;
+}
+
+.order-meta-row {
+    font-size: 0.9rem;
+    color: var(--text-main);
+}
+
+/* Status badges */
+.badge-status {
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.3rem 0.65rem;
+    border-radius: 6px;
+    text-transform: capitalize;
+}
+
+.badge-placed {
+    background: #fef3c7;
+    color: #b45309;
+}
+
+.badge-preparing {
+    background: #dbeafe;
+    color: #1d4ed8;
+}
+
+.badge-out_for_delivery {
+    background: #e0e7ff;
+    color: #4338ca;
+}
+
+.badge-delivered {
+    background: #dcfce7;
+    color: #16a34a;
+}
+
+.badge-cancelled {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+/* Modal details */
+.detail-block {
+    padding: 0.9rem 1rem;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    background: var(--bg-surface);
+}
+
+.detail-label {
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 0.35rem;
+}
+
+.detail-value {
+    font-weight: 600;
+    color: var(--text-main);
+}
+
+.booking-meta,
+.booking-address,
+.service-provider {
+    color: var(--text-muted);
+}
+
+.booking-address {
+    font-size: 0.88rem;
+    line-height: 1.4;
+}

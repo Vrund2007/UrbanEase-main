@@ -1,0 +1,60 @@
+/* My Bookings Page - Reuses hostel/services card styling */
+
+.my-bookings-hero {
+    background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1621905251189-08b45d6a269e?q=80&w=2000&auto=format&fit=crop');
+    background-size: cover;
+    background-position: center;
+}
+
+.booking-card {
+    min-height: 280px;
+}
+
+.booking-card .listing-content {
+    flex: 1;
+}
+
+/* Status badges - match provider status colors */
+.badge-status {
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.3rem 0.65rem;
+    border-radius: 6px;
+    text-transform: capitalize;
+}
+
+.badge-requested {
+    background: #fef3c7;
+    color: #b45309;
+}
+
+.badge-accepted {
+    background: #dbeafe;
+    color: #1d4ed8;
+}
+
+.badge-completed {
+    background: #dcfce7;
+    color: #16a34a;
+}
+
+.badge-cancelled {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+.booking-meta {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+.booking-address {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    line-height: 1.4;
+}
+
+.service-provider {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}

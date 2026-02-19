@@ -180,6 +180,18 @@ class Order(db.Model):
     tiffin_listing = db.relationship('TiffinListing', foreign_keys=[tiffin_listing_id])
     meal = db.relationship('Meal', foreign_keys=[meal_id])
 
+class SavedService(db.Model):
+    __tablename__ = 'saved_services'
+    id = db.Column(db.Integer, primary_key=True)
+    customer_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    service_listing_id = db.Column(db.Integer, db.ForeignKey('service_listings.id'), nullable=False)
+    created_at = db.Column(db.DateTime, server_default=db.func.now())
+
+    __table_args__ = (db.UniqueConstraint('customer_id', 'service_listing_id', name='unique_customer_service'),)
+
+    customer = db.relationship('User', backref=db.backref('saved_services', lazy=True))
+    service_listing = db.relationship('ServiceListing', backref=db.backref('saved_by', lazy=True))
+
 class ServiceBooking(db.Model):
     __tablename__ = 'service_bookings'
     id = db.Column(db.Integer, primary_key=True)

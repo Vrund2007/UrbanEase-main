@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Food Orders - UrbanEase</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/customer.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/hostel.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/my_orders.css') }}">
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="customerNavbar">
+        <div class="container">
+            <a class="navbar-brand" href="/customer/dashboard"><i class="fas fa-city me-2"></i>UrbanEase</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#customerNavbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="customerNavbarNav">
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-heart me-1 d-lg-none"></i>Saved Houses</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-utensils me-1 d-lg-none"></i>Saved Meals</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('customer.browse_services') }}"><i class="fas fa-tools me-1 d-lg-none"></i>Saved Services</a></li>
+                </ul>
+                <div class="nav-profile-wrapper d-none d-lg-block ms-3">
+                    <button class="nav-profile-trigger" id="profileTrigger">
+                        <div class="nav-avatar"><i class="fas fa-user"></i></div>
+                        <i class="fas fa-chevron-down nav-profile-arrow" id="profileArrow"></i>
+                    </button>
+                    <div class="nav-profile-dropdown" id="profileDropdown">
+                        <a href="#" class="nav-profile-item"><i class="fas fa-user-circle"></i>Profile</a>
+                        <a href="#" class="nav-profile-item"><i class="fas fa-map-marker-alt"></i>My Addresses</a>
+                        <a href="{{ url_for('customer.service_bookings') }}" class="nav-profile-item"><i class="fas fa-calendar-check"></i>My Bookings</a>
+                        <a href="{{ url_for('customer.my_orders') }}" class="nav-profile-item"><i class="fas fa-utensils"></i>My Food Orders</a>
+                        <div class="nav-profile-divider"></div>
+                        <a href="/customer/logout" class="nav-profile-item nav-profile-logout"><i class="fas fa-sign-out-alt"></i>Logout</a>
+                    </div>
+                </div>
+                <ul class="navbar-nav d-lg-none mt-2">
+                    <li><hr class="dropdown-divider"></li>
+                    <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-user-circle me-2"></i>Profile</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-map-marker-alt me-2"></i>My Addresses</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('customer.service_bookings') }}"><i class="fas fa-calendar-check me-2"></i>My Bookings</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('customer.my_orders') }}"><i class="fas fa-utensils me-2"></i>My Food Orders</a></li>
+                    <li class="nav-item"><a class="nav-link text-danger" href="/customer/logout"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hostel-hero my-orders-hero">
+        <div class="container h-100">
+            <div class="row h-100 align-items-center">
+                <div class="col-lg-8">
+                    <span class="hero-tag">MY FOOD ORDERS</span>
+                    <h1 class="hero-heading">Track Your Meal Orders</h1>
+                    <p class="hero-subtext">Track your meal orders and delivery status</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="hostel-listings">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">My Orders</h2>
+                <p class="section-subtitle">All your tiffin meal orders in one place.</p>
+            </div>
+
+            <div class="row g-4">
+                {% if orders %}
+                    {% for o in orders %}
+                    <div class="col-md-6 col-lg-4">
+                        <div class="listing-card order-card">
+                            <div class="listing-content">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <h3 class="listing-title">{{ o.meal_name }}</h3>
+                                    <span class="badge-status badge-{{ o.order_status }}">{{ o.order_status|replace('_', ' ')|title }}</span>
+                                </div>
+
+                                <p class="service-provider mb-2"><i class="fas fa-store me-1"></i>{{ o.provider_business_name }}</p>
+
+                                <div class="order-meta mb-2">
+                                    <div class="order-meta-row"><span class="text-muted">Diet:</span> <span class="fw-semibold">{{ o.diet_type|title }}</span></div>
+                                    <div class="order-meta-row"><span class="text-muted">Category:</span> <span class="fw-semibold">{{ o.meal_category|title }}</span></div>
+                                    <div class="order-meta-row"><span class="text-muted">Quantity:</span> <span class="fw-semibold">{{ o.quantity }}</span></div>
+                                    <div class="order-meta-row"><span class="text-muted">Total:</span> <span class="fw-bold">₹{{ "%.0f"|format(o.total_price) }}</span></div>
+                                </div>
+
+                                <p class="booking-address mb-2"><i class="fas fa-map-marker-alt me-1"></i>{{ o.delivery_address[:80] }}{% if o.delivery_address|length > 80 %}...{% endif %}</p>
+                                <p class="booking-meta mb-0"><i class="fas fa-calendar-alt me-1"></i>{{ o.order_date }}</p>
+
+                                <div class="mt-3 d-flex gap-2">
+                                    <button class="btn btn-outline-primary btn-sm flex-grow-1 view-order-details-btn"
+                                            data-order='{{ o | tojson }}'>
+                                        View Details
+                                    </button>
+                                    <a class="btn btn-primary btn-sm flex-grow-1" href="{{ url_for('customer.download_order_bill', order_id=o.id) }}">
+                                        Download Bill
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="col-12 text-center py-5">
+                        <div class="empty-state">
+                            <i class="fas fa-utensils fa-3x text-muted mb-3"></i>
+                            <h4>No Orders Yet</h4>
+                            <p class="text-muted">You haven't placed any meal orders yet. Browse kitchens and order your first meal.</p>
+                            <a href="{{ url_for('customer.browse_tiffins') }}" class="btn btn-primary mt-3">Browse Tiffin Services</a>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </section>
+
+    <!-- Order Details Modal -->
+    <div class="modal fade" id="orderDetailsModal" tabindex="-1" aria-labelledby="orderDetailsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content border-0 rounded-3 shadow-lg">
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title fw-bold" id="orderDetailsModalLabel">Order Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="detail-block">
+                                <div class="detail-label">Meal</div>
+                                <div class="detail-value" id="odMealName">—</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="detail-block">
+                                <div class="detail-label">Provider</div>
+                                <div class="detail-value" id="odProvider">—</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="detail-block">
+                                <div class="detail-label">Diet Type</div>
+                                <div class="detail-value" id="odDiet">—</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="detail-block">
+                                <div class="detail-label">Category</div>
+                                <div class="detail-value" id="odCategory">—</div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="detail-block">
+                                <div class="detail-label">Quantity</div>
+                                <div class="detail-value" id="odQty">—</div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="detail-block">
+                                <div class="detail-label">Fast Delivery</div>
+                                <div class="detail-value" id="odFast">—</div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="detail-block">
+                                <div class="detail-label">Status</div>
+                                <div class="detail-value" id="odStatus">—</div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="detail-block">
+                                <div class="detail-label">Delivery Address</div>
+                                <div class="detail-value" id="odAddress">—</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="detail-block">
+                                <div class="detail-label">Order Date</div>
+                                <div class="detail-value" id="odDate">—</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="detail-block">
+                                <div class="detail-label">Total Price</div>
+                                <div class="detail-value" id="odTotal">—</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 pt-0">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='js/customer.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/my_orders.js') }}"></script>
+</body>
+</html>

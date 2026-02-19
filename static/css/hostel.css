@@ -185,7 +185,7 @@
 .listing-price {
     font-size: 1.1rem;
     font-weight: 700;
-    color: var(--primary);
+    color: var(--primary-dark);
 }
 
 .listing-price small {
@@ -317,7 +317,7 @@
 
 .detail-type-badge {
     display: inline-block;
-    background: var(--primary, #6d28d9); /* Darker purple */
+    background: var(--primary-dark); /* Darker purple */
     color: white;
     padding: 0.25rem 0.85rem;
     border-radius: 6px;
@@ -344,7 +344,7 @@
 }
 
 .detail-location i {
-    color: var(--primary, #6d28d9);
+    color: var(--primary-darker);
 }
 
 .detail-price {
@@ -452,7 +452,7 @@
     align-items: center;
     justify-content: center;
     background: var(--primary-light, #ede9fe);
-    color: var(--primary, #6d28d9); /* Darker purple */
+    color: var(--primary-dark); /* Darker purple */
     border-radius: 8px;
     font-size: 0.8rem;
     flex-shrink: 0;
@@ -473,9 +473,9 @@
     border-radius: 12px;
     font-weight: 600;
     font-size: 0.95rem;
-    background: var(--primary, #6d28d9); /* Darker purple */
+    background: var(--primary-darker,#6d28d9); /* Darker purple */
     color: white;
-    border: 2px solid var(--primary, #6d28d9); /* Darker purple */
+    border: 2px solid var(--primary-darker, #6d28d9); /* Darker purple */
     transition: all 0.2s ease;
 }
 

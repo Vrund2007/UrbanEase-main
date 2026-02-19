@@ -4,6 +4,7 @@
     /* Reuse variables from styles.css to ensure exact match */
     --primary: #DDD6FE; /* Lavender */
     --primary-dark: #7C3AED; /* Darker Purple */
+    --primary-darker: #4d2397; /* Darker Purple */
     --secondary: #FBCFE8; /* Baby Pink */
     --secondary-dark: #DB2777; /* Darker Pink */
     --accent: #A7F3D0; /* Mint */

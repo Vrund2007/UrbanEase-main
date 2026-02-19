@@ -34,6 +34,8 @@
                     <div class="nav-profile-dropdown" id="profileDropdown">
                         <a href="#" class="nav-profile-item"><i class="fas fa-user-circle"></i>Profile</a>
                         <a href="#" class="nav-profile-item"><i class="fas fa-map-marker-alt"></i>My Addresses</a>
+                        <a href="{{ url_for('customer.service_bookings') }}" class="nav-profile-item"><i class="fas fa-calendar-check"></i>My Bookings</a>
+                        <a href="{{ url_for('customer.my_orders') }}" class="nav-profile-item"><i class="fas fa-utensils"></i>My Food Orders</a>
                         <div class="nav-profile-divider"></div>
                         <a href="/customer/logout" class="nav-profile-item nav-profile-logout"><i class="fas fa-sign-out-alt"></i>Logout</a>
                     </div>
