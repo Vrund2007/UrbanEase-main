@@ -246,41 +246,6 @@
     color: #DC2626;
 }
 
-/* ---- Recent Activity ---- */
-.customer-activity {
-    padding: 0 0 100px;
-}
-
-.activity-heading {
-    font-size: 1.75rem;
-    font-weight: 800;
-    color: var(--text-main);
-    margin-bottom: 1.5rem;
-}
-
-.activity-empty {
-    background-color: var(--bg-surface);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 3rem 2rem;
-    text-align: center;
-    color: var(--text-muted);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
-}
-
-.activity-empty i {
-    font-size: 2rem;
-    color: var(--primary);
-    margin-bottom: 0.75rem;
-    display: block;
-}
-
-.activity-empty p {
-    margin: 0;
-    font-size: 1rem;
-    font-weight: 500;
-}
-
 /* ---- Browse Houses Modal ---- */
 .modal-backdrop.show {
     opacity: 0.5;
