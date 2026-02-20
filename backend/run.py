@@ -1,4 +1,4 @@
-from authorization import app, db
+from backend.authorization import app, db
 from admin import admin_bp
 from provider import provider_bp
 from customer import customer_bp
