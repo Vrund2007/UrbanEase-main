@@ -11,8 +11,8 @@ load_dotenv(os.path.join(os.path.dirname(__file__), '.env'))
 
 app = Flask(
     __name__,
-    template_folder='templates',
-    static_folder='static'
+    template_folder=os.path.join(BASE_DIR, "templates"),
+    static_folder=os.path.join(BASE_DIR, "static")
 )
 IMAGES_FOLDER = os.path.join(app.static_folder, 'images', 'database_images')
 app.secret_key = os.environ.get('SECRET_KEY', 'urbanease-dev-secret-key-change-in-production')
