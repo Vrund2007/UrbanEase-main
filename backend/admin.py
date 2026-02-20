@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, request, render_template
-from authorization import db, User
+from backend.authorization import db, User
 
 admin_bp = Blueprint('admin', __name__)
 

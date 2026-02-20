@@ -1,5 +1,5 @@
 from flask import Blueprint, session, redirect, render_template, request, jsonify, send_file
-from authorization import db, User
+from backend.authorization import db, User
 from sqlalchemy import text
 
 customer_bp = Blueprint('customer', __name__)
@@ -107,7 +107,7 @@ def update_profile():
 
                         
 
-from admin import (
+from backend.admin import (
     HouseListing, HouseImage, SavedHouse, HostelDetails, PGDetails, ApartmentDetails,
     ServiceListing, SavedService, ServiceBooking,
     TiffinListing, Meal, Order, ProviderProfile,SavedKitchen

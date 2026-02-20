@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify, request, session, redirect, render_template
-from authorization import db, User, app
-from admin import ProviderProfile, ProviderProfilePic, HouseListing, HouseImage, HostelDetails, PGDetails, ApartmentDetails, TiffinListing, TiffinImage, ServiceListing, Meal, Order, ServiceBooking
+from backend.authorization import db, User, app
+from backend.admin import ProviderProfile, ProviderProfilePic, HouseListing, HouseImage, HostelDetails, PGDetails, ApartmentDetails, TiffinListing, TiffinImage, ServiceListing, Meal, Order, ServiceBooking
 from werkzeug.utils import secure_filename
 import os
 import time
