@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Saved Services - UrbanEase</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/styles.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/customer.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/hostel.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/services.css') }}"
+    />
+  </head>
+  <body>
+    {% include "partials/customer_navbar.html" %}
+
+    <section class="hostel-hero">
+      <div class="container h-100">
+        <div class="row h-100 align-items-center">
+          <div class="col-lg-8">
+            <span class="hero-tag">SAVED SERVICES</span>
+            <h1 class="hero-heading">Saved Services</h1>
+            <p class="hero-subtext">Manage your saved home services.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="hostel-listings">
+      <div class="container">
+        <div class="section-header">
+          <h2 class="section-title">Your Saved Services</h2>
+          <p class="section-subtitle">All the home services you've saved.</p>
+        </div>
+        <div class="row g-4">
+          {% if services %} {% for service in services %}
+          <div class="col-md-6 col-lg-4">
+            <div class="listing-card">
+              <div class="listing-image">
+                {% if service.provider_image %}
+                <img
+                  src="{{ url_for('static', filename='images/database_images/' ~ service.provider_image) }}"
+                  alt="{{ service.service_title }}"
+                  onerror="
+                    this.onerror = null;
+                    this.src =
+                      'https://images.unsplash.com/photo-1621905251189-08b45d6a269e?q=80&w=2000&auto=format&fit=crop';
+                  "
+                />
+                {% else %}
+                <img
+                  src="https://images.unsplash.com/photo-1621905251189-08b45d6a269e?q=80&w=2000&auto=format&fit=crop"
+                  alt="{{ service.service_title }}"
+                />
+                {% endif %}
+                <div class="listing-badge">
+                  {{ service.service_category|replace('_', ' ')|title }}
+                </div>
+              </div>
+              <div class="listing-content">
+                <h3 class="listing-title">{{ service.service_title }}</h3>
+                <p class="service-provider">
+                  <i class="fas fa-store me-1"></i>{{ service.business_name }}
+                </p>
+                <p class="listing-location">
+                  <i class="fas fa-map-marker-alt me-1"></i>Within {{
+                  service.service_radius }} km
+                </p>
+                <p class="listing-desc mb-2">
+                  <small class="text-muted"
+                    ><i class="fas fa-calendar-alt me-1"></i>{{
+                    service.availability_days }}</small
+                  >
+                </p>
+                <div class="listing-price mb-3">
+                  ₹{{ "%.0f"|format(service.base_price) }}
+                  <small>starting</small>
+                </div>
+                <a href="/services" class="btn btn-outline-primary w-100"
+                  >Book Service</a
+                >
+              </div>
+            </div>
+          </div>
+          {% endfor %} {% else %}
+          <div class="col-12">
+            <div class="empty-state text-center py-5">
+              <i class="fas fa-tools fa-3x text-muted mb-3"></i>
+              <h4>You have no saved items yet.</h4>
+              <p class="text-muted">
+                Start browsing and save your favorite services to see them here.
+              </p>
+            </div>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </section>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='js/navbar.js') }}"></script>
+  </body>
+</html>

@@ -1,5 +1,66 @@
 document.addEventListener('DOMContentLoaded', function() {
 
+    // Save restaurant (kitchen) button handlers
+    document.querySelectorAll('.save-restaurant-btn').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            const kitchenId = this.getAttribute('data-id');
+            if (!kitchenId) return;
+            const isSaved = this.getAttribute('data-saved') === 'true';
+            toggleSaveRestaurant(kitchenId, isSaved, this);
+        });
+    });
+
+    function toggleSaveRestaurant(kitchenId, isSaved, btn) {
+        const url = `/save/restaurant/${kitchenId}`;
+        const method = isSaved ? 'DELETE' : 'POST';
+        fetch(url, { method })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    const newSaved = !isSaved;
+                    btn.setAttribute('data-saved', newSaved ? 'true' : 'false');
+                    const icon = btn.querySelector('i');
+                    if (icon) {
+                        icon.classList.toggle('far', !newSaved);
+                        icon.classList.toggle('fas', newSaved);
+                        icon.style.color = newSaved ? '#ef4444' : '';
+                    }
+                    showToast(data.message || (newSaved ? 'Restaurant saved' : 'Restaurant removed from saved'));
+                } else {
+                    showToast(data.message || 'Failed to update', true);
+                }
+            })
+            .catch(err => {
+                console.error('Error toggling restaurant save:', err);
+                showToast('Server error. Please try again.', true);
+            });
+    }
+
+    // Initialize saved restaurant hearts from backend on page load
+    fetch('/saved/restaurants/ids')
+        .then(res => res.json())
+        .then(data => {
+            if (!data || !data.success || !Array.isArray(data.ids)) return;
+            const idSet = new Set(data.ids.map(String));
+            document.querySelectorAll('.save-restaurant-btn').forEach(btn => {
+                const id = btn.getAttribute('data-id');
+                if (!id) return;
+                const isSaved = idSet.has(String(id));
+                btn.setAttribute('data-saved', isSaved ? 'true' : 'false');
+                const icon = btn.querySelector('i');
+                if (icon) {
+                    icon.classList.toggle('far', !isSaved);
+                    icon.classList.toggle('fas', isSaved);
+                    icon.style.color = isSaved ? '#ef4444' : '';
+                }
+            });
+        })
+        .catch(err => {
+            console.error('Error initializing saved restaurants:', err);
+        });
+
     const kitchenListSection = document.getElementById('kitchensListSection');
     const kitchenDetailSection = document.getElementById('kitchenDetailSection');
     const backBtn = document.getElementById('backToKitchensBtn');

@@ -1,0 +1,77 @@
+/* Customer Profile Page */
+
+.profile-hero {
+    background-size: cover;
+    background-position: center;
+    position: relative;
+}
+
+/* Greeting emoji inline fix */
+.greeting {
+    white-space: nowrap;
+}
+
+.greeting .wave {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.profile-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 1.75rem;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+}
+
+.profile-card-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding-bottom: 1.25rem;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 1.25rem;
+}
+
+.profile-card-avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary-dark);
+    font-size: 1.3rem;
+}
+
+.profile-card-title {
+    font-weight: 800;
+    color: var(--text-main);
+}
+
+.profile-grid {
+    display: grid;
+    gap: 1rem;
+}
+
+.profile-field {
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 0.9rem 1rem;
+    background: #fff;
+}
+
+.profile-label {
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 0.35rem;
+}
+
+.profile-value {
+    font-weight: 600;
+    color: var(--text-main);
+}

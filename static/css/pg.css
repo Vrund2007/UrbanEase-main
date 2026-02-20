@@ -96,6 +96,16 @@
     font-size: 1.1rem;
 }
 
+.form-check-label {
+    color: #0f172a; /* dark slate text, matches selects */
+    font-weight: 500;
+    font-size: 1rem;
+    margin-top: 1.3rem;
+}
+.form-check-input {
+    transform: scale(1.5);
+    margin-top: 1.5rem;   /* vertical align fix */
+}
 /* Listing Card */
 .listing-card {
     background: var(--bg-surface);

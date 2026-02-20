@@ -6,7 +6,6 @@ admin_bp = Blueprint('admin', __name__)
 
 @admin_bp.route('/admin')
 def admin_dashboard():
-    """Serve admin dashboard page"""
     return render_template('dashboards/admin/admin.html')
 
 class ProviderProfile(db.Model):
@@ -20,7 +19,6 @@ class ProviderProfile(db.Model):
     verified_at = db.Column(db.DateTime)
     created_at = db.Column(db.DateTime, server_default=db.func.now())
 
-    # Relationship to User (Optional reverse link if needed, but we query directly)
     user = db.relationship('User', backref=db.backref('provider_profile', uselist=False))
 
 class ProviderProfilePic(db.Model):
@@ -54,7 +52,6 @@ class SavedHouse(db.Model):
     house_listing_id = db.Column(db.Integer, db.ForeignKey('house_listings.id'), nullable=False)
     created_at = db.Column(db.DateTime, server_default=db.func.now())
 
-    # Prevent duplicate saves at DB level
     __table_args__ = (db.UniqueConstraint('customer_id', 'house_listing_id', name='unique_customer_listing'),)
 
     customer = db.relationship('User', backref=db.backref('saved_houses', lazy=True))
@@ -73,8 +70,8 @@ class HostelDetails(db.Model):
     __tablename__ = 'hostel_details'
     id = db.Column(db.Integer, primary_key=True)
     listing_id = db.Column(db.Integer, db.ForeignKey('house_listings.id'), nullable=False, unique=True)
-    gender = db.Column(db.String(10), nullable=False)  # boys, girls, coed
-    room_type = db.Column(db.String(20), nullable=False)  # single, double, dorm
+    gender = db.Column(db.String(10), nullable=False)
+    room_type = db.Column(db.String(20), nullable=False)
     wifi = db.Column(db.Boolean, nullable=False, default=False)
     attached_bathroom = db.Column(db.Boolean, nullable=False, default=False)
     food_included = db.Column(db.Boolean, nullable=False, default=False)
@@ -87,9 +84,9 @@ class PGDetails(db.Model):
     __tablename__ = 'pg_details'
     id = db.Column(db.Integer, primary_key=True)
     listing_id = db.Column(db.Integer, db.ForeignKey('house_listings.id'), nullable=False, unique=True)
-    gender = db.Column(db.String(10), nullable=False)  # boys, girls, coed
+    gender = db.Column(db.String(10), nullable=False)
     ac_available = db.Column(db.Boolean, nullable=False, default=False)
-    sharing = db.Column(db.String(10), nullable=False)  # 1, 2, 3, 4+
+    sharing = db.Column(db.String(10), nullable=False)
     food_included = db.Column(db.Boolean, nullable=False, default=False)
     laundry = db.Column(db.Boolean, nullable=False, default=False)
     created_at = db.Column(db.DateTime, server_default=db.func.now())
@@ -100,10 +97,10 @@ class ApartmentDetails(db.Model):
     __tablename__ = 'apartment_details'
     id = db.Column(db.Integer, primary_key=True)
     listing_id = db.Column(db.Integer, db.ForeignKey('house_listings.id'), nullable=False, unique=True)
-    listing_purpose = db.Column(db.String(10), nullable=False)  # rent, sale
-    bhk = db.Column(db.String(10), nullable=False)  # 1, 2, 3, 4+
-    tenant_preference = db.Column(db.String(20), nullable=False)  # family, bachelor, any
-    furnishing = db.Column(db.String(20), nullable=False)  # furnished, semi, unfurnished
+    listing_purpose = db.Column(db.String(10), nullable=False)
+    bhk = db.Column(db.String(10), nullable=False)
+    tenant_preference = db.Column(db.String(20), nullable=False)
+    furnishing = db.Column(db.String(20), nullable=False)
     created_at = db.Column(db.DateTime, server_default=db.func.now())
 
     listing = db.relationship('HouseListing', backref=db.backref('apartment_details', uselist=False))
@@ -180,6 +177,8 @@ class Order(db.Model):
     tiffin_listing = db.relationship('TiffinListing', foreign_keys=[tiffin_listing_id])
     meal = db.relationship('Meal', foreign_keys=[meal_id])
 
+
+
 class SavedService(db.Model):
     __tablename__ = 'saved_services'
     id = db.Column(db.Integer, primary_key=True)
@@ -191,6 +190,19 @@ class SavedService(db.Model):
 
     customer = db.relationship('User', backref=db.backref('saved_services', lazy=True))
     service_listing = db.relationship('ServiceListing', backref=db.backref('saved_by', lazy=True))
+
+
+class SavedKitchen(db.Model):
+    __tablename__ = 'saved_kitchens'
+    id = db.Column(db.Integer, primary_key=True)
+    customer_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    tiffin_listing_id = db.Column(db.Integer, db.ForeignKey('tiffin_listings.id'), nullable=False)
+    created_at = db.Column(db.DateTime, server_default=db.func.now())
+
+    __table_args__ = (db.UniqueConstraint('customer_id', 'tiffin_listing_id', name='unique_customer_kitchen'),)
+
+    customer = db.relationship('User', backref=db.backref('saved_kitchens', lazy=True))
+    tiffin_listing = db.relationship('TiffinListing', backref=db.backref('saved_by', lazy=True))
 
 class ServiceBooking(db.Model):
     __tablename__ = 'service_bookings'
@@ -246,7 +258,6 @@ def get_pending_houses_count():
 @admin_bp.route('/admin/api/pending-houses', methods=['GET'])
 def get_pending_houses():
     try:
-        # Join HouseListing with ProviderProfile to get business_name
         listings = db.session.query(HouseListing, ProviderProfile)\
             .join(ProviderProfile, HouseListing.provider_id == ProviderProfile.id)\
             .filter(HouseListing.status == 'pending')\
@@ -277,7 +288,6 @@ def get_pending_tiffins_count():
 @admin_bp.route('/admin/api/pending-tiffins', methods=['GET'])
 def get_pending_tiffins():
     try:
-        # Join TiffinListing with ProviderProfile to get business_name
         listings = db.session.query(TiffinListing, ProviderProfile)\
             .join(ProviderProfile, TiffinListing.provider_id == ProviderProfile.id)\
             .filter(TiffinListing.status == 'pending')\
@@ -308,7 +318,6 @@ def get_pending_services_count():
 @admin_bp.route('/admin/api/pending-services', methods=['GET'])
 def get_pending_services():
     try:
-        # Join ServiceListing with ProviderProfile to get business_name
         listings = db.session.query(ServiceListing, ProviderProfile)\
             .join(ProviderProfile, ServiceListing.provider_id == ProviderProfile.id)\
             .filter(ServiceListing.status == 'pending')\
@@ -331,7 +340,6 @@ def get_pending_services():
 @admin_bp.route('/admin/api/provider-profiles', methods=['GET'])
 def get_provider_profiles():
     try:
-        # Query all profiles joining with User to get username
         profiles = db.session.query(ProviderProfile, User)\
             .join(User, ProviderProfile.user_id == User.id)\
             .all()
@@ -401,7 +409,6 @@ def suspend_user(user_id):
 @admin_bp.route('/admin/api/house-listings', methods=['GET'])
 def get_house_listings():
     try:
-        # Join HouseListing -> ProviderProfile -> User
         listings = db.session.query(HouseListing, ProviderProfile, User)\
             .join(ProviderProfile, HouseListing.provider_id == ProviderProfile.id)\
             .join(User, ProviderProfile.user_id == User.id)\
@@ -490,7 +497,6 @@ def get_service_listings():
 @admin_bp.route('/admin/api/orders', methods=['GET'])
 def get_orders():
     try:
-        # Join Order -> User (customer), TiffinListing -> ProviderProfile, Meal
         orders = db.session.query(Order, User, ProviderProfile, Meal)\
             .join(User, Order.customer_id == User.id)\
             .join(TiffinListing, Order.tiffin_listing_id == TiffinListing.id)\
@@ -525,7 +531,6 @@ def get_orders():
 @admin_bp.route('/admin/api/service-bookings', methods=['GET'])
 def get_service_bookings():
     try:
-        # Join ServiceBooking -> User (customer), ServiceListing -> ProviderProfile
         bookings = db.session.query(ServiceBooking, User, ServiceListing, ProviderProfile)\
             .join(User, ServiceBooking.customer_id == User.id)\
             .join(ServiceListing, ServiceBooking.service_listing_id == ServiceListing.id)\
@@ -558,7 +563,6 @@ def get_service_bookings():
 @admin_bp.route('/admin/api/provider/<int:provider_id>', methods=['GET'])
 def get_provider_details(provider_id):
     try:
-        # Join ProviderProfile with User to get email and phone
         result = db.session.query(ProviderProfile, User)\
             .join(User, ProviderProfile.user_id == User.id)\
             .filter(ProviderProfile.id == provider_id)\
@@ -569,7 +573,6 @@ def get_provider_details(provider_id):
         
         profile, user = result
         
-        # Fetch profile picture if exists
         profile_pic = ProviderProfilePic.query.filter_by(provider_id=provider_id).first()
         profile_image = profile_pic.image_path if profile_pic else None
         
@@ -627,7 +630,6 @@ def reject_provider(provider_id):
 @admin_bp.route('/admin/api/service/<int:service_id>', methods=['GET'])
 def get_service_details(service_id):
     try:
-        # Join ServiceListing with ProviderProfile and User
         result = db.session.query(ServiceListing, ProviderProfile, User)\
             .join(ProviderProfile, ServiceListing.provider_id == ProviderProfile.id)\
             .join(User, ProviderProfile.user_id == User.id)\
@@ -696,7 +698,6 @@ def reject_service(service_id):
 @admin_bp.route('/admin/api/tiffin/<int:tiffin_id>', methods=['GET'])
 def get_tiffin_details(tiffin_id):
     try:
-        # Join TiffinListing with ProviderProfile and User
         result = db.session.query(TiffinListing, ProviderProfile, User)\
             .join(ProviderProfile, TiffinListing.provider_id == ProviderProfile.id)\
             .join(User, ProviderProfile.user_id == User.id)\
@@ -764,7 +765,6 @@ def reject_tiffin(tiffin_id):
 @admin_bp.route('/admin/api/house/<int:house_id>', methods=['GET'])
 def get_house_details(house_id):
     try:
-        # Join HouseListing with ProviderProfile and User
         result = db.session.query(HouseListing, ProviderProfile, User)\
             .join(ProviderProfile, HouseListing.provider_id == ProviderProfile.id)\
             .join(User, ProviderProfile.user_id == User.id)\
@@ -776,7 +776,6 @@ def get_house_details(house_id):
         
         house, provider, user = result
         
-        # Fetch all images for this house listing
         images = HouseImage.query.filter_by(listing_id=house_id).all()
         image_paths = [{'image_path': img.image_path} for img in images]
         

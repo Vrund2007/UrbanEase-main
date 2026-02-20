@@ -75,6 +75,35 @@
     font-weight: 600;
 }
 
+/* Inline filter checkboxes inside hero search bar */
+.search-bar-container .form-check.form-check-inline {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    margin-right: 0.75rem;
+}
+
+.search-bar-container .form-check-input {
+    cursor: pointer;
+}
+
+.search-bar-container {
+    color: #0f172a; /* dark slate text, matches selects */
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+.form-check-label {
+    color: #0f172a; /* dark slate text, matches selects */
+    font-weight: 500;
+    font-size: 1rem;
+    margin-top: 1.3rem;
+}
+.form-check-input {
+    transform: scale(1.5);
+    margin-top: 1.5rem;   /* vertical align fix */
+}
+
 /* Listings Section */
 .hostel-listings {
     padding: 80px 0;

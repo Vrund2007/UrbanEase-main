@@ -19,42 +19,12 @@
 </head>
 <body>
 
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="customerNavbar">
-        <div class="container">
-            <a class="navbar-brand" href="/customer/dashboard">
-                <i class="fas fa-city me-2"></i>UrbanEase
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#customerNavbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="customerNavbarNav">
-                <ul class="navbar-nav ms-auto align-items-center">
-                    <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-heart me-1 d-lg-none"></i>Saved Houses</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-utensils me-1 d-lg-none"></i>Saved Meals</a></li>
-                </ul>
-                <div class="nav-profile-wrapper d-none d-lg-block ms-3">
-                    <button class="nav-profile-trigger" id="profileTrigger">
-                        <div class="nav-avatar"><i class="fas fa-user"></i></div>
-                        <i class="fas fa-chevron-down nav-profile-arrow" id="profileArrow"></i>
-                    </button>
-                    <div class="nav-profile-dropdown" id="profileDropdown">
-                        <a href="#" class="nav-profile-item"><i class="fas fa-user-circle"></i>Profile</a>
-                        <a href="#" class="nav-profile-item"><i class="fas fa-map-marker-alt"></i>My Addresses</a>
-                        <a href="{{ url_for('customer.service_bookings') }}" class="nav-profile-item"><i class="fas fa-calendar-check"></i>My Bookings</a>
-                        <a href="{{ url_for('customer.my_orders') }}" class="nav-profile-item"><i class="fas fa-utensils"></i>My Food Orders</a>
-                        <div class="nav-profile-divider"></div>
-                        <a href="/customer/logout" class="nav-profile-item nav-profile-logout"><i class="fas fa-sign-out-alt"></i>Logout</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </nav>
+    {% include "partials/customer_navbar.html" %}
 
     <!-- MAIN VIEW: Kitchen Listings -->
     <div id="kitchensListSection">
         <!-- Hero Section -->
-        <section class="hostel-hero tiffin-hero">
+        <section class="hostel-hero tiffin-hero hero-kitchen" style="background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('{{ url_for('static', filename='images/website_images/kitchen-hero.webp') }}'); background-size: cover; background-position: center; background-repeat: no-repeat;">
             <div class="container h-100">
                 <div class="row h-100 align-items-center">
                     <div class="col-lg-8">
@@ -104,6 +74,9 @@
                                     {% if kitchen.fast_delivery_available %}
                                         <div class="fast-delivery-badge"><i class="fas fa-bolt"></i> Fast</div>
                                     {% endif %}
+                                    <button class="save-restaurant-btn btn-save" data-id="{{ kitchen.id }}" data-saved="{{ 'true' if kitchen.is_saved else 'false' }}" title="Save restaurant">
+                                        <i class="{{ 'fas' if kitchen.is_saved else 'far' }} fa-heart"></i>
+                                    </button>
                                 </div>
                                 <div class="listing-content">
                                     <div class="d-flex justify-content-between align-items-start mb-2">
@@ -270,12 +243,13 @@
     </div>
 
     <script>
-        window.DEFAULT_CUSTOMER_ADDRESS = {{ (default_address or '') | tojson }};
+        window.DEFAULT_CUSTOMER_ADDRESS = {{ (default_address or '') | tojson | safe }};
         window.FAST_DELIVERY_CHARGE = 20;
     </script>
 
     <!-- Bootstrap 5 JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='js/navbar.js') }}"></script>
     <script src="{{ url_for('static', filename='js/customer.js') }}"></script>
     <script src="{{ url_for('static', filename='js/tiffin.js') }}"></script>
 </body>

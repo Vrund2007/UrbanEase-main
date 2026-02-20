@@ -1,0 +1,29 @@
+{% if session.get('user_id') and session.get('account_type') == 'customer' %}
+<nav class="navbar navbar-expand-lg navbar-light fixed-top" id="customerNavbar">
+    <div class="container">
+        <a class="navbar-brand" href="/customer/dashboard">
+            <i class="fas fa-city me-2"></i>UrbanEase
+        </a>
+
+        <div class="ms-auto position-relative">
+            <button type="button" class="profile-menu" id="customerProfileMenu" aria-haspopup="true" aria-expanded="false">
+                <div class="profile-avatar" aria-hidden="true"><i class="fas fa-user"></i></div>
+                <span class="profile-name">{{ session.get('username', 'Customer') }}</span>
+                <span class="dropdown-arrow" id="customerProfileArrow" aria-hidden="true">▼</span>
+            </button>
+
+            <div class="profile-dropdown" id="customerProfileDropdown" role="menu" aria-label="Customer menu">
+                <a href="/saved/houses" class="profile-dropdown-item" role="menuitem"><i class="fas fa-heart"></i>Saved Houses</a>
+                <a href="{{ url_for('customer.saved_restaurants') }}" class="profile-dropdown-item" role="menuitem"><i class="fas fa-utensils"></i>Saved Restaurants</a>
+                <a href="/saved/services" class="profile-dropdown-item" role="menuitem"><i class="fas fa-tools"></i>Saved Services</a>
+                <div class="profile-dropdown-divider"></div>
+                <a href="{{ url_for('customer.service_bookings') }}" class="profile-dropdown-item" role="menuitem"><i class="fas fa-calendar-check"></i>My Bookings</a>
+                <a href="{{ url_for('customer.my_orders') }}" class="profile-dropdown-item" role="menuitem"><i class="fas fa-bowl-food"></i>My Food Orders</a>
+                <div class="profile-dropdown-divider"></div>
+                <a href="{{ url_for('customer.profile') }}" class="profile-dropdown-item" role="menuitem"><i class="fas fa-user-circle"></i>Profile</a>
+                <a href="/customer/logout" class="profile-dropdown-item profile-dropdown-logout" role="menuitem"><i class="fas fa-sign-out-alt"></i>Logout</a>
+            </div>
+        </div>
+    </div>
+</nav>
+{% endif %}

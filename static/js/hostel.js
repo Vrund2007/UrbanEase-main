@@ -1,22 +1,13 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Save Button Toggle (on listing cards - Visual only for now, or link to same login if needed)
-    const saveBtns = document.querySelectorAll('.btn-save');
-    saveBtns.forEach(btn => {
+    // Save Button Toggle (on listing cards - calls /save/house/<id>)
+    document.querySelectorAll('.save-house-btn').forEach(btn => {
         btn.addEventListener('click', function(e) {
             e.preventDefault();
             e.stopPropagation();
-            // detailed logic to be implemented if card save is required, 
-            // for now just visual toggle as per previous state
-            const icon = this.querySelector('i');
-            if (icon.classList.contains('far')) {
-                icon.classList.remove('far');
-                icon.classList.add('fas');
-                icon.style.color = '#ef4444';
-            } else {
-                icon.classList.remove('fas');
-                icon.classList.add('far');
-                icon.style.color = '';
-            }
+            const listingId = this.getAttribute('data-id');
+            if (!listingId) return;
+            const isSaved = this.getAttribute('data-saved') === 'true';
+            toggleSaveHouse(listingId, isSaved, this);
         });
     });
 
@@ -148,7 +139,7 @@ function openHostelDetails(listingId) {
             const badgeEl = document.getElementById('providerBadge');
             badgeEl.style.display = provider.verification_status === 'verified' ? 'inline-flex' : 'none';
             
-            // --- Check Input API: Is Saved? ---
+            // --- Check saved status (no dedicated endpoint; use house_listing_id in saved_houses) ---
             fetch(`/housing/hostel/${listingId}/is-saved`)
                 .then(res => res.json())
                 .then(savedData => {
@@ -175,10 +166,7 @@ function toggleSaveHostel(listingId) {
     const saveBtn = document.getElementById('detailSaveBtn');
     const isSaved = saveBtn.classList.contains('saved-state');
     
-    const endpoint = isSaved 
-        ? `/housing/hostel/${listingId}/unsave` 
-        : `/housing/hostel/${listingId}/save`;
-    
+    const endpoint = `/save/house/${listingId}`;
     const method = isSaved ? 'DELETE' : 'POST';
 
     // Optimistic UI update
@@ -219,6 +207,32 @@ function updateSaveButtonUI(isSaved) {
         btn.style.borderColor = '';
         btn.style.color = '';
     }
+}
+
+function toggleSaveHouse(listingId, isSaved, btn) {
+    const url = `/save/house/${listingId}`;
+    const method = isSaved ? 'DELETE' : 'POST';
+    fetch(url, { method })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                const newSaved = !isSaved;
+                btn.setAttribute('data-saved', newSaved ? 'true' : 'false');
+                const icon = btn.querySelector('i');
+                if (icon) {
+                    icon.classList.toggle('far', !newSaved);
+                    icon.classList.toggle('fas', newSaved);
+                    icon.style.color = newSaved ? '#ef4444' : '';
+                }
+                showToast(data.message || (newSaved ? 'Saved' : 'Removed from saved'));
+            } else {
+                showToast(data.message || 'Failed to update', true);
+            }
+        })
+        .catch(err => {
+            console.error('Error toggling save:', err);
+            showToast('Server error. Please try again.', true);
+        });
 }
 
 function showToast(message, isError = false) {

@@ -35,12 +35,82 @@ def customer_logout():
     session.clear()
     return redirect('/login')
 
+
+@customer_bp.route('/profile')
+def profile():
+    """Customer profile page"""
+    user = get_current_user()
+    if not user:
+        return redirect('/login')
+    if user.account_type != 'customer':
+        return redirect('/')
+
+    try:
+        row = db.session.execute(text("""
+            SELECT username, email, phone, created_at
+            FROM users
+            WHERE id = :user_id
+            LIMIT 1
+        """), {'user_id': user.id}).fetchone()
+
+        profile_data = {
+            'username': row[0] if row else user.username,
+            'email': row[1] if row else user.email,
+            'phone': row[2] if row else user.phone,
+            'created_at': (row[3].strftime('%B %d, %Y') if row and row[3] else '')
+        }
+    except Exception as e:
+        print(f"Error loading profile: {e}")
+        profile_data = {
+            'username': user.username,
+            'email': getattr(user, 'email', ''),
+            'phone': getattr(user, 'phone', ''),
+            'created_at': (user.created_at.strftime('%B %d, %Y') if getattr(user, 'created_at', None) else '')
+        }
+
+    return render_template('dashboards/customer/profile.html', profile=profile_data)
+
+
+@customer_bp.route('/profile/update', methods=['PUT'])
+def update_profile():
+    """Update customer profile info"""
+    user = get_current_user()
+    if not user:
+        return jsonify({'success': False, 'message': 'Not authenticated'}), 401
+    if user.account_type != 'customer':
+        return jsonify({'success': False, 'message': 'Unauthorized'}), 403
+
+    data = request.get_json() or {}
+    username = (data.get('username') or '').strip()
+    email = (data.get('email') or '').strip()
+    phone = (data.get('phone') or '').strip()
+
+    if not username or not email or not phone:
+        return jsonify({'success': False, 'message': 'All fields are required'}), 400
+
+    try:
+        db.session.execute(text("""
+            UPDATE users
+            SET username = :username, email = :email, phone = :phone
+            WHERE id = :user_id
+        """), {'username': username, 'email': email, 'phone': phone, 'user_id': user.id})
+        db.session.commit()
+
+        session['username'] = username
+
+        return jsonify({'success': True, 'message': 'Profile updated successfully'}), 200
+    except Exception as e:
+        db.session.rollback()
+        print(f"Error updating profile: {e}")
+        return jsonify({'success': False, 'message': 'Server error'}), 500
+
+
 # --- Housing Routes ---
 
 from admin import (
     HouseListing, HouseImage, SavedHouse, HostelDetails, PGDetails, ApartmentDetails,
     ServiceListing, SavedService, ServiceBooking,
-    TiffinListing, Meal, Order, ProviderProfile
+    TiffinListing, Meal, Order, ProviderProfile,SavedKitchen
 )
 
 @customer_bp.route('/housing/hostel')
@@ -53,6 +123,12 @@ def browse_hostels():
     # Read search query params
     search_location = request.args.get('location', '').strip()
     search_budget = request.args.get('budget', '').strip()
+    filter_gender = request.args.get('gender', '').strip()
+    filter_room_type = request.args.get('room_type', '').strip()
+    filter_wifi = request.args.get('wifi')
+    filter_attached_bathroom = request.args.get('attached_bathroom')
+    filter_food_included = request.args.get('food_included')
+    filter_laundry = request.args.get('laundry')
 
     # Build dynamic query with JOIN to hostel_details
     base_query = """
@@ -86,13 +162,43 @@ def browse_hostels():
     elif search_budget == '4':
         base_query += " AND hl.price > 15000"
     
+    # Hostel_details filters
+    if filter_gender and filter_gender in ('boys', 'girls', 'coed'):
+        base_query += " AND hd.gender = :filter_gender"
+        params['filter_gender'] = filter_gender
+    if filter_room_type and filter_room_type in ('single', 'double', 'dorm'):
+        base_query += " AND hd.room_type = :filter_room_type"
+        params['filter_room_type'] = filter_room_type
+    if filter_wifi == '1':
+        base_query += " AND hd.wifi = TRUE"
+    if filter_attached_bathroom == '1':
+        base_query += " AND hd.attached_bathroom = TRUE"
+    if filter_food_included == '1':
+        base_query += " AND hd.food_included = TRUE"
+    if filter_laundry == '1':
+        base_query += " AND hd.laundry = TRUE"
+    
     base_query += " ORDER BY hl.created_at DESC"
     
     results = db.session.execute(text(base_query), params).fetchall()
     
+    saved_house_ids = set()
+    if user and user.account_type == 'customer':
+        try:
+            saved = SavedHouse.query.filter_by(customer_id=user.id).all()
+            saved_house_ids = {s.house_listing_id for s in saved}
+        except Exception:
+            pass
+    
     listings_data = []
     for row in results:
         image_path = row[-1] if row[-1] else 'placeholder.jpg'
+        gender = row[-7]
+        room_type = row[-6]
+        wifi = row[-5]
+        attached_bathroom = row[-4]
+        food_included = row[-3]
+        laundry = row[-2]
         
         listings_data.append({
             'id': row[0],
@@ -101,20 +207,27 @@ def browse_hostels():
             'price': row[4],
             'location': row[5],
             'image_path': image_path,
-            'gender': row[7],
-            'room_type': row[8],
-            'wifi': row[9],
-            'attached_bathroom': row[10],
-            'food_included': row[11],
-            'laundry': row[12]
+            'gender': gender,
+            'room_type': room_type,
+            'wifi': wifi,
+            'attached_bathroom': attached_bathroom,
+            'food_included': food_included,
+            'laundry': laundry
         })
         
     return render_template(
         'housing/hostel/hostel.html', 
         username=username, 
         listings=listings_data,
+        saved_house_ids=saved_house_ids,
         search_location=search_location,
-        search_budget=search_budget
+        search_budget=search_budget,
+        filter_gender=filter_gender,
+        filter_room_type=filter_room_type,
+        filter_wifi=filter_wifi,
+        filter_attached_bathroom=filter_attached_bathroom,
+        filter_food_included=filter_food_included,
+        filter_laundry=filter_laundry
     )
 
 
@@ -192,6 +305,55 @@ def hostel_details(listing_id):
         
     except Exception as e:
         print(f"Error fetching hostel details: {e}")
+        return jsonify({'success': False, 'message': 'Server error'}), 500
+
+
+@customer_bp.route('/save/house/<int:listing_id>', methods=['POST'])
+def save_house(listing_id):
+    """Unified save for any house listing (Hostel/PG/Apartment) via saved_houses"""
+    user = get_current_user()
+    if not user:
+        return jsonify({'success': False, 'message': 'Not authenticated'}), 401
+    if user.account_type != 'customer':
+        return jsonify({'success': False, 'message': 'Unauthorized'}), 403
+
+    try:
+        listing = HouseListing.query.filter_by(id=listing_id, status='approved').first()
+        if not listing:
+            return jsonify({'success': False, 'message': 'Listing not found or not available'}), 404
+
+        existing = SavedHouse.query.filter_by(customer_id=user.id, house_listing_id=listing_id).first()
+        if existing:
+            return jsonify({'success': True, 'already_saved': True, 'message': 'Already saved'}), 200
+
+        new_save = SavedHouse(customer_id=user.id, house_listing_id=listing_id)
+        db.session.add(new_save)
+        db.session.commit()
+        return jsonify({'success': True, 'message': 'Saved successfully'}), 200
+
+    except Exception as e:
+        db.session.rollback()
+        print(f"Error saving house: {e}")
+        return jsonify({'success': False, 'message': 'Server error'}), 500
+
+
+@customer_bp.route('/save/house/<int:listing_id>', methods=['DELETE'])
+def unsave_house(listing_id):
+    """Unified unsave for any house listing"""
+    user = get_current_user()
+    if not user:
+        return jsonify({'success': False, 'message': 'Not authenticated'}), 401
+
+    try:
+        entry = SavedHouse.query.filter_by(customer_id=user.id, house_listing_id=listing_id).first()
+        if entry:
+            db.session.delete(entry)
+            db.session.commit()
+            return jsonify({'success': True, 'removed': True, 'message': 'Removed from saved'}), 200
+        return jsonify({'success': True, 'removed': False, 'message': 'Was not saved'}), 200
+    except Exception as e:
+        db.session.rollback()
+        print(f"Error unsaving house: {e}")
         return jsonify({'success': False, 'message': 'Server error'}), 500
 
 
@@ -286,6 +448,11 @@ def browse_pgs():
     # Read search query params
     search_location = request.args.get('location', '').strip()
     search_budget = request.args.get('budget', '').strip()
+    filter_gender = request.args.get('gender', '').strip()
+    filter_ac = request.args.get('ac_available')
+    filter_sharing = request.args.get('sharing', '').strip()
+    filter_food_included = request.args.get('food_included')
+    filter_laundry = request.args.get('laundry')
 
     # Build dynamic query with JOIN to pg_details
     base_query = """
@@ -319,13 +486,40 @@ def browse_pgs():
     elif search_budget == '4':
         base_query += " AND hl.price > 15000"
     
+    # pg_details filters
+    if filter_gender and filter_gender in ('boys', 'girls', 'coed'):
+        base_query += " AND pd.gender = :filter_gender"
+        params['filter_gender'] = filter_gender
+    if filter_ac == '1':
+        base_query += " AND pd.ac_available = TRUE"
+    if filter_sharing and filter_sharing in ('1', '2', '3', '4+'):
+        base_query += " AND pd.sharing = :filter_sharing"
+        params['filter_sharing'] = filter_sharing
+    if filter_food_included == '1':
+        base_query += " AND pd.food_included = TRUE"
+    if filter_laundry == '1':
+        base_query += " AND pd.laundry = TRUE"
+    
     base_query += " ORDER BY hl.created_at DESC"
     
     results = db.session.execute(text(base_query), params).fetchall()
     
+    saved_house_ids = set()
+    if user and user.account_type == 'customer':
+        try:
+            saved = SavedHouse.query.filter_by(customer_id=user.id).all()
+            saved_house_ids = {s.house_listing_id for s in saved}
+        except Exception:
+            pass
+    
     listings_data = []
     for row in results:
         image_path = row[-1] if row[-1] else 'placeholder.jpg'
+        gender = row[-7]
+        ac_available = row[-6]
+        sharing = row[-5]
+        food_included = row[-4]
+        laundry = row[-3]
         
         listings_data.append({
             'id': row[0],
@@ -334,19 +528,25 @@ def browse_pgs():
             'price': row[4],
             'location': row[5],
             'image_path': image_path,
-            'gender': row[7],
-            'ac_available': row[8],
-            'sharing': row[9],
-            'food_included': row[10],
-            'laundry': row[11]
+            'gender': gender,
+            'ac_available': ac_available,
+            'sharing': sharing,
+            'food_included': food_included,
+            'laundry': laundry
         })
         
     return render_template(
         'housing/pg/pg.html', 
         username=username, 
         listings=listings_data,
+        saved_house_ids=saved_house_ids,
         search_location=search_location,
-        search_budget=search_budget
+        search_budget=search_budget,
+        filter_gender=filter_gender,
+        filter_ac=filter_ac,
+        filter_sharing=filter_sharing,
+        filter_food_included=filter_food_included,
+        filter_laundry=filter_laundry
     )
 
 
@@ -522,6 +722,10 @@ def browse_apartments():
     # Read search query params
     search_location = request.args.get('location', '').strip()
     search_budget = request.args.get('budget', '').strip()
+    filter_listing_purpose = request.args.get('listing_purpose', '').strip()
+    filter_bhk = request.args.get('bhk', '').strip()
+    filter_tenant_preference = request.args.get('tenant_preference', '').strip()
+    filter_furnishing = request.args.get('furnishing', '').strip()
 
     # Build dynamic query with JOIN to apartment_details
     base_query = """
@@ -555,13 +759,39 @@ def browse_apartments():
     elif search_budget == '4':
         base_query += " AND hl.price > 15000"
     
+    # apartment_details filters
+    if filter_listing_purpose and filter_listing_purpose in ('rent', 'sale'):
+        base_query += " AND ad.listing_purpose = :filter_listing_purpose"
+        params['filter_listing_purpose'] = filter_listing_purpose
+    if filter_bhk and filter_bhk in ('1', '2', '3', '4+'):
+        base_query += " AND ad.bhk = :filter_bhk"
+        params['filter_bhk'] = filter_bhk
+    if filter_tenant_preference and filter_tenant_preference in ('family', 'bachelor', 'any'):
+        base_query += " AND ad.tenant_preference = :filter_tenant_preference"
+        params['filter_tenant_preference'] = filter_tenant_preference
+    if filter_furnishing and filter_furnishing in ('furnished', 'semi', 'unfurnished'):
+        base_query += " AND ad.furnishing = :filter_furnishing"
+        params['filter_furnishing'] = filter_furnishing
+    
     base_query += " ORDER BY hl.created_at DESC"
     
     results = db.session.execute(text(base_query), params).fetchall()
     
+    saved_house_ids = set()
+    if user and user.account_type == 'customer':
+        try:
+            saved = SavedHouse.query.filter_by(customer_id=user.id).all()
+            saved_house_ids = {s.house_listing_id for s in saved}
+        except Exception:
+            pass
+    
     listings_data = []
     for row in results:
         image_path = row[-1] if row[-1] else 'placeholder.jpg'
+        listing_purpose = row[-5]
+        bhk = row[-4]
+        tenant_preference = row[-3]
+        furnishing = row[-2]
         
         listings_data.append({
             'id': row[0],
@@ -570,18 +800,23 @@ def browse_apartments():
             'price': row[4],
             'location': row[5],
             'image_path': image_path,
-            'listing_purpose': row[7],
-            'bhk': row[8],
-            'tenant_preference': row[9],
-            'furnishing': row[10]
+            'listing_purpose': listing_purpose,
+            'bhk': bhk,
+            'tenant_preference': tenant_preference,
+            'furnishing': furnishing
         })
         
     return render_template(
         'housing/apartment/apartment.html', 
         username=username, 
         listings=listings_data,
+        saved_house_ids=saved_house_ids,
         search_location=search_location,
-        search_budget=search_budget
+        search_budget=search_budget,
+        filter_listing_purpose=filter_listing_purpose,
+        filter_bhk=filter_bhk,
+        filter_tenant_preference=filter_tenant_preference,
+        filter_furnishing=filter_furnishing
     )
 
 
@@ -743,8 +978,6 @@ def is_apartment_saved(listing_id):
 
 @customer_bp.route('/services')
 def browse_services():
-    from flask import request
-
     user = get_current_user()
     if not user:
         return redirect('/login')
@@ -752,8 +985,9 @@ def browse_services():
         return redirect('/')
 
     username = user.username
+    search_query = request.args.get('q', '').strip()
 
-    query = text("""
+    base_query = """
         SELECT sl.id, sl.provider_id, sl.service_category, sl.service_title, sl.description,
                sl.base_price, sl.service_radius, sl.availability_days,
                pp.business_name,
@@ -762,9 +996,16 @@ def browse_services():
         JOIN provider_profiles pp ON sl.provider_id = pp.id
         LEFT JOIN provider_profile_pics ppic ON pp.id = ppic.provider_id
         WHERE sl.status = 'approved'
-        ORDER BY sl.created_at DESC
-    """)
-    results = db.session.execute(query).fetchall()
+    """
+    params = {}
+
+    if search_query:
+        base_query += " AND (LOWER(sl.service_title) LIKE LOWER(:search_query))"
+        params['search_query'] = f"%{search_query}%"
+
+    base_query += " ORDER BY sl.created_at DESC"
+
+    results = db.session.execute(text(base_query), params).fetchall()
 
     saved_ids = set()
     if user:
@@ -790,7 +1031,8 @@ def browse_services():
     return render_template(
         'services/services.html',
         username=username,
-        listings=listings_data
+        listings=listings_data,
+        search_query=search_query
     )
 
 
@@ -969,8 +1211,6 @@ def service_bookings():
 
 @customer_bp.route('/tiffin')
 def browse_tiffins():
-    from flask import request
-    
     user = get_current_user()
     if not user:
         return redirect('/login')
@@ -979,11 +1219,9 @@ def browse_tiffins():
 
     username = user.username
 
-    # Read search query params (only location requested in prompt)
+    # Read search query params (used to search by restaurant name)
     search_location = request.args.get('location', '').strip()
 
-    # Build dynamic query
-    # Only status='approved' AND kitchen_open=TRUE
     base_query = """
         SELECT tl.id, tl.delivery_radius, tl.fast_delivery_available, tl.diet_type, tl.available_days,
                pp.business_name,
@@ -999,30 +1237,40 @@ def browse_tiffins():
     """
     
     params = {}
-    
-    # Note: TiffinListing doesn't currently support 'location' column in schema provided.
-    # Searching by business name if location provided, or ignored if not feasible.
-    # User asked for "Search bar: [ Enter Location ]" but schema is missing it.
-    # We will pass search_location to template for UI state, but backend filter might be limited.
-    # If ProviderProfile had address, we could join.
-    # For now, we return all valid kitchens.
+
+    # Filter by restaurant/kitchen name (provider business name) when search text is provided
+    if search_location:
+        base_query += " AND LOWER(pp.business_name) LIKE LOWER(:search_name)"
+        params['search_name'] = f"%{search_location}%"
 
     base_query += " ORDER BY tl.created_at DESC"
     
     results = db.session.execute(text(base_query), params).fetchall()
     
+    saved_kitchen_ids = set()
+    try:
+        saved_rows = db.session.execute(text("""
+            SELECT tiffin_listing_id
+            FROM saved_restaurants
+            WHERE customer_id = :customer_id
+        """), {'customer_id': user.id}).fetchall()
+        saved_kitchen_ids = {row[0] for row in saved_rows}
+    except Exception as e:
+        print(f"Error fetching saved restaurants ids: {e}")
+    
     listings_data = []
     for row in results:
         image_path = row[6] if row[6] else 'placeholder.jpg'
-        
+        kitchen_id = row[0]
         listings_data.append({
-            'id': row[0],
+            'id': kitchen_id,
             'delivery_radius': float(row[1]) if row[1] else 0,
             'fast_delivery_available': row[2],
             'diet_type': row[3],
             'available_days': row[4],
             'business_name': row[5],
-            'image_path': image_path
+            'image_path': image_path,
+            'is_saved': kitchen_id in saved_kitchen_ids
         })
         
     # Fetch default address for pre-fill (if available)
@@ -1228,6 +1476,55 @@ def order_meal(meal_id):
         return jsonify({'success': False, 'message': 'Server error'}), 500
 
 
+@customer_bp.route('/save/kitchen/<int:kitchen_id>', methods=['POST'])
+def save_kitchen(kitchen_id):
+    """Save a kitchen (tiffin listing) for the current customer"""
+    user = get_current_user()
+    if not user:
+        return jsonify({'success': False, 'message': 'Not authenticated'}), 401
+    if user.account_type != 'customer':
+        return jsonify({'success': False, 'message': 'Unauthorized'}), 403
+
+    try:
+        listing = TiffinListing.query.filter_by(id=kitchen_id, status='approved').first()
+        if not listing:
+            return jsonify({'success': False, 'message': 'Kitchen not found or not available'}), 404
+
+        existing = SavedKitchen.query.filter_by(customer_id=user.id, tiffin_listing_id=kitchen_id).first()
+        if existing:
+            return jsonify({'success': True, 'already_saved': True, 'message': 'Kitchen already saved'}), 200
+
+        new_save = SavedKitchen(customer_id=user.id, tiffin_listing_id=kitchen_id)
+        db.session.add(new_save)
+        db.session.commit()
+        return jsonify({'success': True, 'message': 'Kitchen saved successfully'}), 200
+
+    except Exception as e:
+        db.session.rollback()
+        print(f"Error saving kitchen: {e}")
+        return jsonify({'success': False, 'message': 'Server error'}), 500
+
+
+@customer_bp.route('/save/kitchen/<int:kitchen_id>', methods=['DELETE'])
+def unsave_kitchen(kitchen_id):
+    """Remove a saved kitchen for the current customer"""
+    user = get_current_user()
+    if not user:
+        return jsonify({'success': False, 'message': 'Not authenticated'}), 401
+
+    try:
+        entry = SavedKitchen.query.filter_by(customer_id=user.id, tiffin_listing_id=kitchen_id).first()
+        if entry:
+            db.session.delete(entry)
+            db.session.commit()
+            return jsonify({'success': True, 'removed': True, 'message': 'Kitchen removed from saved'}), 200
+        return jsonify({'success': True, 'removed': False, 'message': 'Kitchen was not saved'}), 200
+    except Exception as e:
+        db.session.rollback()
+        print(f"Error unsaving kitchen: {e}")
+        return jsonify({'success': False, 'message': 'Server error'}), 500
+
+
 @customer_bp.route('/orders')
 def my_orders():
     """My Food Orders page for the logged-in customer"""
@@ -1411,3 +1708,234 @@ def download_order_bill(order_id):
     buffer.seek(0)
     filename = f"UrbanEase_Bill_Order_{order_id}.pdf"
     return send_file(buffer, mimetype='application/pdf', as_attachment=True, download_name=filename)
+
+
+# --- Saved Items Routes ---
+
+@customer_bp.route('/saved/houses')
+def saved_houses():
+    """Display saved houses for the current customer"""
+    user = get_current_user()
+    if not user:
+        return redirect('/login')
+    if user.account_type != 'customer':
+        return redirect('/')
+
+    try:
+        query = text("""
+            SELECT hl.id, hl.title, hl.description, hl.price, hl.location, hl.type,
+                   (SELECT image_path 
+                    FROM house_images 
+                    WHERE listing_id = hl.id 
+                    ORDER BY created_at ASC 
+                    LIMIT 1) AS main_image
+            FROM saved_houses sh
+            JOIN house_listings hl ON sh.house_listing_id = hl.id
+            WHERE sh.customer_id = :customer_id
+            AND hl.status = 'approved'
+            ORDER BY sh.created_at DESC
+        """)
+        
+        results = db.session.execute(query, {'customer_id': user.id}).fetchall()
+        
+        listings_data = []
+        for row in results:
+            image_path = row[6] if row[6] else 'placeholder.jpg'
+            listings_data.append({
+                'id': row[0],
+                'title': row[1],
+                'description': row[2] or '',
+                'price': float(row[3]) if row[3] else 0,
+                'location': row[4],
+                'type': row[5],  # Hostel, PG, or Apartment
+                'image_path': image_path
+            })
+        
+        return render_template('saved/saved_houses.html', listings=listings_data, username=user.username)
+    except Exception as e:
+        print(f"Error fetching saved houses: {e}")
+        return render_template('saved/saved_houses.html', listings=[], username=user.username)
+
+
+@customer_bp.route('/save/restaurant/<int:restaurant_id>', methods=['POST'])
+def save_restaurant(restaurant_id):
+    """Save a restaurant (tiffin listing) for the current customer using saved_restaurants table"""
+    user = get_current_user()
+    if not user:
+        return jsonify({'success': False, 'message': 'Not authenticated'}), 401
+    if user.account_type != 'customer':
+        return jsonify({'success': False, 'message': 'Unauthorized'}), 403
+
+    try:
+        listing = TiffinListing.query.filter_by(id=restaurant_id, status='approved', kitchen_open=True).first()
+        if not listing:
+            return jsonify({'success': False, 'message': 'Restaurant not found or not available'}), 404
+
+        existing = db.session.execute(text("""
+            SELECT 1
+            FROM saved_restaurants
+            WHERE customer_id = :customer_id AND tiffin_listing_id = :tiffin_id
+            LIMIT 1
+        """), {'customer_id': user.id, 'tiffin_id': restaurant_id}).fetchone()
+
+        if existing:
+            return jsonify({'success': True, 'already_saved': True, 'message': 'Restaurant already saved'}), 200
+
+        db.session.execute(text("""
+            INSERT INTO saved_restaurants(customer_id, tiffin_listing_id)
+            VALUES (:customer_id, :tiffin_id)
+        """), {'customer_id': user.id, 'tiffin_id': restaurant_id})
+        db.session.commit()
+        return jsonify({'success': True, 'message': 'Restaurant saved successfully'}), 200
+
+    except Exception as e:
+        db.session.rollback()
+        print(f"Error saving restaurant: {e}")
+        return jsonify({'success': False, 'message': 'Server error'}), 500
+
+
+@customer_bp.route('/save/restaurant/<int:restaurant_id>', methods=['DELETE'])
+def unsave_restaurant(restaurant_id):
+    """Remove a saved restaurant (tiffin listing) for the current customer using saved_restaurants table"""
+    user = get_current_user()
+    if not user:
+        return jsonify({'success': False, 'message': 'Not authenticated'}), 401
+
+    try:
+        result = db.session.execute(text("""
+            DELETE FROM saved_restaurants
+            WHERE customer_id = :customer_id AND tiffin_listing_id = :tiffin_id
+        """), {'customer_id': user.id, 'tiffin_id': restaurant_id})
+        db.session.commit()
+
+        removed = bool(getattr(result, 'rowcount', 0))
+        return jsonify({
+            'success': True,
+            'removed': removed,
+            'message': 'Restaurant removed from saved' if removed else 'Restaurant was not saved'
+        }), 200
+    except Exception as e:
+        db.session.rollback()
+        print(f"Error unsaving restaurant: {e}")
+        return jsonify({'success': False, 'message': 'Server error'}), 500
+
+
+@customer_bp.route('/saved/restaurants/ids')
+def saved_restaurant_ids():
+    """Return list of saved restaurant (tiffin listing) IDs for current customer"""
+    user = get_current_user()
+    if not user:
+        return jsonify({'success': True, 'ids': []}), 200
+
+    try:
+        rows = db.session.execute(text("""
+            SELECT tiffin_listing_id
+            FROM saved_restaurants
+            WHERE customer_id = :customer_id
+        """), {'customer_id': user.id}).fetchall()
+        ids = [row[0] for row in rows]
+        return jsonify({'success': True, 'ids': ids}), 200
+    except Exception as e:
+        print(f"Error fetching saved restaurant ids: {e}")
+        return jsonify({'success': False, 'ids': []}), 500
+
+
+@customer_bp.route('/saved/restaurants')
+def saved_restaurants():
+    """Display saved restaurants (tiffin kitchens) for the current customer"""
+    user = get_current_user()
+    if not user:
+        return redirect('/login')
+    if user.account_type != 'customer':
+        return redirect('/')
+
+    try:
+        query = text("""
+            SELECT 
+                tl.id,
+                tl.delivery_radius,
+                tl.fast_delivery_available,
+                tl.diet_type,
+                tl.available_days,
+                tl.created_at,
+                pp.business_name,
+                (
+                    SELECT image_path
+                    FROM tiffin_images
+                    WHERE tiffin_listing_id = tl.id
+                    ORDER BY created_at ASC
+                    LIMIT 1
+                ) AS main_image
+            FROM saved_restaurants sr
+            JOIN tiffin_listings tl
+              ON sr.tiffin_listing_id = tl.id
+            JOIN provider_profiles pp
+              ON tl.provider_id = pp.id
+            WHERE sr.customer_id = :customer_id
+            ORDER BY sr.created_at DESC
+        """)
+
+        results = db.session.execute(query, {'customer_id': user.id}).fetchall()
+
+        restaurants = []
+        for row in results:
+            image_path = row[7] if row[7] else 'placeholder.jpg'
+            restaurants.append({
+                'id': row[0],
+                'delivery_radius': float(row[1]) if row[1] else 0,
+                'fast_delivery_available': row[2],
+                'diet_type': row[3],
+                'available_days': row[4],
+                'created_at': row[5].strftime('%B %d, %Y') if row[5] else None,
+                'business_name': row[6],
+                'image_path': image_path,
+            })
+
+        return render_template('saved/restaurants.html', restaurants=restaurants, username=user.username)
+    except Exception as e:
+        print(f"Error fetching saved restaurants: {e}")
+        return render_template('saved/restaurants.html', restaurants=[], username=user.username)
+
+
+@customer_bp.route('/saved/services')
+def saved_services():
+    """Display saved services for the current customer"""
+    user = get_current_user()
+    if not user:
+        return redirect('/login')
+    if user.account_type != 'customer':
+        return redirect('/')
+
+    try:
+        query = text("""
+            SELECT sl.id, sl.service_title, sl.service_category, sl.base_price, sl.service_radius, sl.availability_days,
+                   pp.business_name,
+                   ppic.image_path AS provider_image
+            FROM saved_services ss
+            JOIN service_listings sl ON ss.service_listing_id = sl.id
+            JOIN provider_profiles pp ON sl.provider_id = pp.id
+            LEFT JOIN provider_profile_pics ppic ON pp.id = ppic.provider_id
+            WHERE ss.customer_id = :customer_id
+            AND sl.status = 'approved'
+            ORDER BY ss.created_at DESC
+        """)
+        
+        results = db.session.execute(query, {'customer_id': user.id}).fetchall()
+        
+        services_data = []
+        for row in results:
+            services_data.append({
+                'id': row[0],
+                'service_title': row[1],
+                'service_category': row[2],
+                'base_price': float(row[3]) if row[3] else 0,
+                'service_radius': float(row[4]) if row[4] else 0,
+                'availability_days': row[5] or '',
+                'business_name': row[6],
+                'provider_image': row[7]
+            })
+        
+        return render_template('saved/saved_services.html', services=services_data, username=user.username)
+    except Exception as e:
+        print(f"Error fetching saved services: {e}")
+        return render_template('saved/saved_services.html', services=[], username=user.username)

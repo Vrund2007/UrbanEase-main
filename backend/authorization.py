@@ -6,31 +6,23 @@ from dotenv import load_dotenv
 import os
 import random
 
-# Project root (parent of backend/)
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-# Load environment variables from .env at project root
-load_dotenv(os.path.join(BASE_DIR, '.env'))
+load_dotenv(os.path.join(os.path.dirname(__file__), '.env'))
 
 app = Flask(
     __name__,
     template_folder=os.path.join(BASE_DIR, 'templates'),
     static_folder=os.path.join(BASE_DIR, 'static')
 )
-# Database images: uploads go here and are served at /static/images/database_images/
 IMAGES_FOLDER = os.path.join(app.static_folder, 'images', 'database_images')
-# Secret key for session management
 app.secret_key = os.environ.get('SECRET_KEY', 'urbanease-dev-secret-key-change-in-production')
-# Enable CORS with credentials support for session cookies
 CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
 
-# Global storage for OTP and registration data (For Testing Only)
-# WARNING: This is not thread-safe and supports only one active signup at a time.
 temp_storage = {
     'otp': None,
     'user_data': None
 }
 
-# Database Configuration (use DATABASE_URL on Render, else local)
 database_url = os.environ.get('DATABASE_URL')
 if database_url and database_url.startswith('postgres://'):
     database_url = database_url.replace('postgres://', 'postgresql://', 1)
@@ -39,11 +31,9 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 
-# Create tables if they don't exist
 with app.app_context():
     db.create_all()
 
-# Mail Configuration
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
 app.config['MAIL_PORT'] = 587
 app.config['MAIL_USE_TLS'] = True
@@ -55,7 +45,6 @@ app.config['MAIL_DEFAULT_SENDER'] = 'krishnajadav1013@gmail.com'
 
 mail = Mail(app)
 
-# --- Models ---
 class User(db.Model):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
@@ -67,7 +56,6 @@ class User(db.Model):
     status = db.Column(db.String(20), nullable=False, default='active')
     created_at = db.Column(db.DateTime, server_default=db.func.now())
 
-# --- Helper Functions ---
 def get_user_by_email(email):
     return User.query.filter_by(email=email).first()
 
@@ -79,7 +67,7 @@ def create_user(username, phone, email, password, account_type):
             email=email,
             password=password,
             account_type=account_type,
-            status='active'  # Default status
+            status='active'
         )
         db.session.add(new_user)
         db.session.commit()
@@ -87,8 +75,6 @@ def create_user(username, phone, email, password, account_type):
     except Exception as e:
         db.session.rollback()
         raise e
-
-# --- Routes ---
 
 @app.route('/login', methods=['POST'])
 def login_api():
@@ -106,14 +92,12 @@ def login_api():
 
     user = get_user_by_email(email)
     
-    # Direct password comparison as per requirements
     if not user or user.password != password:
         return jsonify({
             'success': False,
             'message': 'Invalid email or password'
         }), 200
         
-    # Set session variables for authentication
     session['user_id'] = user.id
     session['account_type'] = user.account_type
     session['username'] = user.username
@@ -140,15 +124,12 @@ def signup():
     if not all([username, phone, email, password, account_type]):
         return jsonify({'success': False, 'message': 'Missing required fields'}), 400
 
-    # Check if user already exists
     if get_user_by_email(email):
         return jsonify({'success': False, 'message': 'Email already exists'}), 400
         
     try:
-        # Generate 6-digit OTP
         otp = str(random.randint(100000, 999999))
         
-        # Store in global variable (Testing only)
         temp_storage['otp'] = otp
         temp_storage['user_data'] = {
             'username': username,
@@ -158,7 +139,6 @@ def signup():
             'account_type': account_type
         }
         
-        # Send OTP Email
         try:
             msg = Message(
                 subject="Your OTP for UrbanEase Registration",
@@ -190,17 +170,14 @@ def verify_otp():
     if not entered_otp:
          return jsonify({'success': False, 'message': 'OTP is required'}), 400
          
-    # Check global storage
     stored_otp = temp_storage.get('otp')
     registration_data = temp_storage.get('user_data')
     
     if not stored_otp or not registration_data:
-        # For better UX in testing, if we lost the state, guide user to retry
         return jsonify({'success': False, 'message': 'No pending registration found. Please try signing up again.'}), 400
         
     if entered_otp == stored_otp:
         try:
-            # Create User
             create_user(
                 registration_data['username'],
                 registration_data['phone'],
@@ -209,7 +186,6 @@ def verify_otp():
                 registration_data['account_type']
             )
             
-            # Send Welcome Email
             try:
                 msg = Message(
                     subject="Welcome to UrbanEase!",
@@ -225,7 +201,6 @@ Welcome to UrbanEase! We are excited to have you on board.
             except Exception as mail_error:
                 print(f"Error sending welcome email: {mail_error}")
             
-            # Clear global storage
             temp_storage['otp'] = None
             temp_storage['user_data'] = None
             
@@ -236,34 +211,26 @@ Welcome to UrbanEase! We are excited to have you on board.
     else:
         return jsonify({'success': False, 'message': 'Invalid OTP'}), 400
 
-# --- Page routes (GET): serve templates ---
 @app.route('/')
 def home():
-    """Homepage"""
     return render_template('home/index.html')
 
 @app.route('/login', methods=['GET'])
 def login_page():
-    """Login page (GET); POST handled by login() below"""
     return render_template('home/login.html')
 
 @app.route('/signup', methods=['GET'])
 def signup_page():
-    """Signup page"""
     return render_template('home/signup.html')
 
 @app.route('/payment')
 def payment_page():
-    """Payment page"""
     return render_template('payment/payment.html')
 
-# --- Backward compatibility: serve database images at /images/<filename> ---
 from flask import send_from_directory
 @app.route('/images/<path:filename>')
 def serve_image(filename):
-    """Serve images from static/images/database_images"""
     return send_from_directory(IMAGES_FOLDER, filename)
 
 if __name__ == '__main__':
-    # Running on port 5000 as the primary common port
     app.run(debug=True, port=5000)

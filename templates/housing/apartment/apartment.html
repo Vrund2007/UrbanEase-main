@@ -19,44 +19,7 @@
 </head>
 <body>
 
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="customerNavbar">
-        <div class="container">
-            <!-- Left: Logo + Brand -->
-            <a class="navbar-brand" href="/customer/dashboard">
-                <i class="fas fa-city me-2"></i>UrbanEase
-            </a>
-
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#customerNavbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-
-            <div class="collapse navbar-collapse" id="customerNavbarNav">
-                <!-- Center: Navigation Links -->
-                <ul class="navbar-nav ms-auto align-items-center">
-                    <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-heart me-1 d-lg-none"></i>Saved Houses</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-utensils me-1 d-lg-none"></i>Saved Meals</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-tools me-1 d-lg-none"></i>Saved Services</a></li>
-                </ul>
-
-                <!-- Right: Profile -->
-                <div class="nav-profile-wrapper d-none d-lg-block ms-3">
-                    <button class="nav-profile-trigger" id="profileTrigger">
-                        <div class="nav-avatar"><i class="fas fa-user"></i></div>
-                        <i class="fas fa-chevron-down nav-profile-arrow" id="profileArrow"></i>
-                    </button>
-                    <div class="nav-profile-dropdown" id="profileDropdown">
-                        <a href="#" class="nav-profile-item"><i class="fas fa-user-circle"></i>Profile</a>
-                        <a href="#" class="nav-profile-item"><i class="fas fa-map-marker-alt"></i>My Addresses</a>
-                        <a href="{{ url_for('customer.service_bookings') }}" class="nav-profile-item"><i class="fas fa-calendar-check"></i>My Bookings</a>
-                        <a href="{{ url_for('customer.my_orders') }}" class="nav-profile-item"><i class="fas fa-utensils"></i>My Food Orders</a>
-                        <div class="nav-profile-divider"></div>
-                        <a href="/customer/logout" class="nav-profile-item nav-profile-logout"><i class="fas fa-sign-out-alt"></i>Logout</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </nav>
+    {% include "partials/customer_navbar.html" %}
 
     <!-- Hero Section -->
     <section class="hostel-hero apartment-hero">
@@ -69,7 +32,7 @@
                     
                     <!-- Search Bar -->
                     <form class="search-bar-container" action="/housing/apartment" method="GET">
-                        <div class="row g-2">
+                        <div class="row g-2 mb-2">
                             <div class="col-md-5">
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="fas fa-map-marker-alt"></i></span>
@@ -90,6 +53,40 @@
                             </div>
                             <div class="col-md-3">
                                 <button type="submit" class="btn btn-primary w-100 search-btn">Search</button>
+                            </div>
+                        </div>
+                        <div class="row g-2">
+                            <div class="col-md-2">
+                                <select class="form-select form-select-sm" name="listing_purpose">
+                                    <option value="" {% if not filter_listing_purpose %}selected{% endif %}>Purpose</option>
+                                    <option value="rent" {% if filter_listing_purpose == 'rent' %}selected{% endif %}>Rent</option>
+                                    <option value="sale" {% if filter_listing_purpose == 'sale' %}selected{% endif %}>Sale</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <select class="form-select form-select-sm" name="bhk">
+                                    <option value="" {% if not filter_bhk %}selected{% endif %}>BHK</option>
+                                    <option value="1" {% if filter_bhk == '1' %}selected{% endif %}>1 BHK</option>
+                                    <option value="2" {% if filter_bhk == '2' %}selected{% endif %}>2 BHK</option>
+                                    <option value="3" {% if filter_bhk == '3' %}selected{% endif %}>3 BHK</option>
+                                    <option value="4+" {% if filter_bhk == '4+' %}selected{% endif %}>4+ BHK</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <select class="form-select form-select-sm" name="tenant_preference">
+                                    <option value="" {% if not filter_tenant_preference %}selected{% endif %}>Tenant</option>
+                                    <option value="family" {% if filter_tenant_preference == 'family' %}selected{% endif %}>Family</option>
+                                    <option value="bachelor" {% if filter_tenant_preference == 'bachelor' %}selected{% endif %}>Bachelor</option>
+                                    <option value="any" {% if filter_tenant_preference == 'any' %}selected{% endif %}>Any</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <select class="form-select form-select-sm" name="furnishing">
+                                    <option value="" {% if not filter_furnishing %}selected{% endif %}>Furnishing</option>
+                                    <option value="furnished" {% if filter_furnishing == 'furnished' %}selected{% endif %}>Furnished</option>
+                                    <option value="semi" {% if filter_furnishing == 'semi' %}selected{% endif %}>Semi</option>
+                                    <option value="unfurnished" {% if filter_furnishing == 'unfurnished' %}selected{% endif %}>Unfurnished</option>
+                                </select>
                             </div>
                         </div>
                     </form>
@@ -119,7 +116,7 @@
                                     <img src="{{ url_for('static', filename='images/database_images/' ~ house.image_path) }}" alt="{{ house.title }}" onerror="this.src='https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?q=80&w=2000&auto=format&fit=crop'">
                                 {% endif %}
                                 <div class="listing-badge">Apartment</div>
-                                <button class="btn-save"><i class="far fa-heart"></i></button>
+                                <button class="save-house-btn btn-save" data-id="{{ house.id }}" data-saved="{{ 'true' if house.id in (saved_house_ids|default([])) else 'false' }}"><i class="{{ 'fas' if house.id in (saved_house_ids|default([])) else 'far' }} fa-heart"></i></button>
                             </div>
                             <div class="listing-content">
                                 <div class="d-flex justify-content-between align-items-start mb-2">
@@ -144,7 +141,7 @@
                         <div class="empty-state">
                             <i class="fas fa-search fa-3x text-muted mb-3"></i>
                             <h4>No Apartments Found</h4>
-                            <p class="text-muted">We couldn't find any approved apartmnets at the moment.</p>
+                            <p class="text-muted">We couldn't find any approved apartments at the moment.</p>
                         </div>
                     </div>
                 {% endif %}
@@ -240,6 +237,7 @@
 
     <!-- Bootstrap 5 JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='js/navbar.js') }}"></script>
     <script src="{{ url_for('static', filename='js/customer.js') }}"></script>
     <script src="{{ url_for('static', filename='js/apartment.js') }}"></script>
 </body>

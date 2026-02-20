@@ -4,26 +4,15 @@
 document.addEventListener('DOMContentLoaded', function() {
     
     // --- Save Apartment Functionality (Card Button) ---
-    const saveButtons = document.querySelectorAll('.btn-save');
-    
-    saveButtons.forEach(btn => {
+    document.querySelectorAll('.save-house-btn').forEach(btn => {
         btn.addEventListener('click', function(e) {
             e.preventDefault();
-            e.stopPropagation(); // Prevent card click
-            
-            const card = this.closest('.listing-card');
-            const viewBtn = card.querySelector('.view-details-btn');
-            const listingId = viewBtn.getAttribute('data-id');
-            const icon = this.querySelector('i');
-            
-            toggleSaveApartment(listingId, icon);
+            e.stopPropagation();
+            const listingId = this.getAttribute('data-id');
+            if (!listingId) return;
+            const isSaved = this.getAttribute('data-saved') === 'true';
+            toggleSaveHouseCard(listingId, isSaved, this);
         });
-        
-        // Check initial state
-        const card = btn.closest('.listing-card');
-        const viewBtn = card.querySelector('.view-details-btn');
-        const listingId = viewBtn.getAttribute('data-id');
-        checkIfSaved(listingId, btn.querySelector('i'));
     });
 
     // --- View Details Modal ---
@@ -170,57 +159,35 @@ document.addEventListener('DOMContentLoaded', function() {
         setTimeout(() => toast.classList.remove('show'), 3000);
     }
 
-    // --- Save Logic (Card Icon) ---
-    function toggleSaveApartment(id, iconElement) {
-        // First check state to determine action
-        const isSaved = iconElement.classList.contains('fas'); // Solid = saved
-        const url = isSaved ? `/housing/apartment/${id}/unsave` : `/housing/apartment/${id}/save`;
+    // --- Save Logic (Card) ---
+    function toggleSaveHouseCard(id, isSaved, btn) {
+        const url = `/save/house/${id}`;
         const method = isSaved ? 'DELETE' : 'POST';
-        
-        fetch(url, { method: method })
+        fetch(url, { method })
             .then(res => res.json())
             .then(data => {
                 if (data.success) {
-                    if (isSaved) {
-                        iconElement.classList.remove('fas', 'text-danger');
-                        iconElement.classList.add('far');
-                        showToast('Apartment removed from saved');
-                    } else {
-                        iconElement.classList.remove('far');
-                        iconElement.classList.add('fas', 'text-danger');
-                        showToast('Apartment saved successfully');
+                    const newSaved = !isSaved;
+                    btn.setAttribute('data-saved', newSaved ? 'true' : 'false');
+                    const icon = btn.querySelector('i');
+                    if (icon) {
+                        icon.classList.toggle('far', !newSaved);
+                        icon.classList.toggle('fas', newSaved);
+                        icon.classList.toggle('text-danger', newSaved);
                     }
+                    showToast(newSaved ? 'Apartment saved successfully' : 'Apartment removed from saved');
                 } else {
-                    if (data.already_saved) {
-                         iconElement.classList.remove('far');
-                         iconElement.classList.add('fas', 'text-danger');
-                    }
                     showToast(data.message || 'Error updating save status', 'error');
                 }
             })
             .catch(err => showToast('Connection error', 'error'));
     }
 
-    function checkIfSaved(id, iconElement) {
-        fetch(`/housing/apartment/${id}/is-saved`)
-            .then(res => res.json())
-            .then(data => {
-                if (data.saved) {
-                    iconElement.classList.remove('far');
-                    iconElement.classList.add('fas', 'text-danger');
-                } else {
-                    iconElement.classList.remove('fas', 'text-danger');
-                    iconElement.classList.add('far');
-                }
-            });
-    }
-
     // --- Save Logic (Modal Button) ---
     function toggleSaveApartmentMsg(id, btnElement) {
         const isSaved = btnElement.classList.contains('btn-saved'); 
-        // We'll track state via class or text content
-        const url = isSaved ? `/housing/apartment/${id}/unsave` : `/housing/apartment/${id}/save`;
-         const method = isSaved ? 'DELETE' : 'POST';
+        const url = `/save/house/${id}`;
+        const method = isSaved ? 'DELETE' : 'POST';
         
         fetch(url, { method: method })
             .then(res => res.json())
@@ -264,17 +231,18 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     function updateCardIcon(id, isSaved) {
-        // Find the card on the page
-        const viewBtn = document.querySelector(`.view-details-btn[data-id="${id}"]`);
-        if (viewBtn) {
-            const card = viewBtn.closest('.listing-card');
-            const icon = card.querySelector('.btn-save i');
-            if (isSaved) {
-                icon.classList.remove('far');
-                icon.classList.add('fas', 'text-danger');
-            } else {
-                icon.classList.remove('fas', 'text-danger');
-                icon.classList.add('far');
+        const saveBtn = document.querySelector(`.save-house-btn[data-id="${id}"]`);
+        if (saveBtn) {
+            saveBtn.setAttribute('data-saved', isSaved ? 'true' : 'false');
+            const icon = saveBtn.querySelector('i');
+            if (icon) {
+                if (isSaved) {
+                    icon.classList.remove('far');
+                    icon.classList.add('fas', 'text-danger');
+                } else {
+                    icon.classList.remove('fas', 'text-danger');
+                    icon.classList.add('far');
+                }
             }
         }
     }

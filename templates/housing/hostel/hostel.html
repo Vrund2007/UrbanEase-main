@@ -14,35 +14,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/hostel.css') }}">
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="customerNavbar">
-        <div class="container">
-            <a class="navbar-brand" href="/customer/dashboard"><i class="fas fa-city me-2"></i>UrbanEase</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#customerNavbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="customerNavbarNav">
-                <ul class="navbar-nav ms-auto align-items-center">
-                    <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-heart me-1 d-lg-none"></i>Saved Houses</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-utensils me-1 d-lg-none"></i>Saved Meals</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-tools me-1 d-lg-none"></i>Saved Services</a></li>
-                </ul>
-                <div class="nav-profile-wrapper d-none d-lg-block ms-3">
-                    <button class="nav-profile-trigger" id="profileTrigger">
-                        <div class="nav-avatar"><i class="fas fa-user"></i></div>
-                        <i class="fas fa-chevron-down nav-profile-arrow" id="profileArrow"></i>
-                    </button>
-                    <div class="nav-profile-dropdown" id="profileDropdown">
-                        <a href="#" class="nav-profile-item"><i class="fas fa-user-circle"></i>Profile</a>
-                        <a href="#" class="nav-profile-item"><i class="fas fa-map-marker-alt"></i>My Addresses</a>
-                        <a href="{{ url_for('customer.service_bookings') }}" class="nav-profile-item"><i class="fas fa-calendar-check"></i>My Bookings</a>
-                        <a href="{{ url_for('customer.my_orders') }}" class="nav-profile-item"><i class="fas fa-utensils"></i>My Food Orders</a>
-                        <div class="nav-profile-divider"></div>
-                        <a href="/customer/logout" class="nav-profile-item nav-profile-logout"><i class="fas fa-sign-out-alt"></i>Logout</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </nav>
+    {% include "partials/customer_navbar.html" %}
 
     <section class="hostel-hero">
         <div class="container h-100">
@@ -52,7 +24,7 @@
                     <h1 class="hero-heading">Find Comfortable Hostels in Your New City</h1>
                     <p class="hero-subtext">Affordable and verified stays near you.</p>
                     <form class="search-bar-container" action="/housing/hostel" method="GET">
-                        <div class="row g-2">
+                        <div class="row g-2 mb-2">
                             <div class="col-md-5">
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="fas fa-map-marker-alt"></i></span>
@@ -73,6 +45,48 @@
                             </div>
                             <div class="col-md-3">
                                 <button type="submit" class="btn btn-primary w-100 search-btn">Search</button>
+                            </div>
+                        </div>
+                        <div class="row g-2">
+                            <div class="col-md-2">
+                                <select class="form-select form-select-sm" name="gender">
+                                    <option value="" {% if not filter_gender %}selected{% endif %}>Gender</option>
+                                    <option value="boys" {% if filter_gender == 'boys' %}selected{% endif %}>Boys</option>
+                                    <option value="girls" {% if filter_gender == 'girls' %}selected{% endif %}>Girls</option>
+                                    <option value="coed" {% if filter_gender == 'coed' %}selected{% endif %}>Co-ed</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <select class="form-select form-select-sm" name="room_type">
+                                    <option value="" {% if not filter_room_type %}selected{% endif %}>Room Type</option>
+                                    <option value="single" {% if filter_room_type == 'single' %}selected{% endif %}>Single</option>
+                                    <option value="double" {% if filter_room_type == 'double' %}selected{% endif %}>Double</option>
+                                    <option value="dorm" {% if filter_room_type == 'dorm' %}selected{% endif %}>Dorm</option>
+                                </select>
+                            </div>
+                            <div class="col-auto">
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="checkbox" name="wifi" value="1" id="fWifi" {% if filter_wifi == '1' %}checked{% endif %}>
+                                    <label class="form-check-label" for="fWifi">WiFi</label>
+                                </div>
+                            </div>
+                            <div class="col-auto">
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="checkbox" name="attached_bathroom" value="1" id="fBath" {% if filter_attached_bathroom == '1' %}checked{% endif %}>
+                                    <label class="form-check-label" for="fBath">Bathroom</label>
+                                </div>
+                            </div>
+                            <div class="col-auto">
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="checkbox" name="food_included" value="1" id="fFood" {% if filter_food_included == '1' %}checked{% endif %}>
+                                    <label class="form-check-label" for="fFood">Food</label>
+                                </div>
+                            </div>
+                            <div class="col-auto">
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="checkbox" name="laundry" value="1" id="fLaundry" {% if filter_laundry == '1' %}checked{% endif %}>
+                                    <label class="form-check-label" for="fLaundry">Laundry</label>
+                                </div>
                             </div>
                         </div>
                     </form>
@@ -99,7 +113,7 @@
                                     <img src="{{ url_for('static', filename='images/database_images/' ~ house.image_path) }}" alt="{{ house.title }}" onerror="this.src='https://images.unsplash.com/photo-1555854877-bab0e564b8d5?q=80&w=2000&auto=format&fit=crop'">
                                 {% endif %}
                                 <div class="listing-badge">Hostel</div>
-                                <button class="btn-save"><i class="far fa-heart"></i></button>
+                                <button class="save-house-btn btn-save" data-id="{{ house.id }}" data-saved="{{ 'true' if house.id in (saved_house_ids|default([])) else 'false' }}"><i class="{{ 'fas' if house.id in (saved_house_ids|default([])) else 'far' }} fa-heart"></i></button>
                             </div>
                             <div class="listing-content">
                                 <div class="d-flex justify-content-between align-items-start mb-2">
@@ -188,6 +202,7 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='js/navbar.js') }}"></script>
     <script src="{{ url_for('static', filename='js/customer.js') }}"></script>
     <script src="{{ url_for('static', filename='js/hostel.js') }}"></script>
 </body>

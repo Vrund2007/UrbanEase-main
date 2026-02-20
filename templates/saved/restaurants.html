@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Saved Restaurants - UrbanEase</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/styles.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/customer.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/hostel.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/tiffin.css') }}"
+    />
+  </head>
+  <body>
+    {% include "partials/customer_navbar.html" %}
+
+    <section
+      class="hostel-hero tiffin-hero"
+      style="background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('{{ url_for('static', filename='images/website_images/kitchen-hero.webp') }}'); background-size: cover; background-position: center; background-repeat: no-repeat;"
+    >
+      <div class="container h-100">
+        <div class="row h-100 align-items-center">
+
+          <div class="col-lg-8">
+            <span class="hero-tag">SAVED RESTAURANTS</span>
+            <h1 class="hero-heading">Saved Restaurants</h1>
+            <p class="hero-subtext">
+              View and manage kitchens you've saved.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="hostel-listings">
+      <div class="container">
+        <div class="section-header">
+          <h2 class="section-title">Your Saved Restaurants</h2>
+          <p class="section-subtitle">
+            All the tiffin kitchens you’ve saved.
+          </p>
+        </div>
+        <div class="row g-4">
+          {% if restaurants %} {% for kitchen in restaurants %}
+          <div class="col-md-6 col-lg-4">
+            <div class="listing-card">
+              <div class="listing-image">
+                {% if kitchen.image_path == 'placeholder.jpg' %}
+                <img
+                  src="https://images.unsplash.com/photo-1556910103-1c02745a30bf?q=80&w=2000&auto=format&fit=crop"
+                  alt="{{ kitchen.business_name }}"
+                />
+                {% else %}
+                <img
+                  src="{{ url_for('static', filename='images/database_images/' ~ kitchen.image_path) }}"
+                  alt="{{ kitchen.business_name }}"
+                  onerror="
+                    this.src =
+                      'https://images.unsplash.com/photo-1556910103-1c02745a30bf?q=80&w=2000&auto=format&fit=crop'
+                  "
+                />
+                {% endif %}
+                <div class="listing-badge">
+                  {{ kitchen.diet_type|title }}
+                </div>
+                {% if kitchen.fast_delivery_available %}
+                <div class="fast-delivery-badge">
+                  <i class="fas fa-bolt"></i> Fast
+                </div>
+                {% endif %}
+              </div>
+              <div class="listing-content">
+                <div
+                  class="d-flex justify-content-between align-items-start mb-2"
+                >
+                  <h3 class="listing-title">{{ kitchen.business_name }}</h3>
+                </div>
+                <p class="listing-location">
+                  <i class="fas fa-route me-1"></i>Delivers within
+                  {{ kitchen.delivery_radius }} km
+                </p>
+                <p class="listing-desc mb-2">
+                  <small class="text-muted"
+                    >Open: {{ kitchen.available_days }}</small
+                  >
+                </p>
+                <a href="/tiffin" class="btn btn-outline-primary w-100"
+                  >Order from this kitchen</a
+                >
+              </div>
+            </div>
+          </div>
+          {% endfor %} {% else %}
+          <div class="col-12">
+            <div class="empty-state text-center py-5">
+              <i class="fas fa-utensils fa-3x text-muted mb-3"></i>
+              <h4>You have no saved restaurants yet.</h4>
+              <p class="text-muted">
+                Browse tiffin kitchens and tap the heart icon to save your
+                favourites.
+              </p>
+            </div>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </section>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='js/navbar.js') }}"></script>
+  </body>
+</html>

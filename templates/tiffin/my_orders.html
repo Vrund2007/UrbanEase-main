@@ -16,43 +16,7 @@
 </head>
 <body>
 
-    <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="customerNavbar">
-        <div class="container">
-            <a class="navbar-brand" href="/customer/dashboard"><i class="fas fa-city me-2"></i>UrbanEase</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#customerNavbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="customerNavbarNav">
-                <ul class="navbar-nav ms-auto align-items-center">
-                    <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-heart me-1 d-lg-none"></i>Saved Houses</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-utensils me-1 d-lg-none"></i>Saved Meals</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{{ url_for('customer.browse_services') }}"><i class="fas fa-tools me-1 d-lg-none"></i>Saved Services</a></li>
-                </ul>
-                <div class="nav-profile-wrapper d-none d-lg-block ms-3">
-                    <button class="nav-profile-trigger" id="profileTrigger">
-                        <div class="nav-avatar"><i class="fas fa-user"></i></div>
-                        <i class="fas fa-chevron-down nav-profile-arrow" id="profileArrow"></i>
-                    </button>
-                    <div class="nav-profile-dropdown" id="profileDropdown">
-                        <a href="#" class="nav-profile-item"><i class="fas fa-user-circle"></i>Profile</a>
-                        <a href="#" class="nav-profile-item"><i class="fas fa-map-marker-alt"></i>My Addresses</a>
-                        <a href="{{ url_for('customer.service_bookings') }}" class="nav-profile-item"><i class="fas fa-calendar-check"></i>My Bookings</a>
-                        <a href="{{ url_for('customer.my_orders') }}" class="nav-profile-item"><i class="fas fa-utensils"></i>My Food Orders</a>
-                        <div class="nav-profile-divider"></div>
-                        <a href="/customer/logout" class="nav-profile-item nav-profile-logout"><i class="fas fa-sign-out-alt"></i>Logout</a>
-                    </div>
-                </div>
-                <ul class="navbar-nav d-lg-none mt-2">
-                    <li><hr class="dropdown-divider"></li>
-                    <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-user-circle me-2"></i>Profile</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-map-marker-alt me-2"></i>My Addresses</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{{ url_for('customer.service_bookings') }}"><i class="fas fa-calendar-check me-2"></i>My Bookings</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{{ url_for('customer.my_orders') }}"><i class="fas fa-utensils me-2"></i>My Food Orders</a></li>
-                    <li class="nav-item"><a class="nav-link text-danger" href="/customer/logout"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
-                </ul>
-            </div>
-        </div>
-    </nav>
+    {% include "partials/customer_navbar.html" %}
 
     <section class="hostel-hero my-orders-hero">
         <div class="container h-100">
@@ -203,6 +167,7 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='js/navbar.js') }}"></script>
     <script src="{{ url_for('static', filename='js/customer.js') }}"></script>
     <script src="{{ url_for('static', filename='js/my_orders.js') }}"></script>
 </body>
