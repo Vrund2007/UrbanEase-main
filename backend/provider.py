@@ -7,10 +7,10 @@ import time
 
 provider_bp = Blueprint('provider', __name__)
 
-# Image storage: same as static/images/database_images (Linux-safe)
+                                                                   
 IMAGES_FOLDER = os.path.join(app.static_folder, 'images', 'database_images')
 ALLOWED_EXTENSIONS = {'jpg', 'jpeg'}
-MAX_FILE_SIZE = 5 * 1024 * 1024  # 5MB
+MAX_FILE_SIZE = 5 * 1024 * 1024       
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -35,7 +35,7 @@ def require_provider_auth(f):
         return f(*args, **kwargs)
     return decorated_function
 
-# --- Routes ---
+                
 
 @provider_bp.route('/provider/dashboard')
 def provider_dashboard():
@@ -55,7 +55,7 @@ def get_provider_status():
     try:
         user_id = session.get('user_id')
         
-        # Get provider profile
+                              
         profile = ProviderProfile.query.filter_by(user_id=user_id).first()
         
         if not profile:
@@ -65,7 +65,7 @@ def get_provider_status():
                 'profile': None
             }), 200
         
-        # Get profile picture if exists
+                                       
         profile_pic = ProviderProfilePic.query.filter_by(provider_id=profile.id).first()
         
         return jsonify({
@@ -110,23 +110,23 @@ def apply_verification():
     try:
         user_id = session.get('user_id')
         
-        # Get form data (provider_type is hardcoded as 'other' - no longer used in UI)
+                                                                                      
         business_name = request.form.get('business_name')
         aadhaar_number = request.form.get('aadhaar_number')
         business_license = request.form.get('business_license')
         
-        # Validate required fields
+                                  
         if not all([business_name, aadhaar_number]):
             return jsonify({'success': False, 'message': 'Missing required fields'}), 400
         
-        # Validate Aadhaar number (12 digits)
+                                             
         if not aadhaar_number.isdigit() or len(aadhaar_number) != 12:
             return jsonify({'success': False, 'message': 'Invalid Aadhaar number. Must be 12 digits.'}), 400
         
-        # Check for existing profile
+                                    
         existing_profile = ProviderProfile.query.filter_by(user_id=user_id).first()
         
-        # Check if Aadhaar already exists (for different user)
+                                                              
         aadhaar_exists = ProviderProfile.query.filter(
             ProviderProfile.aadhaar_number == aadhaar_number,
             ProviderProfile.user_id != user_id
@@ -135,34 +135,34 @@ def apply_verification():
         if aadhaar_exists:
             return jsonify({'success': False, 'message': 'This Aadhaar number is already registered'}), 400
         
-        # Handle file upload
+                            
         profile_image_path = None
         if 'profile_photo' in request.files:
             file = request.files['profile_photo']
             if file and file.filename:
-                # Validate file type
+                                    
                 if not allowed_file(file.filename):
                     return jsonify({'success': False, 'message': 'Only JPEG images are allowed'}), 400
                 
-                # Validate MIME type
+                                    
                 if file.content_type not in ['image/jpeg', 'image/jpg']:
                     return jsonify({'success': False, 'message': 'Only JPEG images are allowed'}), 400
                 
-                # Check file size
-                file.seek(0, 2)  # Seek to end
+                                 
+                file.seek(0, 2)               
                 file_size = file.tell()
-                file.seek(0)  # Seek back to start
+                file.seek(0)                      
                 
                 if file_size > MAX_FILE_SIZE:
                     return jsonify({'success': False, 'message': 'File size must be less than 5MB'}), 400
                 
-                # Generate unique filename
+                                          
                 timestamp = int(time.time())
-                # We'll update this after we have the profile ID
+                                                                
                 temp_filename = f"provider_temp_{timestamp}.jpg"
         
         if existing_profile:
-            # Update existing profile (reapplication after rejection)
+                                                                     
             existing_profile.business_name = business_name
             existing_profile.aadhaar_number = aadhaar_number
             existing_profile.business_license = business_license
@@ -171,7 +171,7 @@ def apply_verification():
             
             profile_id = existing_profile.id
         else:
-            # Create new profile
+                                
             new_profile = ProviderProfile(
                 user_id=user_id,
                 business_name=business_name,
@@ -180,10 +180,10 @@ def apply_verification():
                 verification_status='pending'
             )
             db.session.add(new_profile)
-            db.session.flush()  # Get the ID
+            db.session.flush()              
             profile_id = new_profile.id
         
-        # Now handle the image with proper filename
+                                                   
         if 'profile_photo' in request.files:
             file = request.files['profile_photo']
             if file and file.filename:
@@ -191,16 +191,16 @@ def apply_verification():
                 filename = f"provider_{profile_id}_{timestamp}.jpg"
                 filepath = os.path.join(IMAGES_FOLDER, filename)
                 
-                # Ensure directory exists
+                                         
                 os.makedirs(IMAGES_FOLDER, exist_ok=True)
                 
                 file.save(filepath)
                 profile_image_path = filename
                 
-                # Save or update profile pic record
+                                                   
                 existing_pic = ProviderProfilePic.query.filter_by(provider_id=profile_id).first()
                 if existing_pic:
-                    # Delete old file if exists
+                                               
                     old_path = os.path.join(IMAGES_FOLDER, existing_pic.image_path)
                     if os.path.exists(old_path):
                         try:
@@ -233,7 +233,7 @@ def provider_logout():
     session.clear()
     return redirect('/login')
 
-# --- House Listings Routes ---
+                               
 
 @provider_bp.route('/provider/api/house-listings', methods=['GET'])
 @require_provider_auth
@@ -250,11 +250,11 @@ def get_house_listings():
         
         results = []
         for listing in listings:
-            # Get first image as preview
+                                        
             first_image = HouseImage.query.filter_by(listing_id=listing.id).first()
             preview_image = first_image.image_path if first_image else None
             
-            # Get all images for details
+                                        
             all_images = HouseImage.query.filter_by(listing_id=listing.id).all()
             images_list = [{'id': img.id, 'image_path': img.image_path} for img in all_images]
             
@@ -292,23 +292,23 @@ def add_house_listing():
         if provider_profile.verification_status != 'verified':
             return jsonify({'success': False, 'message': 'Only verified providers can add listings'}), 403
             
-        # Get form data
+                       
         title = request.form.get('title')
         description = request.form.get('description')
         price = request.form.get('price')
         location = request.form.get('location')
         type_ = request.form.get('type')
         
-        # Validate required fields
+                                  
         if not all([title, description, price, location, type_]):
             return jsonify({'success': False, 'message': 'Missing required fields'}), 400
             
-        # Validate Payment Status (Dummy Integration)
+                                                     
         payment_status = request.form.get('payment_status')
         if payment_status != 'success':
             return jsonify({'success': False, 'message': 'Payment required before listing'}), 402
 
-        # Create listing
+                        
         new_listing = HouseListing(
             provider_id=provider_profile.id,
             title=title,
@@ -320,11 +320,11 @@ def add_house_listing():
         )
         
         db.session.add(new_listing)
-        db.session.flush() # Get ID
+        db.session.flush()         
         
         listing_id = new_listing.id
         
-        # Insert into type-specific detail table
+                                                
         if type_ == 'Hostel':
             hostel_details = HostelDetails(
                 listing_id=listing_id,
@@ -356,7 +356,7 @@ def add_house_listing():
             )
             db.session.add(apartment_details)
         
-        # Handle images
+                       
         if 'images' not in request.files:
             db.session.rollback()
             return jsonify({'success': False, 'message': 'At least one image is required'}), 400
@@ -367,46 +367,46 @@ def add_house_listing():
             db.session.rollback()
             return jsonify({'success': False, 'message': 'At least one image is required'}), 400
             
-        # Ensure directory exists
+                                 
         os.makedirs(IMAGES_FOLDER, exist_ok=True)
             
         for file in files:
             if file and allowed_file(file.filename):
                 timestamp = int(time.time())
-                # Format: house_<listing_id>_<timestamp>.<ext>
+                                                              
                 unique_ts = f"{timestamp}_{files.index(file)}"
                 filename = f"house_{listing_id}_{unique_ts}.jpg"
                 filepath = os.path.join(IMAGES_FOLDER, filename)
                 
-                # Check file size (optional per file check)
+                                                           
                 file.seek(0, 2)
                 size = file.tell()
                 file.seek(0)
                 
                 if size > MAX_FILE_SIZE:
-                    continue # Skip large files or handle error
+                    continue                                   
                 
                 file.save(filepath)
                 
-                # Create image record
-                # Note: relative path stored in DB or filename? 
-                # Admin dashboard expects full path or filename? 
-                # Admin dashboard code: `const filename = imagePath.split('\\').pop().split('/').pop();`
-                # It handles paths. Let's store just filename for simplicity or relative path.
-                # User request: "Images stored in: static/Images/database_images/"
-                # Let's store the full relative path from static or just filename? 
-                # Admin View: `img.image_path`
-                # Let's verify how admin retrieves it.
-                # `http://127.0.0.1:5000/images/${encodeURIComponent(filename)}` in admin-script.js
-                # Admin script extracts filename. So storing full path is fine, but storing filename is cleaner.
-                # However, schema says `image_path`. I'll store the absolute path to be consistent with existing practice if any, 
-                # OR better, store relative path `static/Images/database_images/filename.jpg`.
-                # Wait, admin script uses `/images/<filename>` route. I need to make sure that route can serve these files.
-                # The `/images/<filename>` route likely serves from `IMAGES_FOLDER`. 
-                # `provider.py` doesn't seem to have a generic image serving route, `admin.py` or `run.py` might.
-                # Let's look at `run.py` later. For now, I'll store the filename. 
-                # Actually, admin.py's `ProviderProfilePic` stores `image_path` as `provider_<id>_<ts>.jpg` (filename only based on `provider.py` code).
-                # So I will store just the filename.
+                                     
+                                                                
+                                                                 
+                                                                                                        
+                                                                                              
+                                                                                  
+                                                                                   
+                                              
+                                                      
+                                                                                                   
+                                                                                                                
+                                                                                                                                  
+                                                                                              
+                                                                                                                           
+                                                                                     
+                                                                                                                 
+                                                                                  
+                                                                                                                                                        
+                                                    
                 
                 new_image = HouseImage(
                     listing_id=listing_id,
@@ -447,15 +447,15 @@ def get_dashboard_stats():
             'house_count': house_count,
             'tiffin_count': tiffin_count,
             'service_count': service_count,
-            'order_count': 0, # Placeholder
-            'booking_count': 0 # Placeholder
+            'order_count': 0,              
+            'booking_count': 0              
         }), 200
         
     except Exception as e:
         print(f"Error fetching dashboard stats: {e}")
         return jsonify({'error': 'Internal Server Error'}), 500
 
-# --- Tiffin Listing Routes ---
+                               
 
 @provider_bp.route('/provider/api/tiffin-listings', methods=['GET'])
 @require_provider_auth
@@ -472,7 +472,7 @@ def get_provider_tiffin_listings():
         
         results = []
         for listing in listings:
-            # Get first image as preview
+                                        
             first_image = TiffinImage.query.filter_by(tiffin_listing_id=listing.id).first()
             preview_image = first_image.image_path if first_image else None
             
@@ -505,12 +505,12 @@ def add_tiffin_listing():
         if not profile or profile.verification_status != 'verified':
             return jsonify({'success': False, 'message': 'Provider must be verified to add listings'}), 403
 
-        # Validate Payment Status
+                                 
         payment_status = request.form.get('payment_status')
         if payment_status != 'success':
             return jsonify({'success': False, 'message': 'Payment required before listing'}), 402
 
-        # Get form data
+                       
         delivery_radius = request.form.get('delivery_radius')
         fast_delivery = request.form.get('fast_delivery') == 'true'
         diet_type = request.form.get('diet_type')
@@ -519,7 +519,7 @@ def add_tiffin_listing():
         if not all([delivery_radius, diet_type, available_days]):
              return jsonify({'success': False, 'message': 'Missing required fields'}), 400
 
-        # Create listing
+                        
         new_listing = TiffinListing(
             provider_id=profile.id,
             delivery_radius=delivery_radius,
@@ -530,12 +530,12 @@ def add_tiffin_listing():
         )
         
         db.session.add(new_listing)
-        db.session.flush() # Get ID
+        db.session.flush()         
         
-        # Handle Images
+                       
         files = request.files.getlist('images')
         
-        # Ensure directory exists
+                                 
         os.makedirs(IMAGES_FOLDER, exist_ok=True)
             
         for file in files:
@@ -545,7 +545,7 @@ def add_tiffin_listing():
                 filename = f"tiffin_{new_listing.id}_{unique_ts}.jpg"
                 filepath = os.path.join(IMAGES_FOLDER, filename)
                 
-                # Check file size
+                                 
                 file.seek(0, 2)
                 size = file.tell()
                 file.seek(0)
@@ -555,7 +555,7 @@ def add_tiffin_listing():
                 
                 file.save(filepath)
                 
-                # Create Image Record
+                                     
                 new_image = TiffinImage(
                     tiffin_listing_id=new_listing.id,
                     image_path=filename
@@ -593,7 +593,7 @@ def toggle_kitchen_status(listing_id):
         if listing.status != 'approved':
              return jsonify({'success': False, 'message': 'Only approved listings can be toggled'}), 400
             
-        # Toggle status
+                       
         listing.kitchen_open = not listing.kitchen_open
         db.session.commit()
         
@@ -630,7 +630,7 @@ def add_meal(listing_id):
         if not listing.kitchen_open:
              return jsonify({'success': False, 'message': 'Kitchen must be open to add meals'}), 400
 
-        # Form Data
+                   
         meal_name = request.form.get('meal_name')
         meal_category = request.form.get('meal_category')
         diet_type = request.form.get('diet_type')
@@ -639,7 +639,7 @@ def add_meal(listing_id):
         if not all([meal_name, meal_category, diet_type, price]):
              return jsonify({'success': False, 'message': 'Missing required fields'}), 400
 
-        # File Upload
+                     
         if 'meal_image' not in request.files:
              return jsonify({'success': False, 'message': 'Meal image is required'}), 400
              
@@ -728,12 +728,12 @@ def edit_meal(meal_id):
         if not meal:
             return jsonify({'success': False, 'message': 'Meal not found'}), 404
             
-        # Verify ownership through tiffin listing
+                                                 
         listing = TiffinListing.query.filter_by(id=meal.tiffin_listing_id, provider_id=profile.id).first()
         if not listing:
             return jsonify({'success': False, 'message': 'Unauthorized'}), 403
         
-        # Update fields
+                       
         data = request.form
         meal.meal_name = data.get('meal_name', meal.meal_name)
         meal.description = data.get('description', meal.description)
@@ -742,7 +742,7 @@ def edit_meal(meal_id):
         meal.price = data.get('price', meal.price)
         meal.is_available = data.get('is_available') == 'true'
         
-        # Handle optional image update
+                                      
         if 'meal_image' in request.files:
             file = request.files['meal_image']
             if file.filename != '' and allowed_file(file.filename):
@@ -760,7 +760,7 @@ def edit_meal(meal_id):
         print(f"Error editing meal: {e}")
         return jsonify({'success': False, 'message': str(e)}), 500
 
-# --- Orders Routes ---
+                       
 
 @provider_bp.route('/provider/orders/active-count', methods=['GET'])
 @require_provider_auth
@@ -773,7 +773,7 @@ def get_active_orders_count():
         if not profile:
             return jsonify({'active_count': 0}), 200
         
-        # Count orders that are placed, preparing, or out_for_delivery
+                                                                      
         active_count = db.session.query(Order).join(
             TiffinListing, Order.tiffin_listing_id == TiffinListing.id
         ).filter(
@@ -850,14 +850,14 @@ def update_order_status(order_id):
         if not new_status:
             return jsonify({'success': False, 'message': 'New status required'}), 400
         
-        # Valid transitions
+                           
         valid_transitions = {
             'placed': 'preparing',
             'preparing': 'out_for_delivery',
             'out_for_delivery': 'delivered'
         }
         
-        # Secure query: verify ownership through tiffin_listing
+                                                               
         order = db.session.query(Order).join(
             TiffinListing, Order.tiffin_listing_id == TiffinListing.id
         ).filter(
@@ -868,7 +868,7 @@ def update_order_status(order_id):
         if not order:
             return jsonify({'success': False, 'message': 'Order not found or unauthorized'}), 404
         
-        # Check if transition is valid
+                                      
         if order.order_status not in valid_transitions:
             return jsonify({'success': False, 'message': 'Order cannot be updated'}), 400
             
@@ -885,7 +885,7 @@ def update_order_status(order_id):
         print(f"Error updating order status: {e}")
         return jsonify({'success': False, 'message': str(e)}), 500
 
-# --- Service Listing Routes ---
+                                
 
 @provider_bp.route('/provider/api/service-listings', methods=['GET'])
 @require_provider_auth
@@ -931,12 +931,12 @@ def add_service_listing():
         if not profile or profile.verification_status != 'verified':
             return jsonify({'success': False, 'message': 'Provider must be verified to add listings'}), 403
 
-        # Validate Payment Status
+                                 
         payment_status = request.form.get('payment_status')
         if payment_status != 'success':
             return jsonify({'success': False, 'message': 'Payment required before listing'}), 402
 
-        # Get form data
+                       
         service_category = request.form.get('service_category')
         service_title = request.form.get('service_title')
         description = request.form.get('description')
@@ -947,7 +947,7 @@ def add_service_listing():
         if not all([service_category, service_title, description, base_price, service_radius, availability_days]):
              return jsonify({'success': False, 'message': 'Missing required fields'}), 400
 
-        # Create listing
+                        
         new_listing = ServiceListing(
             provider_id=profile.id,
             service_category=service_category,
@@ -969,7 +969,7 @@ def add_service_listing():
         print(f"Error adding service listing: {e}")
         return jsonify({'success': False, 'message': str(e)}), 500
 
-# --- Service Bookings Routes ---
+                                 
 
 @provider_bp.route('/provider/service-bookings/active-count', methods=['GET'])
 @require_provider_auth
@@ -982,7 +982,7 @@ def get_active_service_bookings_count():
         if not profile:
             return jsonify({'active_count': 0}), 200
         
-        # Count bookings that are requested or accepted, only for approved listings
+                                                                                   
         active_count = db.session.query(ServiceBooking).join(
             ServiceListing, ServiceBooking.service_listing_id == ServiceListing.id
         ).filter(
@@ -1057,13 +1057,13 @@ def update_service_booking_status(booking_id):
         if not new_status:
             return jsonify({'success': False, 'message': 'New status required'}), 400
         
-        # Valid transitions
+                           
         valid_transitions = {
             'requested': ['accepted', 'cancelled'],
             'accepted': ['completed', 'cancelled']
         }
         
-        # Secure query: verify ownership through service_listing and require approved status
+                                                                                            
         booking = db.session.query(ServiceBooking).join(
             ServiceListing, ServiceBooking.service_listing_id == ServiceListing.id
         ).filter(
@@ -1075,7 +1075,7 @@ def update_service_booking_status(booking_id):
         if not booking:
             return jsonify({'success': False, 'message': 'Booking not found, unauthorized, or service not approved'}), 404
         
-        # Check if transition is valid
+                                      
         if booking.booking_status not in valid_transitions:
             return jsonify({'success': False, 'message': 'Booking cannot be updated'}), 400
             

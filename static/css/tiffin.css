@@ -1,17 +1,14 @@
-/* Tiffin Hero Override */
 .tiffin-hero {
     background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1556910103-1c02745a30bf?q=80&w=2000&auto=format&fit=crop');
     background-size: cover;
     background-position: center;
 }
 
-/* Detail Section Adjustments */
 #kitchenDetailSection {
     background-color: #f8f9fa;
     min-height: 100vh;
 }
 
-/* Back Button */
 #backToKitchensBtn {
     border-radius: 20px;
     padding: 8px 20px;
@@ -25,7 +22,6 @@
     transform: translateX(-5px);
 }
 
-/* Meal Cards */
 .meal-card {
     background: white;
     border-radius: 16px;
@@ -113,7 +109,7 @@
 .meal-price {
     font-size: 1.25rem;
     font-weight: 800;
-    color: #6366f1; /* Primary Color */
+    color: #6366f1;
     margin-bottom: 10px;
     display: block;
 }
@@ -138,7 +134,6 @@
     box-shadow: 0 5px 15px rgba(99, 102, 241, 0.3);
 }
 
-/* Fast Delivery Badge on Kitchen Card (Override if needed, else used from Hostel) */
 .fast-delivery-badge {
     position: absolute;
     bottom: 15px;
@@ -152,7 +147,6 @@
     box-shadow: 0 4px 10px rgba(0,0,0,0.15);
 }
 
-/* Provider Avatar Large */
 .provider-avatar-lg {
     width: 60px;
     height: 60px;

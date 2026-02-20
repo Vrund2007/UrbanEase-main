@@ -13,7 +13,7 @@ def get_current_user():
     return User.query.get(user_id)
 
 
-# --- Routes ---
+                
 
 @customer_bp.route('/customer/dashboard')
 def customer_dashboard():
@@ -105,7 +105,7 @@ def update_profile():
         return jsonify({'success': False, 'message': 'Server error'}), 500
 
 
-# --- Housing Routes ---
+                        
 
 from admin import (
     HouseListing, HouseImage, SavedHouse, HostelDetails, PGDetails, ApartmentDetails,
@@ -120,7 +120,7 @@ def browse_hostels():
     user = get_current_user()
     username = user.username if user else "Guest"
 
-    # Read search query params
+                              
     search_location = request.args.get('location', '').strip()
     search_budget = request.args.get('budget', '').strip()
     filter_gender = request.args.get('gender', '').strip()
@@ -130,7 +130,7 @@ def browse_hostels():
     filter_food_included = request.args.get('food_included')
     filter_laundry = request.args.get('laundry')
 
-    # Build dynamic query with JOIN to hostel_details
+                                                     
     base_query = """
         SELECT hl.*, 
                hd.gender, hd.room_type, hd.wifi, hd.attached_bathroom, hd.food_included, hd.laundry,
@@ -147,12 +147,12 @@ def browse_hostels():
     
     params = {}
     
-    # Location filter (partial match, case-insensitive)
+                                                       
     if search_location:
         base_query += " AND LOWER(hl.location) LIKE LOWER(:location)"
         params['location'] = f"%{search_location}%"
     
-    # Budget filter
+                   
     if search_budget == '1':
         base_query += " AND hl.price >= 0 AND hl.price <= 5000"
     elif search_budget == '2':
@@ -162,7 +162,7 @@ def browse_hostels():
     elif search_budget == '4':
         base_query += " AND hl.price > 15000"
     
-    # Hostel_details filters
+                            
     if filter_gender and filter_gender in ('boys', 'girls', 'coed'):
         base_query += " AND hd.gender = :filter_gender"
         params['filter_gender'] = filter_gender
@@ -243,7 +243,7 @@ def hostel_details(listing_id):
         return jsonify({'success': False, 'message': 'Unauthorized'}), 403
 
     try:
-        # Fetch listing + provider + user + profile pic + hostel_details
+                                                                        
         query = text("""
             SELECT hl.id, hl.title, hl.description, hl.price, hl.location, hl.type,
                    hl.status, hl.created_at,
@@ -266,7 +266,7 @@ def hostel_details(listing_id):
         if not result:
             return jsonify({'success': False, 'message': 'Listing not found'}), 404
         
-        # Fetch all images
+                          
         images_query = text("""
             SELECT image_path
             FROM house_images
@@ -369,17 +369,17 @@ def save_hostel(listing_id):
         return jsonify({'success': False, 'message': 'Unauthorized'}), 403
 
     try:
-        # 1. Validate listing exists and is approved
+                                                    
         listing = HouseListing.query.filter_by(id=listing_id, type='Hostel', status='approved').first()
         if not listing:
             return jsonify({'success': False, 'message': 'Listing not found or not available'}), 404
 
-        # 2. Check if already saved
+                                   
         existing_save = SavedHouse.query.filter_by(customer_id=user.id, house_listing_id=listing_id).first()
         if existing_save:
             return jsonify({'success': True, 'already_saved': True, 'message': 'Hostel already saved'}), 200
 
-        # 3. Create new save
+                            
         new_save = SavedHouse(customer_id=user.id, house_listing_id=listing_id)
         db.session.add(new_save)
         db.session.commit()
@@ -402,7 +402,7 @@ def unsave_hostel(listing_id):
         return jsonify({'success': False, 'message': 'Not authenticated'}), 401
     
     try:
-        # Delete if exists
+                          
         save_entry = SavedHouse.query.filter_by(customer_id=user.id, house_listing_id=listing_id).first()
         
         if save_entry:
@@ -436,7 +436,7 @@ def is_hostel_saved(listing_id):
         return jsonify({'saved': False}), 200
 
 
-# --- PG Routes ---
+                   
 
 @customer_bp.route('/housing/pg')
 def browse_pgs():
@@ -445,7 +445,7 @@ def browse_pgs():
     user = get_current_user()
     username = user.username if user else "Guest"
 
-    # Read search query params
+                              
     search_location = request.args.get('location', '').strip()
     search_budget = request.args.get('budget', '').strip()
     filter_gender = request.args.get('gender', '').strip()
@@ -454,7 +454,7 @@ def browse_pgs():
     filter_food_included = request.args.get('food_included')
     filter_laundry = request.args.get('laundry')
 
-    # Build dynamic query with JOIN to pg_details
+                                                 
     base_query = """
         SELECT hl.*, 
                pd.gender, pd.ac_available, pd.sharing, pd.food_included, pd.laundry,
@@ -471,12 +471,12 @@ def browse_pgs():
     
     params = {}
     
-    # Location filter
+                     
     if search_location:
         base_query += " AND LOWER(hl.location) LIKE LOWER(:location)"
         params['location'] = f"%{search_location}%"
     
-    # Budget filter
+                   
     if search_budget == '1':
         base_query += " AND hl.price >= 0 AND hl.price <= 5000"
     elif search_budget == '2':
@@ -486,7 +486,7 @@ def browse_pgs():
     elif search_budget == '4':
         base_query += " AND hl.price > 15000"
     
-    # pg_details filters
+                        
     if filter_gender and filter_gender in ('boys', 'girls', 'coed'):
         base_query += " AND pd.gender = :filter_gender"
         params['filter_gender'] = filter_gender
@@ -562,7 +562,7 @@ def pg_details(listing_id):
         return jsonify({'success': False, 'message': 'Unauthorized'}), 403
 
     try:
-        # Fetch listing + provider + user + profile pic + pg_details
+                                                                    
         query = text("""
             SELECT hl.id, hl.title, hl.description, hl.price, hl.location, hl.type,
                    hl.status, hl.created_at,
@@ -585,7 +585,7 @@ def pg_details(listing_id):
         if not result:
             return jsonify({'success': False, 'message': 'Listing not found'}), 404
         
-        # Fetch all images
+                          
         images_query = text("""
             SELECT image_path
             FROM house_images
@@ -638,17 +638,17 @@ def save_pg(listing_id):
         return jsonify({'success': False, 'message': 'Unauthorized'}), 403
 
     try:
-        # 1. Validate listing exists and is approved PG
+                                                       
         listing = HouseListing.query.filter_by(id=listing_id, type='PG', status='approved').first()
         if not listing:
             return jsonify({'success': False, 'message': 'Listing not found or not available'}), 404
 
-        # 2. Check if already saved
+                                   
         existing_save = SavedHouse.query.filter_by(customer_id=user.id, house_listing_id=listing_id).first()
         if existing_save:
             return jsonify({'success': True, 'already_saved': True, 'message': 'PG already saved'}), 200
 
-        # 3. Create new save
+                            
         new_save = SavedHouse(customer_id=user.id, house_listing_id=listing_id)
         db.session.add(new_save)
         db.session.commit()
@@ -671,7 +671,7 @@ def unsave_pg(listing_id):
         return jsonify({'success': False, 'message': 'Not authenticated'}), 401
     
     try:
-        # Delete if exists
+                          
         save_entry = SavedHouse.query.filter_by(customer_id=user.id, house_listing_id=listing_id).first()
         
         if save_entry:
@@ -705,7 +705,7 @@ def is_pg_saved(listing_id):
         return jsonify({'saved': False}), 200
 
 
-# --- Apartment Routes ---
+                          
 
 @customer_bp.route('/housing/apartment')
 def browse_apartments():
@@ -719,7 +719,7 @@ def browse_apartments():
 
     username = user.username
 
-    # Read search query params
+                              
     search_location = request.args.get('location', '').strip()
     search_budget = request.args.get('budget', '').strip()
     filter_listing_purpose = request.args.get('listing_purpose', '').strip()
@@ -727,7 +727,7 @@ def browse_apartments():
     filter_tenant_preference = request.args.get('tenant_preference', '').strip()
     filter_furnishing = request.args.get('furnishing', '').strip()
 
-    # Build dynamic query with JOIN to apartment_details
+                                                        
     base_query = """
         SELECT hl.*, 
                ad.listing_purpose, ad.bhk, ad.tenant_preference, ad.furnishing,
@@ -744,12 +744,12 @@ def browse_apartments():
     
     params = {}
     
-    # Location filter
+                     
     if search_location:
         base_query += " AND LOWER(hl.location) LIKE LOWER(:location)"
         params['location'] = f"%{search_location}%"
     
-    # Budget filter
+                   
     if search_budget == '1':
         base_query += " AND hl.price >= 0 AND hl.price <= 5000"
     elif search_budget == '2':
@@ -759,7 +759,7 @@ def browse_apartments():
     elif search_budget == '4':
         base_query += " AND hl.price > 15000"
     
-    # apartment_details filters
+                               
     if filter_listing_purpose and filter_listing_purpose in ('rent', 'sale'):
         base_query += " AND ad.listing_purpose = :filter_listing_purpose"
         params['filter_listing_purpose'] = filter_listing_purpose
@@ -832,7 +832,7 @@ def apartment_details(listing_id):
         return jsonify({'success': False, 'message': 'Unauthorized'}), 403
 
     try:
-        # Fetch listing + provider + user + profile pic + apartment_details
+                                                                           
         query = text("""
             SELECT hl.id, hl.title, hl.description, hl.price, hl.location, hl.type,
                    hl.status, hl.created_at,
@@ -855,7 +855,7 @@ def apartment_details(listing_id):
         if not result:
             return jsonify({'success': False, 'message': 'Listing not found'}), 404
         
-        # Fetch all images
+                          
         images_query = text("""
             SELECT image_path
             FROM house_images
@@ -907,17 +907,17 @@ def save_apartment(listing_id):
         return jsonify({'success': False, 'message': 'Unauthorized'}), 403
 
     try:
-        # 1. Validate listing exists and is approved Apartment
+                                                              
         listing = HouseListing.query.filter_by(id=listing_id, type='Apartment', status='approved').first()
         if not listing:
             return jsonify({'success': False, 'message': 'Listing not found or not available'}), 404
 
-        # 2. Check if already saved
+                                   
         existing_save = SavedHouse.query.filter_by(customer_id=user.id, house_listing_id=listing_id).first()
         if existing_save:
             return jsonify({'success': True, 'already_saved': True, 'message': 'Apartment already saved'}), 200
 
-        # 3. Create new save
+                            
         new_save = SavedHouse(customer_id=user.id, house_listing_id=listing_id)
         db.session.add(new_save)
         db.session.commit()
@@ -940,7 +940,7 @@ def unsave_apartment(listing_id):
         return jsonify({'success': False, 'message': 'Not authenticated'}), 401
     
     try:
-        # Delete if exists
+                          
         save_entry = SavedHouse.query.filter_by(customer_id=user.id, house_listing_id=listing_id).first()
         
         if save_entry:
@@ -974,7 +974,7 @@ def is_apartment_saved(listing_id):
         return jsonify({'saved': False}), 200
 
 
-# --- Services Routes ---
+                         
 
 @customer_bp.route('/services')
 def browse_services():
@@ -1207,7 +1207,7 @@ def service_bookings():
     return render_template('services/my_bookings.html', username=user.username, bookings=bookings_data)
 
 
-# --- Tiffin Routes ---
+                       
 
 @customer_bp.route('/tiffin')
 def browse_tiffins():
@@ -1219,7 +1219,7 @@ def browse_tiffins():
 
     username = user.username
 
-    # Read search query params (used to search by restaurant name)
+                                                                  
     search_location = request.args.get('location', '').strip()
 
     base_query = """
@@ -1238,7 +1238,7 @@ def browse_tiffins():
     
     params = {}
 
-    # Filter by restaurant/kitchen name (provider business name) when search text is provided
+                                                                                             
     if search_location:
         base_query += " AND LOWER(pp.business_name) LIKE LOWER(:search_name)"
         params['search_name'] = f"%{search_location}%"
@@ -1273,7 +1273,7 @@ def browse_tiffins():
             'is_saved': kitchen_id in saved_kitchen_ids
         })
         
-    # Fetch default address for pre-fill (if available)
+                                                       
     default_address = ''
     try:
         addr_row = db.session.execute(text("""
@@ -1286,7 +1286,7 @@ def browse_tiffins():
         if addr_row and addr_row[0]:
             default_address = addr_row[0]
     except Exception as e:
-        # Address table might not exist in some environments; fail open (no prefill)
+                                                                                    
         print(f"Error fetching default address: {e}")
 
     return render_template(
@@ -1308,7 +1308,7 @@ def tiffin_details(tiffin_id):
         return jsonify({'success': False, 'message': 'Not authenticated'}), 401
     
     try:
-        # Fetch listing + provider + user + profile pic
+                                                       
         query = text("""
             SELECT tl.id, tl.delivery_radius, tl.fast_delivery_available, tl.diet_type, 
                    tl.available_days, tl.created_at,
@@ -1329,7 +1329,7 @@ def tiffin_details(tiffin_id):
         if not result:
             return jsonify({'success': False, 'message': 'Kitchen not found or closed'}), 404
         
-        # Fetch all images
+                          
         images_query = text("""
             SELECT image_path
             FROM tiffin_images
@@ -1427,7 +1427,7 @@ def order_meal(meal_id):
     if not delivery_address:
         return jsonify({'success': False, 'message': 'Delivery address is required'}), 400
 
-    # Never trust frontend: validate meal & listing
+                                                   
     meal = Meal.query.get(meal_id)
     if not meal:
         return jsonify({'success': False, 'message': 'Meal not found'}), 404
@@ -1444,7 +1444,7 @@ def order_meal(meal_id):
     if not listing:
         return jsonify({'success': False, 'message': 'Kitchen is closed or not approved'}), 400
 
-    # Fast delivery allowed only if listing supports it
+                                                       
     fast_delivery = fast_delivery_requested and bool(listing.fast_delivery_available)
 
     from decimal import Decimal
@@ -1584,7 +1584,7 @@ def download_order_bill(order_id):
     if user.account_type != 'customer':
         return redirect('/')
 
-    # Secure ownership check + details fetch
+                                            
     query = text("""
         SELECT o.id AS order_id, o.order_date, o.order_status, o.quantity, o.base_price,
                o.fast_delivery, o.fast_delivery_charge, o.total_price, o.delivery_address,
@@ -1608,7 +1608,7 @@ def download_order_bill(order_id):
     if not row:
         return redirect('/orders')
 
-    # Build PDF
+               
     import io
     from reportlab.pdfgen import canvas
     from reportlab.lib.pagesizes import letter
@@ -1653,7 +1653,7 @@ def download_order_bill(order_id):
     y = draw_kv('Name', row.get('customer_name') or '', y)
     y = draw_kv('Phone', row.get('customer_phone') or '', y)
 
-    # Customer address (multi-line)
+                                   
     c.setFont('Helvetica-Bold', 11)
     c.drawString(left, y, 'Address:')
     c.setFont('Helvetica', 11)
@@ -1710,7 +1710,7 @@ def download_order_bill(order_id):
     return send_file(buffer, mimetype='application/pdf', as_attachment=True, download_name=filename)
 
 
-# --- Saved Items Routes ---
+                            
 
 @customer_bp.route('/saved/houses')
 def saved_houses():
@@ -1747,7 +1747,7 @@ def saved_houses():
                 'description': row[2] or '',
                 'price': float(row[3]) if row[3] else 0,
                 'location': row[4],
-                'type': row[5],  # Hostel, PG, or Apartment
+                'type': row[5],                            
                 'image_path': image_path
             })
         
