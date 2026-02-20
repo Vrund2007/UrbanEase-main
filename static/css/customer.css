@@ -1,7 +1,7 @@
-/* UrbanEase Customer Dashboard - Extends Global Theme */
-/* Minimal additions — all base styles come from styles.css */
 
-/* ---- Dashboard Hero ---- */
+
+
+
 .customer-hero {
     padding: 140px 0 60px;
     background: radial-gradient(circle at top right, rgba(221, 214, 254, 0.35), transparent 50%),
@@ -27,7 +27,7 @@
     max-width: 440px;
 }
 
-/* ---- Service Cards ---- */
+
 .customer-services {
     padding: 60px 0 80px;
 }
@@ -103,7 +103,7 @@
     transform: translateX(4px);
 }
 
-/* Accent tones for food and services cards */
+
 .service-card-btn.btn-food {
     background-color: var(--secondary);
     color: var(--text-main);
@@ -126,7 +126,7 @@
     box-shadow: 0 4px 12px rgba(5, 150, 105, 0.2);
 }
 
-/* ---- Profile Dropdown (Navbar) ---- */
+
 .nav-profile-wrapper {
     position: relative;
 }
@@ -237,9 +237,7 @@
     color: #EF4444;
 }
 
-/* ================================================
-   Standard Customer Navbar Dropdown (Global)
-   ================================================ */
+
 
 .profile-menu {
     display: inline-flex;
@@ -381,7 +379,7 @@
     color: #DC2626;
 }
 
-/* ---- Browse Houses Modal ---- */
+
 .modal-backdrop.show {
     opacity: 0.5;
     backdrop-filter: blur(4px);
@@ -499,7 +497,7 @@
     border-top: 1px solid var(--border);
 }
 
-/* ---- Responsive ---- */
+
 @media (max-width: 991.98px) {
     .customer-hero {
         padding: 120px 0 40px;

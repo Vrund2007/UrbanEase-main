@@ -1,4 +1,4 @@
-/* My Bookings Page - Reuses hostel/services card styling */
+
 
 .my-bookings-hero {
     background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1621905251189-08b45d6a269e?q=80&w=2000&auto=format&fit=crop');
@@ -14,7 +14,7 @@
     flex: 1;
 }
 
-/* Status badges - match provider status colors */
+
 .badge-status {
     font-size: 0.75rem;
     font-weight: 600;

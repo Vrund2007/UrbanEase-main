@@ -1,6 +1,6 @@
-/* PG Page Styles - Cloned from Hostel Styles */
 
-/* Hero Section */
+
+
 .pg-hero {
     margin-top: 76px;
     height: 500px;
@@ -38,7 +38,7 @@
     margin-bottom: 2rem;
 }
 
-/* Search Bar */
+
 .search-bar-container {
     background: white;
     padding: 1rem;
@@ -75,7 +75,7 @@
     font-weight: 600;
 }
 
-/* Listings Section */
+
 .hostel-listings {
     padding: 80px 0;
     background-color: var(--bg-body);
@@ -97,16 +97,16 @@
 }
 
 .form-check-label {
-    color: #0f172a; /* dark slate text, matches selects */
+    color: #0f172a; 
     font-weight: 500;
     font-size: 1rem;
     margin-top: 1.3rem;
 }
 .form-check-input {
     transform: scale(1.5);
-    margin-top: 1.5rem;   /* vertical align fix */
+    margin-top: 1.5rem;   
 }
-/* Listing Card */
+
 .listing-card {
     background: var(--bg-surface);
     border-radius: 16px;
@@ -222,9 +222,7 @@
     overflow: hidden;
 }
 
-/* ================================================
-   VIEW DETAILS MODAL
-   ================================================ */
+
 
 .detail-modal-content {
     border: none;
@@ -262,7 +260,7 @@
     position: relative;
 }
 
-/* Loading State */
+
 .detail-loading {
     display: flex;
     align-items: center;
@@ -270,7 +268,7 @@
     min-height: 400px;
 }
 
-/* Carousel */
+
 .detail-carousel {
     border-radius: 20px 20px 0 0;
     overflow: hidden;
@@ -316,7 +314,7 @@
     filter: invert(1) grayscale(1) brightness(0);
 }
 
-/* Details Body */
+
 .detail-body {
     padding: 2rem;
 }
@@ -327,7 +325,7 @@
 
 .detail-type-badge {
     display: inline-block;
-    background: var(--primary-dark); /* Darker purple */
+    background: var(--primary-dark); 
     color: white;
     padding: 0.25rem 0.85rem;
     border-radius: 6px;
@@ -347,7 +345,7 @@
 
 
 .detail-location {
-    color: #334155; /* Dark Slate to match theme */
+    color: #334155; 
     font-size: 0.95rem;
     margin-bottom: 1rem;
     font-weight: 500;
@@ -360,18 +358,18 @@
 .detail-price {
     font-size: 1.75rem;
     font-weight: 800;
-    color: #4c1d95; /* Very Dark Purple */
+    color: #4c1d95; 
     margin-bottom: 1.25rem;
 }
 
 .detail-price-period {
     font-size: 0.95rem;
     font-weight: 600;
-    color: #475569; /* Darker muted text */
+    color: #475569; 
 }
 
 .detail-description {
-    color: #1e293b; /* Nearly black (Slate 800) for readability */
+    color: #1e293b; 
     font-size: 0.95rem;
     line-height: 1.7;
     margin-bottom: 1.25rem;
@@ -379,13 +377,13 @@
 }
 
 .detail-date {
-    color: #475569; /* Darker Slate (Slate 600) so it's readable */
+    color: #475569; 
     font-size: 0.85rem;
     margin-bottom: 0;
     font-weight: 500;
 }
 
-/* Provider Card */
+
 .provider-card {
     background: #f8fafc;
     border: 1px solid #e2e8f0;
@@ -410,7 +408,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--primary, #6d28d9); /* Darker purple */
+    color: var(--primary, #6d28d9); 
     font-size: 1.25rem;
     overflow: hidden;
     flex-shrink: 0;
@@ -462,13 +460,13 @@
     align-items: center;
     justify-content: center;
     background: var(--primary-light, #ede9fe);
-    color: var(--primary-dark); /* Darker purple */
+    color: var(--primary-dark); 
     border-radius: 8px;
     font-size: 0.8rem;
     flex-shrink: 0;
 }
 
-/* Bottom Actions */
+
 .detail-actions {
     display: flex;
     gap: 0.75rem;
@@ -483,14 +481,14 @@
     border-radius: 12px;
     font-weight: 600;
     font-size: 0.95rem;
-    background: var(--primary-darker,#6d28d9); /* Darker purple */
+    background: var(--primary-darker,#6d28d9); 
     color: white;
-    border: 2px solid var(--primary-darker, #6d28d9); /* Darker purple */
+    border: 2px solid var(--primary-darker, #6d28d9); 
     transition: all 0.2s ease;
 }
 
 .detail-btn-save:hover {
-    background: #5b21b6; /* Even darker purple on hover */
+    background: #5b21b6; 
     border-color: #5b21b6;
     color: white;
     transform: translateY(-1px);
@@ -512,9 +510,7 @@
     border-color: #cbd5e1;
 }
 
-/* ================================================
-   RESPONSIVE
-   ================================================ */
+
 
 @media (max-width: 991.98px) {
     .pg-hero {
@@ -574,13 +570,13 @@
     }
 }
 
-/* Toast Notification */
+
 .custom-toast {
     position: fixed;
     bottom: 2rem;
     left: 50%;
     transform: translateX(-50%) translateY(100px);
-    background: #1e293b; /* Slate 800 */
+    background: #1e293b; 
     color: white;
     padding: 0.75rem 1.5rem;
     border-radius: 50px;
@@ -592,7 +588,7 @@
     font-size: 0.95rem;
     opacity: 0;
     transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-    z-index: 1100; /* Above modal */
+    z-index: 1100; 
 }
 
 .custom-toast.show {
@@ -606,7 +602,7 @@
 
 .custom-toast i {
     font-size: 1.1rem;
-    color: #4ade80; /* Green accent */
+    color: #4ade80; 
 }
 
 .custom-toast.error i {

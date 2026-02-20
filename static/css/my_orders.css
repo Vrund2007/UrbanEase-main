@@ -1,4 +1,4 @@
-/* My Food Orders Page - Reuses hostel/services card styling */
+
 
 .my-orders-hero {
     background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=2000&auto=format&fit=crop');
@@ -20,7 +20,7 @@
     color: var(--text-main);
 }
 
-/* Status badges */
+
 .badge-status {
     font-size: 0.75rem;
     font-weight: 600;
@@ -54,7 +54,7 @@
     color: #dc2626;
 }
 
-/* Modal details */
+
 .detail-block {
     padding: 0.9rem 1rem;
     border: 1px solid var(--border);

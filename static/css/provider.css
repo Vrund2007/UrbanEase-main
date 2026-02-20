@@ -1,9 +1,9 @@
-/* UrbanEase Provider Theme - Extends Global Styles */
-/* This file only adds provider-specific extensions, NOT theme redefinitions */
 
-/* Reuse variables from styles.css (already imported in HTML) */
+
+
+
 :root {
-    /* Shadow utilities matching admin theme */
+    
     --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
     --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
     --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
@@ -18,7 +18,7 @@ body {
     overflow-x: hidden;
 }
 
-/* ---- Mobile Topbar (Same as Admin) ---- */
+
 .admin-topbar {
     position: fixed;
     top: 0;
@@ -67,7 +67,7 @@ body {
     color: var(--primary-dark);
 }
 
-/* ---- Sidebar Overlay ---- */
+
 .sidebar-overlay {
     display: none;
     position: fixed;
@@ -84,7 +84,7 @@ body {
     opacity: 1;
 }
 
-/* ---- Sidebar (Same as Admin) ---- */
+
 .admin-sidebar {
     position: fixed;
     top: 0;
@@ -134,7 +134,7 @@ body {
     padding-left: 2.2rem;
 }
 
-/* ---- Sidebar Navigation ---- */
+
 .sidebar-nav {
     flex: 1;
     padding: 0.5rem 1rem;
@@ -199,7 +199,7 @@ body {
     color: var(--primary-dark);
 }
 
-/* Custom Button Style for Manage Kitchen to match active sidebar */
+
 .btn-manage-kitchen {
     background-color: var(--primary);
     color: var(--text-main);
@@ -223,7 +223,7 @@ body {
     cursor: not-allowed;
 }
 
-/* ---- Disabled Sidebar Links (Provider Specific) ---- */
+
 .sidebar-link.disabled {
     opacity: 0.5;
     cursor: not-allowed;
@@ -257,14 +257,14 @@ body {
     color: #DC2626;
 }
 
-/* ---- Main Content ---- */
+
 .admin-main {
     margin-left: 280px;
     padding: 2.5rem 3rem;
     min-height: 100vh;
 }
 
-/* ---- Admin Sections ---- */
+
 .admin-section {
     display: none;
     padding: 0;
@@ -306,7 +306,7 @@ body {
     color: var(--text-muted);
 }
 
-/* ---- Summary Cards (Same as Admin) ---- */
+
 .summary-card {
     background-color: var(--bg-surface);
     border: 1px solid var(--border);
@@ -382,7 +382,7 @@ body {
     margin-top: 0.25rem;
 }
 
-/* ---- Status Banners (Provider Specific) ---- */
+
 .status-banner {
     padding: 1rem 1.5rem;
     border-radius: 12px;
@@ -427,7 +427,7 @@ body {
     color: #059669;
 }
 
-/* ---- Verification Card (Provider Specific) ---- */
+
 .verification-card {
     background-color: var(--bg-surface);
     border: 1px solid var(--border);
@@ -458,7 +458,7 @@ body {
     margin: 0;
 }
 
-/* ---- Form Styling ---- */
+
 .form-label {
     font-weight: 600;
     color: var(--text-main);
@@ -483,7 +483,7 @@ body {
     color: var(--text-muted);
 }
 
-/* ---- Image Preview ---- */
+
 .image-preview {
     width: 100px;
     height: 100px;
@@ -493,7 +493,7 @@ body {
     box-shadow: var(--shadow-sm);
 }
 
-/* ---- Profile Card ---- */
+
 .profile-card {
     background-color: var(--bg-surface);
     border: 1px solid var(--border);
@@ -511,7 +511,7 @@ body {
     box-shadow: 0 4px 15px rgba(124, 58, 237, 0.2);
 }
 
-/* ---- Table Wrapper ---- */
+
 .admin-table-wrapper {
     background-color: var(--bg-surface);
     border: 1px solid var(--border);
@@ -521,7 +521,7 @@ body {
     white-space: nowrap;
 }
 
-/* ---- Badges ---- */
+
 .badge {
     padding: 0.4em 0.8em;
     font-weight: 600;
@@ -545,7 +545,7 @@ body {
     color: #92400E !important;
 }
 
-/* ---- Buttons (Same as Admin) ---- */
+
 .btn {
     border-radius: 10px;
     font-weight: 600;
@@ -572,7 +572,7 @@ body {
     font-size: 1rem;
 }
 
-/* ---- Animations ---- */
+
 @keyframes fadeInUp {
     from {
         opacity: 0;
@@ -584,7 +584,7 @@ body {
     }
 }
 
-/* ---- Responsive ---- */
+
 @media (min-width: 992px) {
     .admin-sidebar {
         transform: translateX(0);
@@ -628,7 +628,7 @@ body {
     }
 }
 
-/* ---- House Listing Cards ---- */
+
 .house-listings-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -753,7 +753,7 @@ body {
     align-items: center;
 }
 
-/* ---- Uppercase Labels ---- */
+
 .uppercase-label {
     text-transform: uppercase;
     letter-spacing: 0.5px;
@@ -767,7 +767,7 @@ body {
     }
 }
 
-/* ---- Listings Grid & Card Components ---- */
+
 .house-listings-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));

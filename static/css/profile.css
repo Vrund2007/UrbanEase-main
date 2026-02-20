@@ -1,4 +1,4 @@
-/* Customer Profile Page */
+
 
 .profile-hero {
     background-size: cover;
@@ -6,7 +6,7 @@
     position: relative;
 }
 
-/* Greeting emoji inline fix */
+
 .greeting {
     white-space: nowrap;
 }

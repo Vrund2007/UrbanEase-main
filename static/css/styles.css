@@ -1,15 +1,15 @@
-/* UrbanEase Custom Styles - Pastel Theme */
+
 
 :root {
-    --primary: #DDD6FE; /* Lavender */
-    --primary-dark: #7C3AED; /* Darker Purple for hover/text */
-    --secondary: #FBCFE8; /* Baby Pink */
-    --secondary-dark: #DB2777; /* Darker Pink for hover/text */
-    --accent: #A7F3D0; /* Mint */
-    --bg-body: #F9FAFB; /* White Smoke */
+    --primary: #DDD6FE; 
+    --primary-dark: #7C3AED; 
+    --secondary: #FBCFE8; 
+    --secondary-dark: #DB2777; 
+    --accent: #A7F3D0; 
+    --bg-body: #F9FAFB; 
     --bg-surface: #FFFFFF;
-    --text-main: #1F2937; /* Graphite Gray */
-    --text-muted: #6B7280; /* Cool Gray */
+    --text-main: #1F2937; 
+    --text-muted: #6B7280; 
     --border: #E5E7EB;
 }
 
@@ -20,7 +20,7 @@ body {
     overflow-x: hidden;
 }
 
-/* Scrollbar Styling */
+
 ::-webkit-scrollbar {
     width: 5px;
 }
@@ -38,7 +38,7 @@ body {
     background: var(--primary-dark);
 }
 
-/* Navbar */
+
 .navbar {
     background-color: rgba(255, 255, 255, 0.85) !important;
     backdrop-filter: blur(12px);
@@ -85,12 +85,12 @@ body {
     width: 100%;
 }
 
-/* When hovering the navbar, remove the underline from the active link if it's NOT the one being hovered */
+
 .navbar-nav:hover .nav-link.active:not(:hover)::before {
     width: 0;
 }
 
-/* Buttons */
+
 .btn-primary {
     background-color: var(--primary);
     color: var(--text-main);
@@ -121,7 +121,7 @@ body {
     transform: translateY(-2px);
 }
 
-/* Hero Section */
+
 .hero-section {
     padding: 160px 0 100px;
     background: radial-gradient(circle at top right, rgba(221, 214, 254, 0.4), transparent 50%),
@@ -144,13 +144,13 @@ body {
     max-width: 600px;
 }
 
-/* Background Utilities */
+
 .bg-gradient-theme {
     background: radial-gradient(circle at top right, rgba(221, 214, 254, 0.4), transparent 50%),
                 radial-gradient(circle at bottom left, rgba(251, 207, 232, 0.4), transparent 50%);
 }
 
-/* Cards */
+
 .feature-card {
     background-color: var(--bg-surface);
     border: 1px solid var(--border);
@@ -223,7 +223,7 @@ body {
     line-height: 1.6;
 }
 
-/* Premium Badge */
+
 .premium-badge {
     background: linear-gradient(135deg, var(--primary-dark), var(--secondary-dark));
     color: white;
@@ -238,7 +238,7 @@ body {
     box-shadow: 0 4px 10px rgba(124, 58, 237, 0.2);
 }
 
-/* Sections */
+
 section {
     padding: 100px 0;
 }
@@ -262,7 +262,7 @@ section {
     border-radius: 3px;
 }
 
-/* Tiffin Plans */
+
 .plan-card {
     background: var(--bg-surface);
     border: 1px solid var(--border);
@@ -322,8 +322,8 @@ section {
 }
 
 .features-list li i {
-    color: #10B981; /* Keep checkmarks green for semantic meaning, or use accent? */
-    color: var(--secondary-dark); /* Using secondary dark (Pink) for styling consistency */
+    color: #10B981; 
+    color: var(--secondary-dark); 
     margin-right: 0.75rem;
     background: var(--secondary);
     padding: 4px;
@@ -336,7 +336,7 @@ section {
     justify-content: center;
 }
 
-/* Custom Select Dropdown */
+
 .form-select {
     background-color: var(--bg-surface);
     border: 1px solid var(--border);
@@ -364,7 +364,7 @@ section {
     border-color: var(--primary);
 }
 
-/* Dropdown options */
+
 .form-select option {
     background-color: var(--bg-surface);
     color: var(--text-main);
@@ -372,20 +372,20 @@ section {
     font-weight: 500;
 }
 
-/* Hover effect for options (requires a bit of JavaScript for full cross-browser, but this improves some browsers) */
+
 .form-select option:hover,
 .form-select option:focus {
     background-color: var(--primary) !important;
     color: var(--text-main) !important;
 }
 
-/* Placeholder option styling */
+
 .form-select option[value=""] {
     color: var(--text-muted);
     font-style: italic;
 }
 
-/* Custom Account Type Dropdown */
+
 .custom-dropdown-wrapper {
     position: relative;
     height: calc(3.5rem + 2px);
@@ -484,13 +484,13 @@ section {
     font-weight: 600;
 }
 
-/* Style for the placeholder option in the list */
+
 .custom-dropdown-option[data-value=""] {
     color: var(--text-muted);
     font-weight: 500;
 }
 
-/* Form Field Consistency */
+
 .custom-dropdown-wrapper {
     height: calc(3.5rem + 2px);
 }
@@ -516,7 +516,7 @@ section {
     border-bottom: 1px solid var(--border);
 }
 
-/* Responsive */
+
 @media (max-width: 991.98px) {
     .hero-title {
         font-size: 2.5rem;
@@ -537,12 +537,12 @@ section {
     }
 }
 
-/* Scroll Spy Active State */
+
 .nav-link.active {
     color: var(--primary-dark) !important;
 }
 
-/* Animations */
+
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(20px); }
     to { opacity: 1; transform: translateY(0); }

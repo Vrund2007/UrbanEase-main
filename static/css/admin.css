@@ -1,17 +1,17 @@
-/* UrbanEase Admin Theme - Matching Frontend */
+
 
 :root {
-    /* Reuse variables from styles.css to ensure exact match */
-    --primary: #DDD6FE; /* Lavender */
-    --primary-dark: #7C3AED; /* Darker Purple */
-    --primary-darker: #4d2397; /* Darker Purple */
-    --secondary: #FBCFE8; /* Baby Pink */
-    --secondary-dark: #DB2777; /* Darker Pink */
-    --accent: #A7F3D0; /* Mint */
-    --bg-body: #F9FAFB; /* White Smoke */
+    
+    --primary: #DDD6FE; 
+    --primary-dark: #7C3AED; 
+    --primary-darker: #4d2397; 
+    --secondary: #FBCFE8; 
+    --secondary-dark: #DB2777; 
+    --accent: #A7F3D0; 
+    --bg-body: #F9FAFB; 
     --bg-surface: #FFFFFF;
-    --text-main: #1F2937; /* Graphite Gray */
-    --text-muted: #6B7280; /* Cool Gray */
+    --text-main: #1F2937; 
+    --text-muted: #6B7280; 
     --border: #E5E7EB;
     --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
     --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
@@ -27,7 +27,7 @@ body {
     overflow-x: hidden;
 }
 
-/* ---- Mobile Topbar ---- */
+
 .admin-topbar {
     position: fixed;
     top: 0;
@@ -76,7 +76,7 @@ body {
     color: var(--primary-dark);
 }
 
-/* ---- Sidebar Overlay ---- */
+
 .sidebar-overlay {
     display: none;
     position: fixed;
@@ -93,7 +93,7 @@ body {
     opacity: 1;
 }
 
-/* ---- Sidebar ---- */
+
 .admin-sidebar {
     position: fixed;
     top: 0;
@@ -143,7 +143,7 @@ body {
     padding-left: 2.2rem;
 }
 
-/* ---- Sidebar Navigation ---- */
+
 .sidebar-nav {
     flex: 1;
     padding: 0.5rem 1rem;
@@ -180,15 +180,15 @@ body {
 
 .sidebar-link:hover {
     color: var(--primary-dark);
-    background-color: #FAF5FF; /* Very light purple */
+    background-color: #FAF5FF; 
     text-decoration: none;
 }
 
 .sidebar-link.active {
     background-color: var(--primary);
-    color: var(--text-main); /* Or darker purple text? primary-dark is acceptable but main is better contrast on light primary */
+    color: var(--text-main); 
     font-weight: 600;
-    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.15); /* Soft purple shadow */
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.15); 
     border-color: rgba(139, 92, 246, 0.1);
 }
 
@@ -226,14 +226,14 @@ body {
     color: #DC2626;
 }
 
-/* ---- Main Content ---- */
+
 .admin-main {
     margin-left: 280px;
     padding: 2.5rem 3rem;
     min-height: 100vh;
 }
 
-/* ---- Admin Sections ---- */
+
 .admin-section {
     display: none;
     padding: 0;
@@ -275,7 +275,7 @@ body {
     color: var(--text-muted);
 }
 
-/* ---- Summary Cards (Dashboard) ---- */
+
 .summary-card {
     background-color: var(--bg-surface);
     border: 1px solid var(--border);
@@ -298,7 +298,7 @@ body {
     right: 0;
     height: 6px;
     background: linear-gradient(to right, var(--primary), var(--secondary));
-    opacity: 1; /* Keep visible if desired, or revert to 0 if full revert */
+    opacity: 1; 
     transition: opacity 0.3s ease;
 }
 
@@ -317,7 +317,7 @@ body {
     justify-content: center;
     font-size: 1.25rem;
     flex-shrink: 0;
-    /* Background color handled by inline styles in HTML, but transition remains */
+    
     transition: all 0.3s ease;
 }
 
@@ -345,25 +345,25 @@ body {
     line-height: 1.2;
 }
 
-/* ---- Table Styling ---- */
+
 .admin-table-wrapper {
     background-color: var(--bg-surface);
     border: 1px solid var(--border);
     border-radius: var(--radius-xl);
     box-shadow: var(--shadow);
-    overflow-x: auto; /* Restored horizontal scrolling */
-    white-space: nowrap; /* Ensure table actually scrolls */
+    overflow-x: auto; 
+    white-space: nowrap; 
 }
 
 .table.admin-table {
     margin-bottom: 0;
     width: 100%;
-    border-collapse: collapse; /* Ensure no gaps */
+    border-collapse: collapse; 
 }
 
-/* Header */
+
 .admin-table thead th {
-    background-color: #F8FAFC; /* Very light cool gray */
+    background-color: #F8FAFC; 
     border-bottom: 1px solid var(--border);
     color: var(--text-muted);
     font-weight: 700;
@@ -374,7 +374,7 @@ body {
     white-space: nowrap;
 }
 
-/* Rows */
+
 .admin-table tbody td {
     padding: 1.25rem 1.5rem;
     color: var(--text-main);
@@ -397,34 +397,34 @@ body {
     border-bottom: none;
 }
 
-/* ---- Badges & Buttons Compatibility ---- */
+
 .badge {
     padding: 0.4em 0.8em;
     font-weight: 600;
-    border-radius: 6px; /* slightly simpler radius for badges */
+    border-radius: 6px; 
     font-size: 0.75rem;
     letter-spacing: 0.3px;
 }
 
-/* Success Badge Override */
+
 .bg-success {
-    background-color: #D1FAE5 !important; /* Mint Green Light */
-    color: #065F46 !important; /* Dark Green Text */
+    background-color: #D1FAE5 !important; 
+    color: #065F46 !important; 
 }
 
-/* Danger Badge Override */
+
 .bg-danger {
-    background-color: #FEE2E2 !important; /* Soft Red Light */
-    color: #991B1B !important; /* Dark Red Text */
+    background-color: #FEE2E2 !important; 
+    color: #991B1B !important; 
 }
 
-/* Warning Badge Override */
+
 .bg-warning {
-    background-color: #FEF3C7 !important; /* Soft Yellow */
-    color: #92400E !important; /* Dark Orange Text */
+    background-color: #FEF3C7 !important; 
+    color: #92400E !important; 
 }
 
-/* Buttons */
+
 .btn {
     border-radius: 10px;
     font-weight: 600;
@@ -433,10 +433,10 @@ body {
     font-size: 0.9rem;
 }
 
-/* Primary Button Redesign */
+
 .btn-primary {
     background-color: var(--primary);
-    color: #4C1D95; /* Deep Purple text for contrast on lavender */
+    color: #4C1D95; 
     border: none;
 }
 
@@ -447,7 +447,7 @@ body {
     box-shadow: 0 4px 12px rgba(124, 58, 237, 0.25);
 }
 
-/* Danger Button Redesign */
+
 .btn-danger {
     background-color: #FEE2E2;
     color: #DC2626;
@@ -473,7 +473,7 @@ body {
     border-color: #E5E7EB;
 }
 
-/* ---- Animations ---- */
+
 @keyframes fadeInUp {
     from {
         opacity: 0;
@@ -485,7 +485,7 @@ body {
     }
 }
 
-/* ---- Responsive ---- */
+
 @media (min-width: 992px) {
     .admin-sidebar {
         transform: translateX(0);

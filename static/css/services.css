@@ -1,5 +1,5 @@
-/* Services Page - Hero override + minimal overrides */
-/* Reuses card, shadows, radius, button styles from hostel.css */
+
+
 
 .services-hero {
     background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1621905251189-08b45d6a269e?q=80&w=2000&auto=format&fit=crop');
@@ -7,13 +7,13 @@
     background-position: center;
 }
 
-/* Service card image fallback - ensure Unsplash loads */
+
 .service-placeholder-img,
 .listing-image img.use-placeholder {
     object-fit: cover;
 }
 
-/* Service card inline save button */
+
 .btn-save-inline {
     padding: 0.5rem 0.75rem;
     min-width: 44px;
@@ -23,7 +23,7 @@
     margin: 0;
 }
 
-/* Book Service button - primary style from hostel */
+
 .book-service-btn {
     border-radius: 12px;
     font-weight: 600;
