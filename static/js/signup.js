@@ -25,6 +25,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
+            const originalBtnText = submitBtn.innerHTML;
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>';
+
             try {
                 // IMPORTANT: In production, ensure CORS credentials are allowed
                 const response = await fetch('/verify_otp', {
@@ -43,10 +47,14 @@ document.addEventListener('DOMContentLoaded', () => {
                         window.location.href = '/login';
                     }
                 } else {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = originalBtnText;
                     alert(data.message || 'OTP Verification failed.');
                 }
             } catch (error) {
                 console.error('Error:', error);
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalBtnText;
                 alert('An error occurred. Please try again later.');
             }
 
@@ -97,6 +105,10 @@ document.addEventListener('DOMContentLoaded', () => {
             }
     
             // 2. Submission (Initial Signup)
+            const originalBtnText = submitBtn.innerHTML;
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>';
+
             try {
                 const response = await fetch('/signup', {
                     method: 'POST',
@@ -128,14 +140,19 @@ document.addEventListener('DOMContentLoaded', () => {
                     // For simplicity, just disabling inputs and showing OTP field
                     
                     otpSection.style.display = 'block';
+                    submitBtn.disabled = false;
                     submitBtn.textContent = 'Verify OTP & Create Account';
                     otpInput.focus();
                     
                 } else {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = originalBtnText;
                     alert(data.message || 'Signup failed. Please try again.');
                 }
             } catch (error) {
                 console.error('Error:', error);
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalBtnText;
                 alert('An error occurred. Please try again later.');
             }
         }

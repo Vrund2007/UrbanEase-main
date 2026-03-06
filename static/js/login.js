@@ -19,6 +19,11 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
             // 3. Send login request
+            const submitBtn = loginForm.querySelector('button[type="submit"]');
+            const originalBtnText = submitBtn.innerHTML;
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>';
+
             fetch('/login', {
                 method: 'POST',
                 headers: {
@@ -47,11 +52,15 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                 } else {
                     // Login failed
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = originalBtnText;
                     alert(data.message || "Invalid email or password");
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalBtnText;
                 alert("An error occurred. Please try again.");
             });
         });
