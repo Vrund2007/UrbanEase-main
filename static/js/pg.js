@@ -77,7 +77,7 @@ function openPGDetails(listingId) {
                 imgEl.className = 'd-block w-100';
                 
                 if (img) {
-                    imgEl.src = `/static/images/database_images/${img}`;
+                    imgEl.src = `${img}`;
                     imgEl.onerror = function() {
                         this.src = 'https://images.unsplash.com/photo-1522771753918-725f5d6443a4?q=80&w=2000&auto=format&fit=crop';
                     };
@@ -129,7 +129,7 @@ function openPGDetails(listingId) {
             
             const avatarEl = document.getElementById('providerAvatar');
             if (provider.profile_pic) {
-                avatarEl.innerHTML = `<img src="/static/images/database_images/${provider.profile_pic}" alt="${provider.business_name}" onerror="this.parentElement.innerHTML='<i class=\\'fas fa-user\\'></i>'">`;
+                avatarEl.innerHTML = `<img src="${provider.profile_pic}" alt="${provider.business_name}" onerror="this.parentElement.innerHTML='<i class=\\'fas fa-user\\'></i>'">`;
             } else {
                 avatarEl.innerHTML = '<i class="fas fa-user"></i>';
             }

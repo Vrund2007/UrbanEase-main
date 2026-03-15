@@ -117,7 +117,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Provider Avatar
         if (provider.profile_pic) {
-            providerAvatar.innerHTML = `<img src="/static/images/database_images/${provider.profile_pic}" alt="Provider">`;
+            providerAvatar.innerHTML = `<img src="${provider.profile_pic}" alt="Provider">`;
         } else {
             providerAvatar.innerHTML = `<i class="fas fa-user"></i>`;
         }
@@ -129,7 +129,7 @@ document.addEventListener('DOMContentLoaded', function() {
             listing.images.forEach((img, index) => {
                 const item = document.createElement('div');
                 item.className = `carousel-item ${index === 0 ? 'active' : ''}`;
-                item.innerHTML = `<img src="/static/images/database_images/${img}" class="d-block w-100" alt="Listing Image">`;
+                item.innerHTML = `<img src="${img}" class="d-block w-100" alt="Listing Image">`;
                 carouselInner.appendChild(item);
             });
         } else {

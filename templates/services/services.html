@@ -55,7 +55,7 @@
                         <div class="listing-card service-listing-card">
                             <div class="listing-image">
                                 {% if service.provider_image %}
-                                    <img src="{{ url_for('static', filename='images/database_images/' ~ service.provider_image) }}" alt="{{ service.service_title }}" onerror="this.onerror=null; this.classList.add('use-placeholder'); this.src='https://images.unsplash.com/photo-1621905251189-08b45d6a269e?q=80&w=2000&auto=format&fit=crop'">
+                                    <img src="{{service.provider_image}}" alt="{{ service.service_title }}" onerror="this.onerror=null; this.classList.add('use-placeholder'); this.src='https://images.unsplash.com/photo-1621905251189-08b45d6a269e?q=80&w=2000&auto=format&fit=crop'">
                                 {% else %}
                                     <img src="https://images.unsplash.com/photo-1621905251189-08b45d6a269e?q=80&w=2000&auto=format&fit=crop" alt="{{ service.service_title }}" class="service-placeholder-img">
                                 {% endif %}

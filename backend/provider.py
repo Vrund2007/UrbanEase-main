@@ -4,12 +4,13 @@ from backend.admin import ProviderProfile, ProviderProfilePic, HouseListing, Hou
 from werkzeug.utils import secure_filename
 import os
 import time
-
+import cloudinary
+import cloudinary.uploader
 provider_bp = Blueprint('provider', __name__)
 
                                                                    
 IMAGES_FOLDER = os.path.join(app.static_folder, 'images', 'database_images')
-ALLOWED_EXTENSIONS = {'jpg', 'jpeg'}
+ALLOWED_EXTENSIONS = {'jpg', 'jpeg', 'png', 'webp'}
 MAX_FILE_SIZE = 5 * 1024 * 1024       
 
 def allowed_file(filename):
@@ -142,11 +143,11 @@ def apply_verification():
             if file and file.filename:
                                     
                 if not allowed_file(file.filename):
-                    return jsonify({'success': False, 'message': 'Only JPEG images are allowed'}), 400
+                    return jsonify({'success': False, 'message': 'Only JPEG, PNG, and WebP images are allowed'}), 400
                 
                                     
-                if file.content_type not in ['image/jpeg', 'image/jpg']:
-                    return jsonify({'success': False, 'message': 'Only JPEG images are allowed'}), 400
+                if file.content_type not in ['image/jpeg', 'image/jpg', 'image/png', 'image/webp']:
+                    return jsonify({'success': False, 'message': 'Only JPEG, PNG, and WebP images are allowed'}), 400
                 
                                  
                 file.seek(0, 2)               
@@ -191,22 +192,16 @@ def apply_verification():
                 filename = f"provider_{profile_id}_{timestamp}.jpg"
                 filepath = os.path.join(IMAGES_FOLDER, filename)
                 
-                                         
-                os.makedirs(IMAGES_FOLDER, exist_ok=True)
-                
-                file.save(filepath)
-                profile_image_path = filename
+                upload_result = cloudinary.uploader.upload(
+                    file,
+                    folder="urbanease/providers",
+                    allowed_formats=['jpg', 'jpeg', 'png', 'webp']
+                )
+                profile_image_path = upload_result.get('secure_url')
                 
                                                    
                 existing_pic = ProviderProfilePic.query.filter_by(provider_id=profile_id).first()
                 if existing_pic:
-                                               
-                    old_path = os.path.join(IMAGES_FOLDER, existing_pic.image_path)
-                    if os.path.exists(old_path):
-                        try:
-                            os.remove(old_path)
-                        except:
-                            pass
                     existing_pic.image_path = profile_image_path
                 else:
                     new_pic = ProviderProfilePic(
@@ -367,18 +362,8 @@ def add_house_listing():
             db.session.rollback()
             return jsonify({'success': False, 'message': 'At least one image is required'}), 400
             
-                                 
-        os.makedirs(IMAGES_FOLDER, exist_ok=True)
-            
         for file in files:
             if file and allowed_file(file.filename):
-                timestamp = int(time.time())
-                                                              
-                unique_ts = f"{timestamp}_{files.index(file)}"
-                filename = f"house_{listing_id}_{unique_ts}.jpg"
-                filepath = os.path.join(IMAGES_FOLDER, filename)
-                
-                                                           
                 file.seek(0, 2)
                 size = file.tell()
                 file.seek(0)
@@ -386,7 +371,12 @@ def add_house_listing():
                 if size > MAX_FILE_SIZE:
                     continue                                   
                 
-                file.save(filepath)
+                upload_result = cloudinary.uploader.upload(
+                    file,
+                    folder="urbanease/uploads",
+                    allowed_formats=['jpg', 'jpeg', 'png', 'webp']
+                )
+                filename = upload_result.get('secure_url')
                 
                                      
                                                                 
@@ -535,17 +525,8 @@ def add_tiffin_listing():
                        
         files = request.files.getlist('images')
         
-                                 
-        os.makedirs(IMAGES_FOLDER, exist_ok=True)
-            
         for file in files:
             if file and allowed_file(file.filename):
-                timestamp = int(time.time())
-                unique_ts = f"{timestamp}_{files.index(file)}"
-                filename = f"tiffin_{new_listing.id}_{unique_ts}.jpg"
-                filepath = os.path.join(IMAGES_FOLDER, filename)
-                
-                                 
                 file.seek(0, 2)
                 size = file.tell()
                 file.seek(0)
@@ -553,7 +534,12 @@ def add_tiffin_listing():
                 if size > MAX_FILE_SIZE:
                     continue 
                 
-                file.save(filepath)
+                upload_result = cloudinary.uploader.upload(
+                    file,
+                    folder="urbanease/services",
+                    allowed_formats=['jpg', 'jpeg', 'png', 'webp']
+                )
+                filename = upload_result.get('secure_url')
                 
                                      
                 new_image = TiffinImage(
@@ -648,9 +634,12 @@ def add_meal(listing_id):
              return jsonify({'success': False, 'message': 'No selected file'}), 400
              
         if file and allowed_file(file.filename):
-            filename = secure_filename(f"meal_{listing.id}_{int(time.time())}.jpg")
-            filepath = os.path.join(IMAGES_FOLDER, filename)
-            file.save(filepath)
+            upload_result = cloudinary.uploader.upload(
+                file,
+                folder="urbanease/services",
+                allowed_formats=['jpg', 'jpeg', 'png', 'webp']
+            )
+            filename = upload_result.get('secure_url')
             
             new_meal = Meal(
                 tiffin_listing_id=listing.id,
@@ -746,10 +735,12 @@ def edit_meal(meal_id):
         if 'meal_image' in request.files:
             file = request.files['meal_image']
             if file.filename != '' and allowed_file(file.filename):
-                filename = secure_filename(f"meal_{listing.id}_{int(time.time())}.jpg")
-                filepath = os.path.join(IMAGES_FOLDER, filename)
-                file.save(filepath)
-                meal.meal_image_path = filename
+                upload_result = cloudinary.uploader.upload(
+                    file,
+                    folder="urbanease/services",
+                    allowed_formats=['jpg', 'jpeg', 'png', 'webp']
+                )
+                meal.meal_image_path = upload_result.get('secure_url')
         
         db.session.commit()
         

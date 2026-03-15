@@ -63,7 +63,7 @@
               <div class="listing-image">
                 {% if service.provider_image %}
                 <img
-                  src="{{ url_for('static', filename='images/database_images/' ~ service.provider_image) }}"
+                  src="{{service.provider_image}}"
                   alt="{{ service.service_title }}"
                   onerror="
                     this.onerror = null;

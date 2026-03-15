@@ -77,7 +77,7 @@ function openHostelDetails(listingId) {
                 imgEl.className = 'd-block w-100';
                 
                 if (img) {
-                    imgEl.src = `/static/images/database_images/${img}`;
+                    imgEl.src = `${img}`;
                     imgEl.onerror = function() {
                         this.src = 'https://images.unsplash.com/photo-1555854877-bab0e564b8d5?q=80&w=2000&auto=format&fit=crop';
                     };
@@ -131,7 +131,7 @@ function openHostelDetails(listingId) {
             
             const avatarEl = document.getElementById('providerAvatar');
             if (provider.profile_pic) {
-                avatarEl.innerHTML = `<img src="/static/images/database_images/${provider.profile_pic}" alt="${provider.business_name}" onerror="this.parentElement.innerHTML='<i class=\\'fas fa-user\\'></i>'">`;
+                avatarEl.innerHTML = `<img src="${provider.profile_pic}" alt="${provider.business_name}" onerror="this.parentElement.innerHTML='<i class=\\'fas fa-user\\'></i>'">`;
             } else {
                 avatarEl.innerHTML = '<i class="fas fa-user"></i>';
             }

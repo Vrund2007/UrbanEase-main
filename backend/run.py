@@ -2,6 +2,10 @@ from backend.authorization import app, db
 from backend.admin import admin_bp
 from backend.provider import provider_bp
 from backend.customer import customer_bp
+from backend.cloudinary_config import configure_cloudinary
+
+# Initialize Cloudinary
+configure_cloudinary()
 
 app.register_blueprint(admin_bp)
 app.register_blueprint(provider_bp)

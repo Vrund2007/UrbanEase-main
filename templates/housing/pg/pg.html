@@ -115,7 +115,7 @@
                                 {% if house.image_path == 'placeholder.jpg' %}
                                     <img src="https://images.unsplash.com/photo-1522771753918-725f5d6443a4?q=80&w=2000&auto=format&fit=crop" alt="{{ house.title }}">
                                 {% else %}
-                                    <img src="{{ url_for('static', filename='images/database_images/' ~ house.image_path) }}" alt="{{ house.title }}" onerror="this.src='https://images.unsplash.com/photo-1522771753918-725f5d6443a4?q=80&w=2000&auto=format&fit=crop'">
+                                    <img src="{{house.image_path}}" alt="{{ house.title }}" onerror="this.src='https://images.unsplash.com/photo-1522771753918-725f5d6443a4?q=80&w=2000&auto=format&fit=crop'">
                                 {% endif %}
                                 <div class="listing-badge">PG</div>
                                 <button class="save-house-btn btn-save" data-id="{{ house.id }}" data-saved="{{ 'true' if house.id in (saved_house_ids|default([])) else 'false' }}"><i class="{{ 'fas' if house.id in (saved_house_ids|default([])) else 'far' }} fa-heart"></i></button>

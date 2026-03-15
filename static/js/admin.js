@@ -783,10 +783,8 @@ function buildImageCarousel(images) {
     
     // Build carousel items and indicators
     images.forEach((img, index) => {
-        // Extract filename from absolute path and construct URL
-        const imagePath = img.image_path;
-        const filename = imagePath.split('\\').pop().split('/').pop();
-        const imageUrl = `/images/${encodeURIComponent(filename)}`;
+        // Use Cloudinary URL directly
+        const imageUrl = img.image_path;
         
         // Carousel item
         const carouselItem = document.createElement('div');
@@ -1003,9 +1001,8 @@ function handleViewPendingProvider(providerId) {
             // Set profile image
             const profileImg = document.getElementById('modal-provider-image');
             if (data.profile_image) {
-                // Extract just the filename from path (handles both / and \ separators)
-                const filename = data.profile_image.split('/').pop().split('\\').pop();
-                const imageUrl = `/images/${encodeURIComponent(filename)}`;
+                // Use Cloudinary URL directly
+                const imageUrl = data.profile_image;
                 profileImg.src = imageUrl;
             } else {
                 // Placeholder avatar - using a simple SVG data URI

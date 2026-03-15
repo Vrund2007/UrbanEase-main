@@ -167,7 +167,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         const avatarEl = document.getElementById('providerAvatar');
         if (provider.profile_pic) {
-            avatarEl.innerHTML = `<img src="/static/images/database_images/${provider.profile_pic}" alt="Provider">`;
+            avatarEl.innerHTML = `<img src="${provider.profile_pic}" alt="Provider">`;
         } else {
             avatarEl.innerHTML = `<i class="fas fa-user"></i>`;
         }
@@ -187,7 +187,7 @@ document.addEventListener('DOMContentLoaded', function() {
             imgEl.style.objectFit = 'cover';
 
             if (img) {
-                imgEl.src = `/static/images/database_images/${img}`;
+                imgEl.src = `${img}`;
                 imgEl.onerror = function() {
                     this.src = 'https://images.unsplash.com/photo-1556910103-1c02745a30bf?q=80&w=2000&auto=format&fit=crop';
                 };
@@ -238,7 +238,7 @@ document.addEventListener('DOMContentLoaded', function() {
             else if (meal.diet_type.toLowerCase() === 'both') dietClass = 'diet-both';
 
             const imgSrc = meal.image_path && meal.image_path !== 'placeholder.jpg'
-                ? `/static/images/database_images/${meal.image_path}`
+                ? `${meal.image_path}`
                 : 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=2000&auto=format&fit=crop';
 
             col.innerHTML = `

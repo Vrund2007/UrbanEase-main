@@ -64,7 +64,7 @@
                 />
                 {% else %}
                 <img
-                  src="{{ url_for('static', filename='images/database_images/' ~ house.image_path) }}"
+                  src="{{house.image_path}}"
                   alt="{{ house.title }}"
                   onerror="
                     this.src =
